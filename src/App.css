@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+html {
+  font-family: 'Adobe Garamond Pro', sans-serif;
+  color: #4B371C;
+  background-color: #E0E0E0;
+}
+
+p{
+  font-family: "Inter", sans-serif;
+}
+
+/* Color Pallete  */
+
+/* 4. Soft Minimalist (Modern Luxury) 
+Primary: Light Beige (#E6DACD) 
+Secondary: Soft Gray (#E0E0E0) 
+Accent: Black (#000000) 
+Dark Chocolate (#4B371C) 
+Why? 
+A muted,
+airy palette feels contemporary and high-end—think The Row or Bottega Veneta. */
