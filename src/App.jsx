@@ -21,8 +21,6 @@ import AnimatedCursor from "react-animated-cursor"
 function App() {
   const location = useLocation();
 
-
-
   return (
     <div className='min-h-screen flex flex-col'>
    <AnimatedCursor

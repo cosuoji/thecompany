@@ -11,6 +11,7 @@ const Footer = ({ navLinks = [] }) => {
     // Default navigation configuration
     const defaultNavigation = [
         { name: 'About', path: '/about' },
+        { name: "Contact", path: '/contact'},
         { name: 'FAQ', path: '/faq' },
         { name: 'Shipping', path: '/shipping' },
         { name: 'Terms', path: '/terms' },
@@ -24,7 +25,15 @@ const Footer = ({ navLinks = [] }) => {
     return () => clearInterval(timer);
   }, []);
 
-  const AnalogClock = ({ timezoneOffset = 0 }) => {
+  const AnalogClock = ({ timezoneOffset = 0, size = 80 }) => {
+    const [time, setTime] = React.useState(new Date());
+  
+    // Update clock every second
+    React.useEffect(() => {
+      const interval = setInterval(() => setTime(new Date()), 1000);
+      return () => clearInterval(interval);
+    }, []);
+  
     const localTime = new Date(time.getTime() + timezoneOffset * 3600 * 1000);
     const hours = localTime.getHours() % 12;
     const minutes = localTime.getMinutes();
@@ -32,27 +41,52 @@ const Footer = ({ navLinks = [] }) => {
     const hourDeg = hours * 30 + minutes * 0.5;
     const minuteDeg = minutes * 6;
     const secondDeg = seconds * 6;
-    
-
+  
     return (
-      <div className="relative w-20 h-20 border-2 border-[#4B371C] opacity-60 rounded-full">
-        {/* Clock hands - now visible with z-index */}
+      <div
+        className="relative border-2 border-[#4B371C] opacity-60 rounded-full"
+        style={{
+          width: size,
+          height: size,
+        }}
+      >
+        {/* Hour Hand */}
         <div
-          className="absolute w-0.5 bg-[#4B371C] h-6 bg- left-1/2 bottom-1/2 origin-bottom z-10"
-          style={{ transform: `translateX(-50%) rotate(${hourDeg}deg)` }}
+          className="absolute w-[2px] bg-[#4B371C] left-1/2 bottom-1/2 origin-bottom z-10"
+          style={{
+            height: size * 0.3,
+            transform: `translateX(-50%) rotate(${hourDeg}deg)`,
+          }}
         />
+        {/* Minute Hand */}
         <div
-          className="absolute w-0.5 h-8 bg-[#4B371C] left-1/2 bottom-1/2 origin-bottom z-10"
-          style={{ transform: `translateX(-50%) rotate(${minuteDeg}deg)` }}
+          className="absolute w-[2px] bg-[#4B371C] left-1/2 bottom-1/2 origin-bottom z-10"
+          style={{
+            height: size * 0.4,
+            transform: `translateX(-50%) rotate(${minuteDeg}deg)`,
+          }}
         />
-           <div
-          className="absolute w-0.5 h-6 bg-[#4B371C] left-1/2 bottom-1/2 origin-bottom z-10"
-          style={{ transform: `translateX(-50%) rotate(${secondDeg}deg)` }}
+        {/* Second Hand */}
+        <div
+          className="absolute w-[2px] bg-[#4B371C] left-1/2 bottom-1/2 origin-bottom z-10"
+          style={{
+            height: size * 0.3,
+            transform: `translateX(-50%) rotate(${secondDeg}deg)`,
+          }}
         />
-        <div className="absolute w-2 h-2 bg-[#4B371C] bg-chocolate rounded-full left-1/2 bottom-1/2 transform -translate-x-1/2 translate-y-1/2 z-20" />
+        {/* Center Dot */}
+        <div
+          className="absolute bg-[#4B371C] rounded-full left-1/2 bottom-1/2 z-20"
+          style={{
+            width: size * 0.05,
+            height: size * 0.05,
+            transform: 'translate(-50%, 50%)',
+          }}
+        />
       </div>
     );
   };
+  
 
   return (
     <footer className="bg-beige pt-12 px-5 md:px-10 lg:px-20 border-t border-gray-200">
@@ -60,7 +94,7 @@ const Footer = ({ navLinks = [] }) => {
         <div className="flex flex-col md:flex-row justify-center gap-16 mb-12">
         {/* England */}
         <div className="flex items-center gap-6">
-          <h3 className="font-medium text-3xl text-[#4B371C] whitespace-nowrap">ENGLAND</h3>
+          <h3 className="font-medium text-3xl text-[#4B371C] whitespace-nowrap">U.K</h3>
           <AnalogClock timezoneOffset={0} />
           <div className="text-sm leading-relaxed text-[#4B371C] ml-4">
             <p>123 Madison Avenue</p>
