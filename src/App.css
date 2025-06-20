@@ -1,10 +1,13 @@
 @import "tailwindcss";
 
+
 html {
   font-family: 'Adobe Garamond Pro', sans-serif;
   color: #4B371C;
-  background-color: #E0E0E0;
+  background-color: white;
+
 }
+
 
 p{
   font-family: "Inter", sans-serif;
@@ -18,5 +21,537 @@ Secondary: Soft Gray (#E0E0E0)
 Accent: Black (#000000) 
 Dark Chocolate (#4B371C) 
 Why? 
-A muted,
-airy palette feels contemporary and high-end—think The Row or Bottega Veneta. */
+A muted, airy palette feels contemporary and high-end—think The Row or Bottega Veneta. */
+
+
+/****HEADER STYLES *****/
+/* Delete Button container styles */
+.button--container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Button styles */
+.button--rhea {
+  position: relative;
+  font-weight: 900;
+  font-style: normal;
+  width: 90px;
+  height: 90px;
+  color: #000;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  outline: none;
+}
+
+/* CSS for Component Version */
+.button--rhea--small {
+  /* Sizing */
+  width: 90px;
+  height: 90px;
+
+  /* Reset default button styles */
+  background: none;
+  border: none;
+  padding: 0;
+
+  /* Positioning */
+  position: relative;
+  /* Allows absolute positioning of children */
+  display: inline-block;
+  /* Makes width/height work properly */
+
+  /* Text styles */
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #000;
+  cursor: pointer;
+}
+
+.button--rhea::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: #E0E0E0;
+  clip-path: polygon(20% 30%, 0 30%, 0 50%, 0 70%, 20% 70%, 50% 70%, 80% 70%, 100% 70%, 100% 50%, 100% 30%, 80% 30%, 50% 30%);
+  transition: clip-path 0.4s cubic-bezier(0.3, 1, 0.2, 1), transform 0.4s cubic-bezier(0.3, 1, 0.2, 1), background 0.4s ease;
+}
+
+.button--rhea:hover::before {
+  background: #000;
+  transform: scale3d(0.7, 0.7, 1);
+  clip-path: polygon(30% 10%, 10% 30%, 30% 50%, 10% 70%, 30% 90%, 50% 70%, 70% 90%, 90% 70%, 70% 50%, 90% 30%, 70% 10%, 50% 30%);
+}
+
+.button--rhea span {
+  display: block;
+  transition: transform 0.4s cubic-bezier(0.3, 1, 0.2, 1), opacity 0.05s;
+}
+
+.button--rhea:hover span {
+  color: #E0E0E0;
+  transform: scale3d(0.1, 0.1, 1);
+  opacity: 0;
+  transition-delay: 0s, 0.35s;
+}
+
+@media (max-width: 600px) {
+  .button--rhea--small {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+
+
+/**Add to Cart button Styles ***/
+.add-to-cart {
+  --background-default: #4B371C;
+  --background-hover: #0A0A0C;
+  --background-scale: 1;
+  --text-color: #E6DACD;
+  --text-o: 1;
+  --text-x: 12px;
+  --cart: #fff;
+  --cart-x: -48px;
+  --cart-y: 0px;
+  --cart-rotate: 0deg;
+  --cart-scale: .75;
+  --cart-clip: 0px;
+  --cart-clip-x: 0px;
+  --cart-tick-offset: 10px;
+  --cart-tick-color: #FF328B;
+  --shirt-y: -16px;
+  --shirt-scale: 0;
+  --shirt-color: #4B371C;
+  --shirt-logo: #fff;
+  --shirt-second-y: 24px;
+  --shirt-second-color: #4B371C;
+  --shirt-second-logo: #17171B;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  background: none;
+  border: none;
+  padding: 12px 0;
+  width: 164px;
+  margin: 0;
+  cursor: pointer;
+  position: relative;
+  font-family: inherit;
+}
+
+.add-to-cart::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 5px;
+  transition: background .25s;
+  background: var(--background, var(--background-default));
+  transform: scaleX(var(--background-scale)) translateZ(0);
+}
+
+.add-to-cart:not(.active):hover {
+  --background: var(--background-hover);
+}
+
+.add-to-cart span {
+  display: block;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 24px;
+  color: var(--text-color);
+  opacity: var(--text-o);
+  transform: translateX(var(--text-x)) translateZ(0);
+}
+
+.add-to-cart svg {
+  display: block;
+  width: var(--svg-width, 24px);
+  height: var(--svg-height, 24px);
+  position: var(--svg-position, relative);
+  left: var(--svg-left, 0);
+  top: var(--svg-top, 0);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.add-to-cart svg path {
+  fill: var(--svg-fill, none);
+  stroke: var(--svg-stroke, none);
+  stroke-width: var(--svg-stroke-width, 2);
+}
+
+.add-to-cart .morph {
+  --svg-width: 64px;
+  --svg-height: 13px;
+  --svg-left: 50%;
+  --svg-top: -12px;
+  --svg-position: absolute;
+  --svg-fill: var(--background, var(--background-default));
+  transition: fill .25s;
+  pointer-events: none;
+  margin-left: -32px;
+}
+
+.add-to-cart .shirt,
+.add-to-cart .cart {
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+}
+
+.add-to-cart .shirt {
+  margin: -12px 0 0 -12px;
+  top: 0;
+  transform-origin: 50% 100%;
+  transform: translateY(var(--shirt-y)) scale(var(--shirt-scale));
+}
+
+.add-to-cart .shirt svg {
+  --svg-fill: #4B371C;
+}
+
+.add-to-cart .shirt svg g {
+  --svg-fill: #4B371C;
+}
+
+.add-to-cart .shirt svg.second {
+  --svg-fill: var(--shirt-second-color);
+  --svg-g-fill: #4B371C;
+  --svg-position: absolute;
+  clip-path: polygon(0 var(--shirt-second-y), 24px var(--shirt-second-y), 24px 24px, 0 24px);
+}
+
+.add-to-cart .cart {
+  --svg-width: 36px;
+  --svg-height: 26px;
+  --svg-stroke: var(--cart);
+  top: 10px;
+  margin-left: -18px;
+  transform: translate(var(--cart-x), var(--cart-y)) rotate(var(--cart-rotate)) scale(var(--cart-scale)) translateZ(0);
+}
+
+.add-to-cart .cart::before {
+  content: '';
+  display: block;
+  width: 22px;
+  height: 12px;
+  position: absolute;
+  left: 7px;
+  top: 7px;
+  background: var(--cart);
+  clip-path: polygon(0 0, 22px 0, calc(22px - var(--cart-clip-x)) var(--cart-clip), var(--cart-clip-x) var(--cart-clip));
+}
+
+.add-to-cart .cart path.wheel {
+  --svg-stroke-width: 1.5;
+}
+
+.add-to-cart .cart path.tick {
+  --svg-stroke: var(--cart-tick-color);
+  stroke-dasharray: 10px;
+  stroke-dashoffset: var(--cart-tick-offset);
+}
+
+.white {
+  width: 100%;
+  display: flex;
+  margin-top: 30px;
+ 
+}
+
+/***BLOG PAGE STYLES ***/
+/* Base styles */
+/* Base blog content styles */
+.blog-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+.blog-text {
+  margin-bottom: 2rem;
+}
+
+/* BlogImage.css */
+.blog-image {
+  margin: 2rem 0;
+}
+
+/* Full width image */
+.blog-image.full {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+.blog-image.full .image-wrapper {
+  width: 100%;
+}
+
+.blog-image.full img {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Side by side images */
+.side-by-side-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  width: 100%;
+}
+
+.side-by-side-container .image-wrapper {
+  position: relative;
+}
+
+.side-by-side-container img {
+  width: 100%;
+  height: auto;
+}
+
+.side-by-side-images {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+@media (max-width: 768px) {
+  .side-by-side-images {
+    grid-template-columns: 1fr;
+  }
+}
+
+.paired-caption {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* Caption styling */
+.blog-image figcaption {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0.5rem;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .side-by-side-container {
+    grid-template-columns: 1fr;
+  }
+
+  .blog-image.full {
+    width: 100%;
+    left: auto;
+    right: auto;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* Add these to your existing BlogImage.css */
+.side-by-side-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.image-pair {
+  display: contents;
+  /* Makes children behave as grid items */
+}
+
+.individual-caption {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.5rem;
+  text-align: center;
+  font-style: italic;
+}
+
+.main-caption {
+  font-size: 0.9rem;
+  color: #777;
+  text-align: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+/* components/PullQuote.css */
+.pull-quote {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border-left: 4px solid #333;
+  background-color: #f8f8f8;
+  font-family: serif;
+}
+
+.pull-quote blockquote {
+  margin: 0;
+  padding: 0;
+  font-size: 1.4rem;
+  line-height: 1.5;
+  color: #333;
+  font-style: italic;
+}
+
+.pull-quote footer {
+  margin-top: 1rem;
+  font-size: 1rem;
+  font-style: normal;
+}
+
+.pull-quote cite {
+  font-weight: bold;
+}
+
+.pull-quote .source {
+  display: block;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* SingleBlogPost.css */
+.single-blog-post {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.post-header {
+  text-align: center;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+}
+
+.post-title {
+  font-size: 3rem;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.post-description {
+  font-size: 1.4rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.share-links {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.share-links button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #333;
+  transition: color 0.2s;
+}
+
+.share-links button:hover {
+  color: #1a73e8;
+  /* Change to your brand color */
+}
+
+.header-image-container {
+  width: 100vw;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  max-height: 80vh;
+  overflow: hidden;
+  margin-bottom: 3rem;
+}
+
+.header-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.post-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .post-title {
+    font-size: 2.2rem;
+  }
+
+  .post-description {
+    font-size: 1.2rem;
+  }
+
+  .post-meta {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+/* Add to your existing SingleBlogPost.css */
+.back-to-blogs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.95rem;
+}
+
+.back-to-blogs:hover {
+  background-color: #e0e0e0;
+}
+
+.back-to-blogs svg {
+  font-size: 0.9rem;
+}

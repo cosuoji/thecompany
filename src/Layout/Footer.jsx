@@ -1,12 +1,13 @@
 import { FacebookIcon, InstagramIcon, Twitter, YoutubeIcon } from 'lucide-react';
 import React, { useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
-
-
-
+import { useForm, ValidationError } from '@formspree/react';
+import AnalogClock from '../Components/AnalogClock';
 
 const Footer = ({ navLinks = [] }) => {
-  const [time, setTime] = useState(new Date());
+
+
+  const [state, handleSubmit] = useForm("xeokgazj");
 
     // Default navigation configuration
     const defaultNavigation = [
@@ -19,73 +20,6 @@ const Footer = ({ navLinks = [] }) => {
       ];
     
     const footerLinks = navLinks.length > 0 ? navLinks : defaultNavigation;  
-
-  useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const AnalogClock = ({ timezoneOffset = 0, size = 80 }) => {
-    const [time, setTime] = React.useState(new Date());
-  
-    // Update clock every second
-    React.useEffect(() => {
-      const interval = setInterval(() => setTime(new Date()), 1000);
-      return () => clearInterval(interval);
-    }, []);
-  
-    const localTime = new Date(time.getTime() + timezoneOffset * 3600 * 1000);
-    const hours = localTime.getHours() % 12;
-    const minutes = localTime.getMinutes();
-    const seconds = localTime.getSeconds();
-    const hourDeg = hours * 30 + minutes * 0.5;
-    const minuteDeg = minutes * 6;
-    const secondDeg = seconds * 6;
-  
-    return (
-      <div
-        className="relative border-2 border-[#4B371C] opacity-60 rounded-full"
-        style={{
-          width: size,
-          height: size,
-        }}
-      >
-        {/* Hour Hand */}
-        <div
-          className="absolute w-[2px] bg-[#4B371C] left-1/2 bottom-1/2 origin-bottom z-10"
-          style={{
-            height: size * 0.3,
-            transform: `translateX(-50%) rotate(${hourDeg}deg)`,
-          }}
-        />
-        {/* Minute Hand */}
-        <div
-          className="absolute w-[2px] bg-[#4B371C] left-1/2 bottom-1/2 origin-bottom z-10"
-          style={{
-            height: size * 0.4,
-            transform: `translateX(-50%) rotate(${minuteDeg}deg)`,
-          }}
-        />
-        {/* Second Hand */}
-        <div
-          className="absolute w-[2px] bg-[#4B371C] left-1/2 bottom-1/2 origin-bottom z-10"
-          style={{
-            height: size * 0.3,
-            transform: `translateX(-50%) rotate(${secondDeg}deg)`,
-          }}
-        />
-        {/* Center Dot */}
-        <div
-          className="absolute bg-[#4B371C] rounded-full left-1/2 bottom-1/2 z-20"
-          style={{
-            width: size * 0.05,
-            height: size * 0.05,
-            transform: 'translate(-50%, 50%)',
-          }}
-        />
-      </div>
-    );
-  };
   
 
   return (
@@ -94,7 +28,7 @@ const Footer = ({ navLinks = [] }) => {
         <div className="flex flex-col md:flex-row justify-center gap-16 mb-12">
         {/* England */}
         <div className="flex items-center gap-6">
-          <h3 className="font-medium text-3xl text-[#4B371C] whitespace-nowrap">U.K</h3>
+          <h3 className="font-medium text-3xl text-[#4B371C] whitespace-nowrap">+44</h3>
           <AnalogClock timezoneOffset={0} />
           <div className="text-sm leading-relaxed text-[#4B371C] ml-4">
             <p>123 Madison Avenue</p>
@@ -106,7 +40,7 @@ const Footer = ({ navLinks = [] }) => {
 
         {/* Lagos */}
         <div className="flex items-center gap-6">
-          <h3 className="font-medium text-3xl text-[#4B371C] whitespace-nowrap">LAGOS</h3>
+          <h3 className="font-medium text-3xl text-[#4B371C] whitespace-nowrap">+234</h3>
           <AnalogClock timezoneOffset={0} />
           <div className="text-sm leading-relaxed text-[#4B371C] ml-4">
             <p>123 Madison Avenue</p>
@@ -121,21 +55,32 @@ const Footer = ({ navLinks = [] }) => {
       <div className="flex flex-col border-t border-gray-200 pt-6 md:flex-row justify-center items-center gap-12 mb-12">
         {/* Newsletter - Centered and aligned */}
         <div className="w-full max-w-md text-center">
-          <h3 className="font-medium text-lg mb-4 bg-[#E0E0E0] text-center text-chocolate">JOIN OUR NEWSLETTER</h3>
-          <form className="flex w-full  ">
-            <input
-              type="email"
-              placeholder="Your email address"
-              className="flex-1 px-4 py-2.5 border-1 bg-[#E0E0E0] text-chocolate text-sm focus:outline-none"
-              required
-            />
-            <button
-              type="submit"
-              className="px-5 py-2.5 bg-[#4B371C] text-white text-sm hover:bg-[#4B371C] transition-colors rounded-shadow cursor-not-allowed"
-            >
-              SUBSCRIBE
-            </button>
-          </form>
+          <h3 className="font-medium text-lg mb-4 text-center text-chocolate">JOIN OUR NEWSLETTER</h3>
+
+          {state.succeeded ? (
+            <p className="text-[#4B371C]">Thanks for Subscribing to Our Newsletter</p>
+          ) : (
+            <form className="flex w-full" onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(e);
+            }}>
+              <input
+                type="email"
+                placeholder="Your email address"
+                id='email'
+                name='email'
+                className="flex-1 px-4 py-2.5 border-1 text-chocolate text-sm focus:outline-none"
+                required
+              />
+              <button
+                disabled={state.submitting}
+                type="submit"
+                className="px-5 py-2.5 bg-[#4B371C] text-white text-sm hover:bg-[#4B371C] transition-colors rounded-shadow"
+              >
+                {state.submitting ? 'SUBSCRIBING...' : 'SUBSCRIBE'}
+              </button>
+            </form>
+          )}
         </div>
 
         {/* Follow Us */}

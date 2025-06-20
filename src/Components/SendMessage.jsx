@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
-import MessageForm from './MessageForm';
+import MessageForm from './Forms/ContactMessageForm';
 
 const SendMessage = () => {
   return (
-    <div className="bg-[#E0E0E0] py-12 px-6 md:px-12 lg:px-24">
+    <div className="py-12 px-6 md:px-12 lg:px-24">
       <motion.div 
         className="max-w-6xl mx-auto"
         initial={{ opacity: 0 }}

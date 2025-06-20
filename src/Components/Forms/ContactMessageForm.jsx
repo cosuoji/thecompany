@@ -1,12 +1,24 @@
 import { motion } from 'framer-motion';
-
+import React from 'react';
+import { useForm, ValidationError } from '@formspree/react';
+import ElegantButton from '../Buttons/ElegantButton';
 const MessageForm = () => {
+
+  const [state, handleSubmit] = useForm("mjkryong");
+  
+
+  if (state.succeeded) {
+    return <p className='px-20 text-center py-10'>Thanks for reaching out!</p>;
+}
+
   return (
     <motion.form 
       className="space-y-4"
+      onSubmit={handleSubmit}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.5 }} 
+      method='POST'
     >
       {/* New Select Dropdown */}
       <div>
@@ -18,11 +30,12 @@ const MessageForm = () => {
         
         <motion.select
           id="inquiry"
+          name='inquiry'
           whileFocus={{ borderColor: "#4B371C", boxShadow: "0 0 0 1px #4B371C" }}
           className="w-full px-4 py-2 border border-[#E0E0E0] bg-white text-[#4B371C] focus:outline-none focus:ring-1 pr-10 focus:ring-[#4B371C] appearance-none"
           required
         >
-          <option value="" disabled selected>Select an option</option>
+          <option defaultValue="" disabled>Select an option</option>
           <option value="customer-service">Online Customer Services</option>
           <option value="marketing">Marketing</option>
           <option value="general">General Inquiries</option>
@@ -44,6 +57,7 @@ const MessageForm = () => {
           <input
             type="text"
             id="name"
+            name='name'
             className="w-full px-4 py-2 border border-[#E0E0E0] bg-white text-[#4B371C] focus:outline-none focus:ring-1 focus:ring-[#4B371C]"
             required
           />
@@ -54,6 +68,7 @@ const MessageForm = () => {
           </label>
           <input
             type="email"
+            name='name'
             id="email"
             className="w-full px-4 py-2 border border-[#E0E0E0] bg-white text-[#4B371C] focus:outline-none focus:ring-1 focus:ring-[#4B371C]"
             required
@@ -68,6 +83,7 @@ const MessageForm = () => {
         <input
           type="text"
           id="subject"
+          name='name'
           className="w-full px-4 py-2 border border-[#E0E0E0] bg-white text-[#4B371C] focus:outline-none focus:ring-1 focus:ring-[#4B371C]"
           required
         />
@@ -79,20 +95,17 @@ const MessageForm = () => {
         </label>
         <textarea
           id="message"
+          name='name'
           rows={4}
           className="w-full px-4 py-2 border border-[#E0E0E0] bg-white text-[#4B371C] focus:outline-none focus:ring-1 focus:ring-[#4B371C]"
           required
         ></textarea>
       </div>
 
-      <motion.button
-        type="submit"
-        className="px-6 py-3 bg-[#4B371C] text-white hover:bg-[#3A2E26] transition-colors duration-300"
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-      >
-        Send Message
-      </motion.button>
+    
+      <ElegantButton label={state.submitting ? 'Sending...' : 'Send Message'} state={state.submitting}/>
+    
+
     </motion.form>
   );
 };

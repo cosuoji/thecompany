@@ -1,10 +1,9 @@
-import React from 'react'
-import InstagramSection from '../Components/InstagramSection'
+import React, { useState } from 'react'
+
 
 const Homepage = () => {
-  return (
-    <div>Homepage</div>
-   )
-}
-
+ return <></>
+        
+};
 export default Homepage
+
