@@ -41,30 +41,50 @@ export const useCartStore = create((set, get) => ({
   
   // Update cart item quantity
   updateCartItem: async (itemId, quantity) => {
-    if (quantity < 1) return;
-    
-    set({ loading: true });
+    set(state => ({
+      ...state,
+      loading: true,
+      // Preserve image references during update
+      cart: state.cart && {
+        ...state.cart,
+        items: state.cart.items.map(item => 
+          item._id === itemId 
+            ? { ...item, quantity, product: item.product } // Keep product reference
+            : item
+        )
+      }
+    }));
+  
     try {
       const { data } = await axiosInstance.put(`/cart/${itemId}`, { quantity });
       set({ cart: data, loading: false });
     } catch (error) {
-      set({ loading: false });
-      toast.error(error.response?.data?.message || 'Failed to update cart');
+      set(state => ({ ...state, loading: false }));
+      toast.error(error.response?.data?.message || 'Failed to update quantity');
     }
   },
   
   // Remove item from cart
-  removeFromCart: async (itemId) => {
-    set({ loading: true });
-    try {
-      const { data } = await axiosInstance.delete(`/cart/${itemId}`);
-      set({ cart: data, loading: false });
-      toast.success('Item removed from cart');
-    } catch (error) {
-      set({ loading: false });
-      toast.error(error.response?.data?.message || 'Failed to remove item');
-    }
-  },
+    // useCartStore.js
+    removeFromCart: async (itemId) => {
+      set({ loading: true });
+      try {
+        console.log('Attempting to remove item:', itemId);
+        
+        const { data } = await axiosInstance.delete(`/cart/${itemId}`);
+        
+        console.log('Updated cart:', data);
+        set({ cart: data, loading: false });
+        toast.success('Item removed from cart');
+      } catch (error) {
+        console.error('Remove item error:', {
+          error: error.response?.data,
+          itemId
+        });
+        set({ loading: false });
+        toast.error(error.response?.data?.message || 'Failed to remove item');
+      }
+    },
   
   // Clear entire cart
   clearCart: async () => {

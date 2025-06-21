@@ -59,10 +59,19 @@ const MagazineUploadPage = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+      // Validate issue number
+    const issueNumber = parseInt(formData.magazineData.issueNumber);
+    if (isNaN(issueNumber)) {
+      toast.error('Issue number must be a valid number');
+      return;
+    }
+    
     try {
       // Use the store directly instead of getState()
       await useProductStore.getState().createProduct(formData);
       toast.success('Magazine created successfully!');
+      
       
       // Reset form after successful submission
       setFormData({

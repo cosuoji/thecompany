@@ -9,6 +9,7 @@ const AccountLayout = () => {
     { path: '/account/profile', label: 'Profile' },
     { path: '/account/addresses', label: 'Addresses' },
     { path: '/account/orders', label: 'Order History' },
+    { path: '/account/wishlist', label: 'Wishlist' }, // Add this line
   ];
 
   return (

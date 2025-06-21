@@ -555,3 +555,13 @@ A muted, airy palette feels contemporary and high-end—think The Row or Bottega
 .back-to-blogs svg {
   font-size: 0.9rem;
 }
+
+/* Add to your global CSS */
+.cart-item-image {
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.cart-item-image.loaded {
+  opacity: 1;
+}

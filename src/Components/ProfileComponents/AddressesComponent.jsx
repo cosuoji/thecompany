@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useUserStore } from '../store/useUserStore';
+import { useUserStore } from '../../store/useUserStore';
 import { toast } from 'react-hot-toast';
 
 const AddressesPage = () => {

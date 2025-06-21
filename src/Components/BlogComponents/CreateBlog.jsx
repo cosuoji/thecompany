@@ -56,6 +56,7 @@ const CreateBlog = () => {
       // Prepare the data object
       const blogData = {
         title: formData.title,
+        magazineIssue: formData.magazineIssue || "",
         description: formData.description,
         headerImage: formData.headerImageUrl,
         innerImageForFeatured: formData.innerImageForFeaturedUrl,
@@ -227,6 +228,17 @@ const CreateBlog = () => {
                 onChange={handleInputChange}
                 className="w-full p-3 border rounded-lg"
                 required
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2 font-medium">What Magazine Issue is this for?</label>
+              <input
+                type="text"
+                name="magazineIssue"
+                value={formData.magazineIssue}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-lg"
               />
             </div>
             

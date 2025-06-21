@@ -22,6 +22,7 @@ export const useUserStore = create((set, get) => ({
 	checkingAuth: true,
 	cart: null,
 	wishlist: [],
+	wishlistProducts: [],
 	orders: [],
 	  // In your store
 _initialized: false,
@@ -213,23 +214,30 @@ init: async () => {
   },
 
   removeFromWishlist: async (productId) => {
-    try {
-      set({ loading: true });
-      const res = await axiosInstance.delete(`/wishlist/${productId}`);
-
-      set(state => ({
-        wishlist: res.data,
-        loading: false
-      }));
-      toast.success('Removed from wishlist');
-      return true;
-    } catch (error) {
-      set({ loading: false });
-      toast.error(error.response?.data?.message || 'Failed to remove item');
-      return false;
-    }
+	try {
+	  set({ loading: true });
+  
+	  const { data: updatedWishlist } = await axiosInstance.delete(`/user/wishlist/${productId}`);
+	  console.log(typeof(productId))
+	  console.log('Removing productId:', productId)
+  
+	  set(state => ({
+		user: {
+		  ...state.user,
+		  wishlist: updatedWishlist
+		},
+		wishlistProducts: updatedWishlist,
+		loading: false
+	  }));
+  
+	  toast.success('Removed from wishlist');
+	} catch (error) {
+	  set({ loading: false });
+	  toast.error(error.response?.data?.message || 'Failed to remove item');
+	  throw error;
+	}
   },
-
+  
    // Order Methods
    createOrder: async (orderData) => {
     try {
@@ -400,6 +408,21 @@ init: async () => {
 		  set({ loading: false });
 		}
 	},
+	fetchWishlistProducts: async () => {
+		try {
+		  set({ loading: true });
+		  const res = await axiosInstance.get('/user/wishlist/products');
+		  set({ 
+			wishlistProducts: res.data, // Store full products separately
+			loading: false
+		  });
+		  return res.data;
+		} catch (error) {
+		  set({ loading: false });
+		  toast.error('Failed to load wishlist products');
+		  throw error;
+		}
+	  },
   checkAuth: async (force = false) => {
 	// Skip if we already have a user and not forcing refresh
 	if (get().user && !force) {

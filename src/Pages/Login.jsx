@@ -14,13 +14,7 @@ const Login = () => {
     password: ''
   });
 
-  const from = location.state?.from?.pathname || '/';
 
-  useEffect(() => {
-    if (user) {
-      navigate(from, { replace: true });
-    }
-  }, [user, navigate, from]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,7 +23,7 @@ const Login = () => {
     const success = await login(formData.email, formData.password);
     if (success) {
       toast.success('Logged in successfully!');
-      navigate(from, { replace: true });
+      navigate(location.state?.from || '/account', { replace: true });
     }
 
     if (!success) {

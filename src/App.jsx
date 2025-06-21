@@ -15,7 +15,6 @@ import PageTransition from './Components/PageTransition'; // Assuming you have t
 import "./App.css"
 import BackToTop from './Components/BackToTop';
 import Contact from './Pages/Contact';
-import AnimatedCursor from "react-animated-cursor"
 import Blog from './Pages/Blog';
 import Store from './Pages/Store';
 import Login from './Pages/Login';
@@ -27,12 +26,16 @@ import AdminRoute from './Components/ProtectedRoutes/AdminRoute';
 import SingleBlogPost from './Components/BlogComponents/SingleBlog';
 import Cart from './Pages/Cart';
 import AccountLayout from './Layout/AccountLayout';
-import ProfilePage from './Pages/ProfilePage';
-import AddressesPage from './Pages/AddressesPage';
-import OrdersPage from './Pages/OrdersPage';
+import ProfilePage from './Components/ProfileComponents/ProfileComponent';
+import AddressesPage from './Components/ProfileComponents/AddressesComponent';
+import OrdersPage from './Components/ProfileComponents/OrdersComponent';
 import ProtectedRoute from './Components/ProtectedRoutes/ProtectedRoute';
 import MagazineListPage from './Pages/Magazine';
 import MagazineUploadPage from './Pages/MagazineProductUploadPage';
+import MagazineDetail from './Components/MagazineComponents/MagazineDetail';
+import CustomCursor from './Components/CursorComponents/CustomCursor';
+import CursorErrorBoundary from './Components/CursorComponents/CusorErrorBoundary';
+import WishlistPage from './Components/ProfileComponents/WishListComponent';
 
 
 function App() {
@@ -49,41 +52,9 @@ function App() {
 
   return (
     <div className='min-h-screen flex flex-col'>
-   <AnimatedCursor
-      innerSize={8}
-      outerSize={8}
-      color='75, 55, 28'
-      outerAlpha={0.2}
-      innerScale={0.7}
-      outerScale={5}
-      clickables={[
-        'a',
-        'input[type="text"]',
-        'input[type="email"]',
-        'input[type="number"]',
-        'input[type="submit"]',
-        'input[type="image"]',
-        'label[for]',
-        'select',
-        'textarea',
-        'button',
-        '.link',
-        {
-          target: '.custom',
-          options: {
-            innerSize: 12,
-            outerSize: 12,
-            color: '75, 55, 28',
-            outerAlpha: 0.3,
-            innerScale: 0.7,
-            outerScale: 5
-          }
-        }
-      ]}
-      outerStyle={{
-        mixBlendMode: 'exclusion'
-      }}
-    />
+      <CursorErrorBoundary>
+      <CustomCursor />
+      </CursorErrorBoundary>
       <main className='flex-grow'>
         <Layout>
           <AnimatePresence mode="wait">
@@ -94,7 +65,7 @@ function App() {
               <Route path="/faq" element={<PageTransition><FAQ /></PageTransition>} />
               <Route path='/magazine' >
                   <Route index element={<PageTransition><MagazineListPage /></PageTransition>} />
-                  <Route path=':issue' element={<PageTransition><MagazineListPage /></PageTransition>} />
+                  <Route path=':issueNumber' element={<PageTransition><MagazineDetail /></PageTransition>} />
               </Route>
 
               <Route path='/cart' element={
@@ -120,6 +91,7 @@ function App() {
                 <Route path='profile'  element={<ProfilePage />} />
                 <Route path='addresses'  element={<AddressesPage />} />
                 <Route path='orders'  element={<OrdersPage />} />
+                <Route path='wishlist'  element={<WishlistPage />} />
               </Route>
 
               <Route path="/blog">
