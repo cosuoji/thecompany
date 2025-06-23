@@ -36,6 +36,7 @@ import MagazineDetail from './Components/MagazineComponents/MagazineDetail';
 import CustomCursor from './Components/CursorComponents/CustomCursor';
 import CursorErrorBoundary from './Components/CursorComponents/CusorErrorBoundary';
 import WishlistPage from './Components/ProfileComponents/WishListComponent';
+import ShoeUploadForm from './Pages/ShoeUploadForm';
 
 
 function App() {
@@ -107,7 +108,9 @@ function App() {
 
               <Route path="/store">
                   <Route index element={<PageTransition><Store /></PageTransition>} />   
-                  <Route path='addproduct' element={<AdminRoute><MagazineUploadPage /></AdminRoute>} /> 
+                  <Route path='addmagazine' element={<AdminRoute><MagazineUploadPage /></AdminRoute>} /> 
+                  <Route path='addshoe' element={<AdminRoute><ShoeUploadForm /></AdminRoute>} /> 
+
               </Route>
               <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
               <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />

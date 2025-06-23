@@ -7,6 +7,7 @@ import { useUserStore } from "../store/useUserStore";
 import { useCartStore } from "../store/useCartStore";
 import { toast } from "react-hot-toast";
 import CartPage from "../Pages/Cart";
+import BentoMenu from "../Components/Menus/BentoMenu";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -145,7 +146,8 @@ const Header = () => {
             transition={{ duration: 0.5, ease: "easeInOut" }}
             className="fixed inset-0 z-40"
           >
-            <SectionGallery onClose={() => setIsMenuOpen(false)} />
+            {/* <SectionGallery onClose={() => setIsMenuOpen(false)} /> */}
+            <BentoMenu onClose={() => setIsMenuOpen(false)} />
           </motion.div>
         )}
       </AnimatePresence>
