@@ -1,11 +1,22 @@
 import { useState, useEffect } from 'react';
 import { IKContext, IKUpload, IKImage } from 'imagekitio-react';
 import { toast } from 'react-hot-toast';
-import axiosInstance from '../lib/axios';
 import useShoeStore from '../store/useShoeStore';
 
 
 const ShoeUploadForm = () => {
+  const {
+    options,
+    fetchOptions,
+    generateVariants,
+    createShoe, 
+    loading,
+     error
+  } = useShoeStore();
+  
+  const [coverImage, setCoverImage] = useState(null);
+
+
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -21,12 +32,97 @@ const ShoeUploadForm = () => {
     variants: []
   });
 
-
-  const {options, fetchOptions, generateVariants} = useShoeStore()
-  // Fetch all options on mount
+  
   useEffect(() => {
-    fetchOptions();
-  }, []);
+    fetchOptions().then(() => {
+      console.log('fetchOptions completed'); // Debug 2
+    });
+  }, [fetchOptions]);
+
+
+
+  //Submit form
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Prepare the data in correct format
+      const submissionData = {
+        name: formData.name,
+        description: formData.description,
+        basePrice: formData.basePrice,
+        categories: formData.categories,
+        collections: formData.collections,
+        coverImage: coverImage ? {
+          url: coverImage.url,
+          publicId: coverImage.publicId
+        } : null,
+      
+        colorOptions: formData.colorOptions.map(color => ({
+          name: color.name,
+          hexCode: color.hexCode,
+          images: color.images || []
+        })),
+      
+        sizeOptions: formData.sizeOptions,
+        widthOptions: formData.widthOptions,
+      
+        soleOptions: formData.soleOptions.map(soleId => {
+          const sole = options.soles.find(s => s._id === soleId);
+          return {
+            name: sole?.name || `Sole ${soleId}`,
+            description: sole?.description || ''
+          };
+        }),
+      
+        lastOptions: formData.lastOptions.map(lastId => {
+          const last = options.lasts.find(l => l._id === lastId);
+          return {
+            name: last?.name || `Last ${lastId}`,
+            description: last?.description || '',
+            image: last?.image || '',
+            code: last?.code || "",
+          };
+        }),
+      
+        materialOptions: formData.materialOptions.map(materialId => {
+          const material = options.materials.find(m => m._id === materialId);
+          return {
+            name: material?.name || 'Unnamed Material',
+            type: material?.type || 'Leather',
+            sustainabilityRating: material?.sustainabilityRating || 0
+          };
+        })
+      };
+      
+      const response = await createShoe(submissionData);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to create shoe');
+    }
+  };
+
+  // Generate variants when options change
+  useEffect(() => {
+    if (formData.colorOptions.length > 0) {
+      const variants = generateVariants({
+        colorOptions: formData.colorOptions,
+        sizeOptions: formData.sizeOptions,
+        widthOptions: formData.widthOptions,
+        soleOptions: formData.soleOptions,
+        lastOptions: formData.lastOptions,
+        materialOptions: formData.materialOptions
+      });
+      setFormData(prev => ({ ...prev, variants }));
+    }
+  }, [
+    formData.colorOptions,
+    formData.sizeOptions,
+    formData.widthOptions,
+    formData.soleOptions,
+    formData.lastOptions,
+    formData.materialOptions,
+    generateVariants
+  ]);
 
   // Handle image upload for color options
   const handleColorImageUpload = async (res, colorIndex) => {
@@ -37,22 +133,37 @@ const ShoeUploadForm = () => {
       publicId: res.fileId,
       isPrimary: updatedColors[colorIndex].images.length === 0
     });
-    
+    console.log('Upload response:', res)
     setFormData({ ...formData, colorOptions: updatedColors });
     toast.success('Image uploaded!');
   };
 
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axiosInstance.post('/shoes/shoes', formData);
-      toast.success('Shoe product created successfully!');
-      // Reset form or redirect
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to create product');
-    }
+  // In your component
+  const handleGenerateVariants = () => {
+    const variants = generateVariants({
+      colorOptions: formData.colorOptions,
+      sizeOptions: formData.sizeOptions,
+      widthOptions: formData.widthOptions,
+      soleOptions: formData.soleOptions,
+      lastOptions: formData.lastOptions,
+      materialOptions: formData.materialOptions
+    });
+    
+    setFormData(prev => ({
+      ...prev,
+      variants
+    }));
   };
+
+
+  if (loading) {
+    return <div>Loading options...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading options: {error.message}</div>;
+  }
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -97,7 +208,47 @@ const ShoeUploadForm = () => {
             required
           />
         </div>
-
+        {/* Cover Image */}
+        <div>
+          <label className="block mb-2 font-medium">Cover Image*</label>
+          <IKUpload
+            fileName={`shoe-cover-${formData.name}-${Date.now()}.jpg`}
+            onSuccess={(res) => setCoverImage({
+              url: res.url,
+              publicId: res.fileId
+            })}
+            onError={() => toast.error('Cover image upload failed')}
+            className="hidden"
+            id="cover-upload"
+          />
+          
+          <div className="flex items-center gap-4">
+            <label
+              htmlFor="cover-upload"
+              className="px-4 py-2 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200"
+            >
+              {coverImage ? 'Change Cover' : 'Upload Cover'}
+            </label>
+            
+            {coverImage && (
+              <div className="relative group">
+                <IKImage
+                  src={coverImage.url}
+                  transformation={[{ height: 100, width: 100, crop: 'fit' }]}
+                  urlEndpoint="https://ik.imagekit.io/ldhzgky9pk"
+                  className="h-24 w-24 object-cover rounded border"
+                />
+                <button
+                  type="button"
+                  onClick={() => setCoverImage(null)}
+                  className="absolute -top-2 -right-2 p-1 bg-white rounded-full shadow"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
         {/* Categories & Collections */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -111,7 +262,7 @@ const ShoeUploadForm = () => {
               })}
               className="w-full p-3 border rounded-lg h-auto min-h-[42px]"
             >
-              {options.allCategories.map(category => (
+              {options?.categories?.map(category => (
                 <option key={category._id} value={category._id}>
                   {category.name}
                 </option>
@@ -130,7 +281,7 @@ const ShoeUploadForm = () => {
               })}
               className="w-full p-3 border rounded-lg h-auto min-h-[42px]"
             >
-              {options.allCollections.map(collection => (
+              {options?.collections?.map(collection => (
                 <option key={collection._id} value={collection._id}>
                   {collection.name}
                 </option>
@@ -189,85 +340,37 @@ const ShoeUploadForm = () => {
                     </div>
                   </div>
                   
-                  <div>
-                    <label className="block mb-2">Images</label>
-                    <IKContext
-                        urlEndpoint="https://ik.imagekit.io/ldhzgky9pk"
-                        publicKey="public_Y9ne/saJW/xkRygZ4ZR/GXn6W9Q="
-                        authenticator={async () => {
-                        try {
-                        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/imagekit`, {
-                            headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                            }
-                        });
-                    
-                        // First check if response exists
-                        if (!response) {
-                            throw new Error('No response from server');
-                        }
-                    
-                        // Check for empty response
-                        const text = await response.text();
-                        if (!text) {
-                            throw new Error('Empty response from server');
-                        }
-                    
-                        // Try to parse JSON
-                        let data;
-                        try {
-                            data = JSON.parse(text);
-                        } catch (parseError) {
-                            console.error('Failed to parse JSON:', text);
-                            throw new Error('Invalid JSON response');
-                        }
-                    
-                        // Verify required fields
-                        if (!data.token || !data.signature || !data.expire) {
-                            console.error('Missing auth fields:', data);
-                            throw new Error('Incomplete authentication data');
-                        }
-                    
-                        return data;
-                        } catch (error) {
-                        console.error('Authentication failed:', {
-                            error: error.message,
-                            stack: error.stack,
-                            timestamp: new Date().toISOString()
-                        });
-                        throw error;
-                        }
-                    }}
-                    >
-                      <IKUpload
-                        fileName={`shoe-${formData.name}-${color.name}-${Date.now()}.jpg`}
-                        onSuccess={(res) => handleColorImageUpload(res, index)}
-                        onError={() => toast.error('Image upload failed')}
-                        className="hidden"
-                        id={`color-upload-${index}`}
-                      />
-                      <label
-                        htmlFor={`color-upload-${index}`}
-                        className="inline-block px-4 py-2 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200"
-                      >
-                        Upload Image
-                      </label>
-                    </IKContext>
-                  </div>
+
+                <div>
+                  <label className="block mb-2">Images</label>
+                  <IKUpload
+                    fileName={`shoe-${formData.name}-${color.name}-${Date.now()}.jpg`}
+                    onSuccess={(res) => handleColorImageUpload(res, index)}
+                    onError={() => toast.error('Image upload failed')}
+                    className="hidden"
+                    id={`color-upload-${index}`}
+                  />
+                  <label
+                    htmlFor={`color-upload-${index}`}
+                    className="inline-block px-4 py-2 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200"
+                  >
+                    Upload Image
+                  </label>
+                </div>
                 </div>
                 
                 {/* Image previews */}
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {color.images?.map((image, imgIndex) => (
+                  {color?.images?.map((image, imgIndex) => (
                     <div key={imgIndex} className="relative group">
                       <IKImage
-                        path={image.publicId}
+                        src={image.url}
                         transformation={[{
                           height: 100,
                           width: 100,
                           crop: 'fit'
                         }]}
+                         urlEndpoint="https://ik.imagekit.io/ldhzgky9pk"
                         className="h-24 w-24 object-cover rounded border"
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
@@ -373,7 +476,7 @@ const ShoeUploadForm = () => {
                 })}
                 className="w-full p-2 border rounded"
               >
-                {options.allSoles.map(sole => (
+                {options?.soles?.map(sole => (
                   <option key={sole._id} value={sole._id}>
                     {sole.name}
                   </option>
@@ -392,7 +495,7 @@ const ShoeUploadForm = () => {
                 })}
                 className="w-full p-2 border rounded"
               >
-                {options.allLasts.map(last => (
+                {options?.lasts?.map(last => (
                   <option key={last._id} value={last._id}>
                     {last.name} ({last.code})
                   </option>
@@ -411,7 +514,7 @@ const ShoeUploadForm = () => {
                 })}
                 className="w-full p-2 border rounded"
               >
-                {options.allMaterials.map(material => (
+                {options?.materials?.map(material => (
                   <option key={material._id} value={material._id}>
                     {material.name} ({material.type})
                   </option>

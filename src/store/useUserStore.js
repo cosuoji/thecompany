@@ -120,8 +120,8 @@ init: async () => {
 		  const [userRes, cartRes, wishlistRes, ordersRes] = await Promise.all([
 			axiosInstance.get('/auth/profile'),
 			axiosInstance.get('/cart'),
-			axiosInstance.get('/wishlist'),
-			axiosInstance.get('/orders/myorders')
+			axiosInstance.get('/user/wishlist/products'),
+			//axiosInstance.get('/orders/myorders')
 		  ]);
 		  
 	
@@ -129,7 +129,7 @@ init: async () => {
 			user: userRes.data,
 			cart: cartRes.data,
 			wishlist: wishlistRes.data,
-			orders: ordersRes.data,
+			//orders: ordersRes.data,
 			loading: false
 		  });
 		} catch (error) {
@@ -198,7 +198,7 @@ init: async () => {
   addToWishlist: async (productId) => {
     try {
       set({ loading: true });
-      const res = await axiosInstance.post('/wishlist', { productId });
+      const res = await axiosInstance.post('/user/wishlist', { productId });
 
       set(state => ({
         wishlist: res.data,
@@ -218,8 +218,7 @@ init: async () => {
 	  set({ loading: true });
   
 	  const { data: updatedWishlist } = await axiosInstance.delete(`/user/wishlist/${productId}`);
-	  console.log(typeof(productId))
-	  console.log('Removing productId:', productId)
+	 
   
 	  set(state => ({
 		user: {

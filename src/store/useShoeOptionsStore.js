@@ -45,7 +45,7 @@ const useShoeOptionsStore = create((set) => ({
   createCategory: async (categoryData) => {
     set({ loading: true });
     try {
-      const { data } = await axiosInstance.post('/api/categories', categoryData);
+      const { data } = await axiosInstance.post('/shoes/categories', categoryData);
       set(state => ({
         categories: [...state.categories, data],
         loading: false
@@ -63,7 +63,7 @@ const useShoeOptionsStore = create((set) => ({
   createColor: async (colorData) => {
     set({ loading: true });
     try {
-      const { data } = await axiosInstance.post('/api/colors', colorData);
+      const { data } = await axiosInstance.post('/shoes/colors', colorData);
       set(state => ({
         colors: [...state.colors, data],
         loading: false
@@ -81,7 +81,7 @@ const useShoeOptionsStore = create((set) => ({
   createSole: async (soleData) => {
     set({ loading: true });
     try {
-      const { data } = await axiosInstance.post('/api/soles', soleData);
+      const { data } = await axiosInstance.post('/shoes/soles', soleData);
       set(state => ({
         soles: [...state.soles, data],
         loading: false
@@ -99,7 +99,7 @@ const useShoeOptionsStore = create((set) => ({
   createLast: async (lastData) => {
     set({ loading: true });
     try {
-      const { data } = await axiosInstance.post('/api/lasts', lastData);
+      const { data } = await axiosInstance.post('/shoes/lasts', lastData);
       set(state => ({
         lasts: [...state.lasts, data],
         loading: false
@@ -117,7 +117,7 @@ const useShoeOptionsStore = create((set) => ({
   createMaterial: async (materialData) => {
     set({ loading: true });
     try {
-      const { data } = await axiosInstance.post('/api/materials', materialData);
+      const { data } = await axiosInstance.post('/shoes/materials', materialData);
       set(state => ({
         materials: [...state.materials, data],
         loading: false
@@ -135,7 +135,7 @@ const useShoeOptionsStore = create((set) => ({
   createCollection: async (collectionData) => {
     set({ loading: true });
     try {
-      const { data } = await axiosInstance.post('/api/collections', collectionData);
+      const { data } = await axiosInstance.post('/shoes/collections', collectionData);
       set(state => ({
         collections: [...state.collections, data],
         loading: false

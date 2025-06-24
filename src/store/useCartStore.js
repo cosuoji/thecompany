@@ -26,7 +26,7 @@ export const useCartStore = create((set, get) => ({
         productId,
         productType,
         variant,
-        quantity
+        quantity,
       });
       
       set({ cart: data, loading: false });
@@ -38,6 +38,47 @@ export const useCartStore = create((set, get) => ({
       return false;
     }
   },
+
+// In your useUserStore or cart store
+addToCartShoes: async (productId, variant = null, quantity = 1) => {
+  set({ loading: true });
+  try {
+    // Validate required shoe variant properties
+    if (!variant || !variant.colorId || !variant.size) {
+      throw new Error('Please select both color and size');
+    }
+
+    const { data } = await axiosInstance.post('/cart/shoes', {
+      productId,
+      variant: {
+        colorId: variant.colorId,  // Reference to color option
+        size: variant.size        // Selected size
+      },
+      quantity
+    });
+
+    // Update both cart and optimistic UI updates
+    set(state => ({
+      cart: data,
+      loading: false,
+      // Optional: Update shoe-specific state if needed
+      selectedShoeOptions: {
+        ...state.selectedShoeOptions,
+        [productId]: variant
+      }
+    }));
+
+    toast.success('Shoes added to cart!');
+    return true;
+  } catch (error) {
+    set({ loading: false });
+    const errorMessage = error.response?.data?.message || 
+                        error.message || 
+                        'Failed to add shoes to cart';
+    toast.error(errorMessage);
+    return false;
+  }
+},
   
   // Update cart item quantity
   updateCartItem: async (itemId, quantity) => {

@@ -7,7 +7,6 @@ const ProfilePage = () => {
   const { user, updateProfile } = useUserStore();
   const [isDisabled, setDisabled] = useState(true);
 
-
   const [formData, setFormData] = useState({
     firstName: user?.profile?.firstName || '',
     lastName: user?.profile?.lastName || '',

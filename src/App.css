@@ -565,3 +565,40 @@ A muted, airy palette feels contemporary and high-end—think The Row or Bottega
 .cart-item-image.loaded {
   opacity: 1;
 }
+
+
+/*Product CSS */
+.product-card {
+  transition: all 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+.wishlist-button {
+  transition: transform 0.2s ease;
+}
+
+.wishlist-button:hover {
+  transform: scale(1.1);
+}
+
+.color-swatch {
+  transition: all 0.2s ease;
+}
+
+.color-swatch.active {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 2px #000;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}

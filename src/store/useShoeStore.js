@@ -57,6 +57,7 @@ const useShoeStore = create((set, get) => ({
       } catch (error) {
         set({ error: error.message, loading: false });
         toast.error(error.response?.data?.message || 'Failed to create shoe');
+        console.log(error.response?.data?.message)
         throw error;
       }
     },
@@ -86,7 +87,7 @@ const useShoeStore = create((set, get) => ({
     deleteShoe: async (id) => {
       set({ loading: true });
       try {
-        await axiosInstance.delete(`/api/shoes/${id}`);
+        await axiosInstance.delete(`/shoes/${id}`);
         set(state => ({
           shoes: state.shoes.filter(shoe => shoe._id !== id),
           loading: false
@@ -99,29 +100,92 @@ const useShoeStore = create((set, get) => ({
       }
     },
   
-
+     // Unified Options Management
+     fetchOptions: async () => {
+      set({ loading: true, options: { ...get().options, loading: true } });
+      try {
+        console.log('Starting options fetch...'); // Debug log
+        
+        const endpoints = [
+          '/shoes/categories',
+          '/shoes/colors',
+          '/shoes/materials',
+          '/shoes/soles',
+          '/shoes/lasts',
+          '/shoes/collections'
+        ];
+    
+        // Debug: Log each endpoint before request
+        endpoints.forEach(endpoint => console.log(`Will fetch: ${endpoint}`));
+        
+        const responses = await Promise.all(
+          endpoints.map(endpoint => axiosInstance.get(endpoint))
+        );
+    
+        // Debug: Log raw responses
+      //  console.log('Raw responses:', responses);
+        
+        const [categories, colors, materials, soles, lasts, collections] = responses;
+    
+        set({
+          options: {
+            categories: categories.data || [],
+            colors: colors.data || [],
+            materials: materials.data || [],
+            soles: soles.data || [],
+            lasts: lasts.data || [],
+            collections: collections.data || [],
+            loading: false,
+            error: null
+          },
+          loading: false
+        });
+    
+        //console.log('Options updated:', get().options); // Verify state update
+      } catch (error) {
+        console.error('Full fetch error:', error); // Detailed error log
+        console.error('Error response:', error.response); // Axios specific info
+        
+        set({
+          error: error.message,
+          loading: false,
+          options: { ...get().options, error: error.message, loading: false }
+        });
+        toast.error('Failed to load options');
+      }
+    },
   
     // Generate variants (client-side)
     generateVariants: (options) => {
-      const { colorOptions, sizeOptions, widthOptions, soleOptions, lastOptions, materialOptions } = options;
+      const {
+        colorOptions = [],
+        sizeOptions = [],
+        widthOptions = ['Standard'],
+        soleOptions = [],
+        lastOptions = [],
+        materialOptions = []
+      } = options;
+  
       const variants = [];
       
-      colorOptions.forEach(color => {
+      // Just use the indices as temporary references
+      colorOptions.forEach((color, colorIdx) => {
         sizeOptions.forEach(size => {
           widthOptions.forEach(width => {
-            soleOptions.forEach(sole => {
-              lastOptions.forEach(last => {
-                materialOptions.forEach(material => {
+            soleOptions.forEach((sole, soleIdx) => {
+              lastOptions.forEach((last, lastIdx) => {
+                materialOptions.forEach((material, materialIdx) => {
                   variants.push({
-                    color: color._id,
+                    // Temporary references using indices
+                    color: `color-${colorIdx}`,
                     size,
                     width,
-                    soleType: sole._id,
-                    lastType: last._id,
-                    material: material._id,
+                    soleType: `sole-${soleIdx}`,
+                    lastType: `last-${lastIdx}`,
+                    material: `material-${materialIdx}`,
                     stock: 0,
                     priceAdjustment: 0,
-                    sku: `SH-${color.name.slice(0,2)}-${size}-${width.charAt(0)}`
+                    sku: `TEMP-SH-${colorIdx}-${size}-${width.charAt(0)}`
                   });
                 });
               });
@@ -133,5 +197,14 @@ const useShoeStore = create((set, get) => ({
       return variants;
     }
   }));
+
+
+export const generateId = () => {
+  // A simple function to generate random IDs for frontend use
+  return Math.random().toString(36).substring(2, 15) + 
+         Math.random().toString(36).substring(2, 15);
+};
+
+
   
   export default useShoeStore;

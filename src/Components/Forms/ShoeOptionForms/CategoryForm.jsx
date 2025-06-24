@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import useShoeOptionsStore from '../../store/useShoeOptionsStore';
+import useShoeOptionsStore from '../../../store/useShoeOptionsStore';
 
 const CategoryForm = () => {
   const { 
     createCategory,
     categories,
-    fetchCategories 
+    fetchAllOptions
   } = useShoeOptionsStore();
   
   const [name, setName] = useState('');
@@ -13,8 +13,8 @@ const CategoryForm = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+    fetchAllOptions();
+  }, [fetchAllOptions]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

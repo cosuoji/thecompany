@@ -37,6 +37,10 @@ import CustomCursor from './Components/CursorComponents/CustomCursor';
 import CursorErrorBoundary from './Components/CursorComponents/CusorErrorBoundary';
 import WishlistPage from './Components/ProfileComponents/WishListComponent';
 import ShoeUploadForm from './Pages/ShoeUploadForm';
+import ProductOptionsForm from './Pages/ProductOptions';
+import ForgotPassword from './Pages/ForgotPassword';
+import ResetPassword from './Pages/ResetPassword';
+import ImageKitProvider from './Components/ImageKitProvider';
 
 
 function App() {
@@ -52,6 +56,7 @@ function App() {
   }
 
   return (
+    <ImageKitProvider>
     <div className='min-h-screen flex flex-col'>
       <CursorErrorBoundary>
       <CustomCursor />
@@ -110,6 +115,7 @@ function App() {
                   <Route index element={<PageTransition><Store /></PageTransition>} />   
                   <Route path='addmagazine' element={<AdminRoute><MagazineUploadPage /></AdminRoute>} /> 
                   <Route path='addshoe' element={<AdminRoute><ShoeUploadForm /></AdminRoute>} /> 
+                  <Route path='options' element={<AdminRoute><ProductOptionsForm /></AdminRoute>} /> 
 
               </Route>
               <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
@@ -120,6 +126,8 @@ function App() {
 
            <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
             <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
+            <Route path="/forgot" element={!user ? <ForgotPassword /> : <Navigate to="/" />} />
+            <Route path="/reset/:token" element={!user ? <ResetPassword /> : <Navigate to="/" />} />
             <Route path="*" element={<Navigate to={"/"} />} /> 
 
             </Routes>
@@ -134,6 +142,7 @@ function App() {
         error: { iconTheme: { primary: "#E6DACD", secondary: "black" }},
       }} />
     </div>
+    </ImageKitProvider>
   );
 }
 

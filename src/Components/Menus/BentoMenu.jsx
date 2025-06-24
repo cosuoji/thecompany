@@ -17,24 +17,18 @@ const sections = [
   },
   {
     id: 's2',
-    label: 'COLLECTIONS',
-    link: '/collections',
-    background: collectionBg,
-  },
-  {
-    id: 's3',
     label: 'PODCAST',
     link: '/podcast',
     background: podcastBg,
   },
   {
-    id: 's4',
+    id: 's3',
     label: 'STORE',
     link: '/store',
     background: storeBg,
   },
   {
-    id: 's5',
+    id: 's4',
     label: 'MAGAZINE',
     link: '/magazine',
     background: magazineBg,
@@ -73,7 +67,7 @@ const BentoMenu = ({ onClose }) => {
         <div className="absolute inset-0 hover:bg-opacity-70 transition duration-500"></div>
 
         {/* ✅ Text */}
-        <span className="relative z-10">{section.label}</span>
+        <span className="relative text-[#4B371C] z-10">{section.label}</span>
         </button>
       ))}
     </div>

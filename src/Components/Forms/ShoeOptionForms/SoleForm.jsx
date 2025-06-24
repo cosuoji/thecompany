@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import useShoeOptionsStore from '../../store/useShoeOptionsStore';
+import useShoeOptionsStore from '../../../store/useShoeOptionsStore';
 
 const SoleForm = () => {
   const { createSole } = useShoeOptionsStore();

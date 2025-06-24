@@ -4,38 +4,77 @@ import axiosInstance from '../lib/axios';
 
 export const useWishlist = () => {
   const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [fullInfo, setFullInfo] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // ✅ 1. Fetch ONCE on mount
+  // Fetch basic wishlist products
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchWishlist = async () => {
       try {
         setIsLoading(true);
-        const res = await axiosInstance.get('/user/wishlist/products');
-        setProducts(res.data);
+        const { data } = await axiosInstance.get('/user/wishlist/products', {
+          withCredentials: true,
+        });
+        setProducts(data);
       } catch (err) {
         setError(err);
-        console.error('Failed to fetch wishlist products', err);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchProducts();
-  }, []); // ❌ NO dependency on user?.wishlist!
+    fetchWishlist();
+  }, []);
 
-  // ✅ 2. Remove locally + call backend
+  // Fetch detailed product info when products change
+  useEffect(() => {
+    const fetchFullProductDetails = async () => {
+      if (products.length === 0) return;
+      console.log(products)
+      try {
+        setIsLoading(true);
+        const requests = products.map(product => 
+          axiosInstance.get(`/shoes/${product.toString()}`, {
+            withCredentials: true,
+          })
+          
+        );
+        
+        const responses = await Promise.all(requests);
+        const detailedProducts = responses.map(res => res.data);
+        
+        setFullInfo(detailedProducts);
+      } catch (err) {
+        console.error('Failed to fetch detailed product info:', err);
+        // You might want to setError here or handle differently
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFullProductDetails();
+  }, [products]);
+
+
   const removeFromWishlist = async (productId) => {
-    await axiosInstance.delete(`/user/wishlist/${productId}`);
-    // ✅ Update local products state only
-    setProducts((prev) => prev.filter(p => p._id !== productId));
+    try {
+      await axiosInstance.delete(`/user/wishlist/${productId}`, {
+        withCredentials: true,
+      });
+      // Update both products and fullInfo states
+      setProducts(products.filter(p => p._id !== productId));
+      setFullInfo(fullInfo.filter(p => p._id !== productId));
+    } catch (err) {
+      throw err;
+    }
   };
 
-  return {
-    products,
-    isLoading,
-    error,
-    removeFromWishlist
+  return { 
+    products, 
+    fullInfo, 
+    isLoading, 
+    error, 
+    removeFromWishlist 
   };
 };
