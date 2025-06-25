@@ -1,5 +1,4 @@
 import { create } from "zustand";
-
 import { toast } from "react-hot-toast";
 import axiosInstance from "../lib/axios";
 
@@ -12,6 +11,8 @@ const publicRoutes = [
 	'/magazine',
 	'/blog',
 	'/store',
+	"/store/shoes/:slug"
+
 	// Add all your public routes here
   ];
 
@@ -30,14 +31,22 @@ _initialized: false,
 init: async () => {
 	const store = get();
 	if (store._initialized) return;
-
-	// Only check auth if we have a token
-	if (localStorage.getItem('accessToken')) {
+  
+	const hasToken = localStorage.getItem('accessToken');
+  
+	if (hasToken) {
+	  try {
 		await store.checkAuth();
+	  } catch (err) {
+		// If checkAuth fails, ensure it still sets checkingAuth: false
+	  }
+	} else {
+	  set({ checkingAuth: false }); // ✅ Handle unauthenticated state
 	}
+  
 	set({ _initialized: true });
-},
-
+  },
+  
 
 	
 	signup: async ({ email, password, confirmPassword }) => {
@@ -516,10 +525,12 @@ const processQueue = (error, token = null) => {
 	  const currentPath = window.location.pathname;
     
 	   // Skip auth checks for public routes
-	   if (publicRoutes.some(route => {
-		const routePattern = new RegExp('^' + route.replace(/:\w+/g, '\\w+') + '$');
-		return routePattern.test(currentPath);
-	  })) {
+	   const isPublicRoute = publicRoutes.some(route => {
+		const pattern = new RegExp('^' + route.replace(/:\w+/g, '[^/]+') + '$');
+		return pattern.test(currentPath);
+	  });
+	  
+	  if (isPublicRoute) {
 		return Promise.reject(error);
 	  }
 	  

@@ -30,8 +30,9 @@ const CartPage = () => {
       const coverImage = item.product?.magazineData?.coverImage;
       return typeof coverImage === 'string' ? coverImage : coverImage?.url;
     }
+    //console.log(item.variant.color.images[0].url)
     // Handle regular product image
-    return item.product?.images?.[0];
+    return item.variant.color.images[0].url
   };
 
   return (

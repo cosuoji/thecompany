@@ -1,4 +1,3 @@
-// components/CustomCursor.js
 import { useState, useEffect } from 'react';
 import AnimatedCursor from "react-animated-cursor";
 
@@ -6,12 +5,15 @@ const CustomCursor = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Delay cursor initialization
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 50);
+    const handleLoad = () => setIsVisible(true);
 
-    return () => clearTimeout(timer);
+    if (document.readyState === 'complete') {
+      setIsVisible(true);
+    } else {
+      window.addEventListener('load', handleLoad);
+    }
+
+    return () => window.removeEventListener('load', handleLoad);
   }, []);
 
   if (!isVisible) return null;
@@ -26,12 +28,7 @@ const CustomCursor = () => {
       outerScale={5}
       clickables={[
         'a',
-        'input[type="text"]',
-        'input[type="email"]',
-        'input[type="number"]',
-        'input[type="submit"]',
-        'input[type="image"]',
-        'label[for]',
+        'input',
         'select',
         'textarea',
         'button',

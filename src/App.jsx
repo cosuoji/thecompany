@@ -41,15 +41,17 @@ import ProductOptionsForm from './Pages/ProductOptions';
 import ForgotPassword from './Pages/ForgotPassword';
 import ResetPassword from './Pages/ResetPassword';
 import ImageKitProvider from './Components/ImageKitProvider';
+import ProductPage from './Pages/ProductPage';
+import ScrollToTop from './Components/ScrollToTop';
 
 
 function App() {
   const location = useLocation();
-  const { user, checkAuth, checkingAuth } = useUserStore();
+  const { user, init, checkingAuth } = useUserStore();
 
   useEffect(() => {
-		checkAuth();
-	}, [checkAuth]);
+    useUserStore.getState().init(); // only checks if there's a token
+  }, []);
 
   if (checkingAuth) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
@@ -63,6 +65,7 @@ function App() {
       </CursorErrorBoundary>
       <main className='flex-grow'>
         <Layout>
+          <ScrollToTop />
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<PageTransition><Homepage /></PageTransition>} />
@@ -116,8 +119,9 @@ function App() {
                   <Route path='addmagazine' element={<AdminRoute><MagazineUploadPage /></AdminRoute>} /> 
                   <Route path='addshoe' element={<AdminRoute><ShoeUploadForm /></AdminRoute>} /> 
                   <Route path='options' element={<AdminRoute><ProductOptionsForm /></AdminRoute>} /> 
-
-              </Route>
+                  <Route path='shoes/:slug' element={<ProductPage />} />
+               </Route>
+ 
               <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
               <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
               <Route path='/contact' element={<PageTransition><Contact /></PageTransition>} />

@@ -44,7 +44,7 @@ export const ProductCard = ({ product, className = '' }) => {
 
   return (
     <Link 
-      to={`/products/${product?.slug || product?._id}`}
+      to={`shoes/${product?.slug}`}
       className={`relative bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 group block ${className}`}
     >
       {/* Wishlist Button */}

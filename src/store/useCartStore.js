@@ -44,16 +44,14 @@ addToCartShoes: async (productId, variant = null, quantity = 1) => {
   set({ loading: true });
   try {
     // Validate required shoe variant properties
-    if (!variant || !variant.colorId || !variant.size) {
+    console.log(variant.color)
+    if (!variant || !variant.color._id || !variant.size) {
       throw new Error('Please select both color and size');
     }
 
     const { data } = await axiosInstance.post('/cart/shoes', {
       productId,
-      variant: {
-        colorId: variant.colorId,  // Reference to color option
-        size: variant.size        // Selected size
-      },
+      variant,
       quantity
     });
 

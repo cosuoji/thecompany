@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import SectionGallery from '../Components/Menus/SectionGallery';
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { FiShoppingCart, FiUser, FiX, FiPlus, FiMinus, FiTrash2 } from 'react-icons/fi';
@@ -13,7 +12,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const location = useLocation();
-  const { user } = useUserStore();
+  const { user, checkingAuth } = useUserStore();
   const { 
     cart, 
     loading, 
@@ -40,10 +39,10 @@ const Header = () => {
 
   // Fetch cart when cart modal opens
   useEffect(() => {
-    if (isCartOpen && user) {
+    if (isCartOpen && user && !checkingAuth) {
       fetchCart();
     }
-  }, [isCartOpen, user]);
+  }, [isCartOpen, user, checkingAuth]);
 
   const toggleCart = () => {
     setIsCartOpen(!isCartOpen);
@@ -186,6 +185,17 @@ const Header = () => {
             <FiX className="w-6 h-6" />
           </button>
         </div>
+        {!user && (
+          <div className="mt-4 text-center">
+            <Link to="/login">
+              <button
+                className="px-6 py-2 text-sm sm:text-base bg-[#4B371C] text-[#E6DACD] rounded-full shadow-md hover:bg-[#3c2d15] transition duration-300"
+              >
+                Login to add items to cart
+              </button>
+            </Link>
+          </div>
+        )}
 
         {/* Cart Content */}
         <CartPage />

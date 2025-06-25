@@ -4,9 +4,6 @@ import { slides } from '../Components/ProductComponents/ProductSliderList'
 import { ProductGrid } from '../Components/ProductComponents/ProductGrid'
 
 const Store = () => {
-
-  
-
   return (
     
     <>

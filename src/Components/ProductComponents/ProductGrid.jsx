@@ -5,6 +5,7 @@ import useShoeStore from '../../store/useShoeStore';
 export const ProductGrid = () => {
   const { shoes, loading, error, fetchShoes } = useShoeStore();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [activeAccordion, setActiveAccordion] = useState(null);
   const [filters, setFilters] = useState({
     sizes: [],
     colors: [],
@@ -43,6 +44,10 @@ export const ProductGrid = () => {
 
   const toggleFilter = () => setIsFilterOpen(!isFilterOpen);
 
+  const toggleAccordion = (accordion) => {
+    setActiveAccordion(activeAccordion === accordion ? null : accordion);
+  };
+
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({
       ...prev,
@@ -76,42 +81,198 @@ export const ProductGrid = () => {
 
   // Filter shoes based on all active filters
   const filteredShoes = shoes.filter(shoe => {
-    // Price range filter
     const shoePrice = shoe.discountedPrice || shoe.basePrice;
     const priceInRange = shoePrice >= filters.priceRange[0] && 
                         shoePrice <= filters.priceRange[1];
-    
-    // Size filter
     const sizeMatch = filters.sizes.length === 0 || 
                      shoe.sizeOptions.some(size => filters.sizes.includes(size));
-    
-    // Color filter
     const colorMatch = filters.colors.length === 0 || 
                       shoe.colorOptions.some(color => filters.colors.includes(color.name));
-    
-    // Material filter
     const materialMatch = filters.materials.length === 0 || 
                          shoe.materialOptions.some(material => filters.materials.includes(material.type));
-    
-    // Category filter
     const categoryMatch = filters.categories.length === 0 || 
                          shoe.categories.some(cat => filters.categories.includes(cat.name));
-    
-    // Width filter
     const widthMatch = filters.widths.length === 0 || 
                       shoe.widthOptions.some(width => filters.widths.includes(width));
-    
-    // Sole filter
     const soleMatch = filters.soles.length === 0 || 
                      shoe.soleOptions.some(sole => filters.soles.includes(sole.name));
-    
-    // Last filter
     const lastMatch = filters.lasts.length === 0 || 
                      shoe.lastOptions.some(last => filters.lasts.includes(last.name));
     
     return priceInRange && sizeMatch && colorMatch && materialMatch && 
            categoryMatch && widthMatch && soleMatch && lastMatch;
   });
+
+  // Accordion filter sections
+  const filterSections = [
+    {
+      id: 'price',
+      title: 'Price Range',
+      content: (
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-gray-500">
+              ${filters.priceRange[0].toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            </span>
+            <span className="text-sm text-gray-500">
+              ${filters.priceRange[1].toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              type="range"
+              min="0"
+              max="10000000"
+              value={filters.priceRange[0]}
+              onChange={(e) => handlePriceChange(0, e.target.value)}
+              className="w-full accent-[#4B371C]"
+            />
+            <input
+              type="range"
+              min="0"
+              max="10000000"
+              value={filters.priceRange[1]}
+              onChange={(e) => handlePriceChange(1, e.target.value)}
+              className="w-full accent-[#4B371C]"
+            />
+          </div>
+        </div>
+      )
+    },
+    {
+      id: 'categories',
+      title: 'Categories',
+      content: (
+        <div className="grid grid-cols-2 gap-2">
+          {allCategories.map(category => (
+            <label key={category} className="flex items-center">
+              <input
+                type="checkbox"
+                checked={filters.categories.includes(category)}
+                onChange={() => handleFilterChange('categories', category)}
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <span className="ml-2 text-sm text-gray-700">{category}</span>
+            </label>
+          ))}
+        </div>
+      )
+    },
+    {
+      id: 'sizes',
+      title: 'Sizes',
+      content: (
+        <div className="grid grid-cols-4 gap-2">
+          {allSizes.map(size => (
+            <label key={size} className="flex items-center">
+              <input
+                type="checkbox"
+                checked={filters.sizes.includes(size)}
+                onChange={() => handleFilterChange('sizes', size)}
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <span className="ml-2 text-sm text-gray-700">EU {size}</span>
+            </label>
+          ))}
+        </div>
+      )
+    },
+    {
+      id: 'widths',
+      title: 'Widths',
+      content: (
+        <div className="grid grid-cols-2 gap-2">
+          {allWidths.map(width => (
+            <label key={width} className="flex items-center">
+              <input
+                type="checkbox"
+                checked={filters.widths.includes(width)}
+                onChange={() => handleFilterChange('widths', width)}
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <span className="ml-2 text-sm text-gray-700">{width}</span>
+            </label>
+          ))}
+        </div>
+      )
+    },
+    {
+      id: 'colors',
+      title: 'Colors',
+      content: (
+        <div className="grid grid-cols-4 gap-2">
+          {allColors.map(color => (
+            <label key={color} className="flex items-center">
+              <input
+                type="checkbox"
+                checked={filters.colors.includes(color)}
+                onChange={() => handleFilterChange('colors', color)}
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <span className="ml-2 text-sm text-gray-700">{color}</span>
+            </label>
+          ))}
+        </div>
+      )
+    },
+    {
+      id: 'materials',
+      title: 'Materials',
+      content: (
+        <div className="grid grid-cols-2 gap-2">
+          {allMaterials.map(material => (
+            <label key={material} className="flex items-center">
+              <input
+                type="checkbox"
+                checked={filters.materials.includes(material)}
+                onChange={() => handleFilterChange('materials', material)}
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <span className="ml-2 text-sm text-gray-700">{material}</span>
+            </label>
+          ))}
+        </div>
+      )
+    },
+    {
+      id: 'soles',
+      title: 'Soles',
+      content: (
+        <div className="grid grid-cols-2 gap-2">
+          {allSoles.map(sole => (
+            <label key={sole} className="flex items-center">
+              <input
+                type="checkbox"
+                checked={filters.soles.includes(sole)}
+                onChange={() => handleFilterChange('soles', sole)}
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <span className="ml-2 text-sm text-gray-700">{sole}</span>
+            </label>
+          ))}
+        </div>
+      )
+    },
+    {
+      id: 'lasts',
+      title: 'Lasts',
+      content: (
+        <div className="grid grid-cols-2 gap-2">
+          {allLasts.map(last => (
+            <label key={last} className="flex items-center">
+              <input
+                type="checkbox"
+                checked={filters.lasts.includes(last)}
+                onChange={() => handleFilterChange('lasts', last)}
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <span className="ml-2 text-sm text-gray-700">{last}</span>
+            </label>
+          ))}
+        </div>
+      )
+    }
+  ];
 
   return (
     <div className="px-4 py-8 bg-gray-50">
@@ -153,165 +314,42 @@ export const ProductGrid = () => {
                 </button>
               </div>
 
-              {/* Price Range Filter */}
-              <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Price Range</h4>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-500">
-                    ${filters.priceRange[0].toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                  </span>
-                  <span className="text-sm text-gray-500">
-                    ${filters.priceRange[1].toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                  </span>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <input
-                    type="range"
-                    min="0"
-                    max="10000000"
-                    value={filters.priceRange[0]}
-                    onChange={(e) => handlePriceChange(0, e.target.value)}
-                    className="w-full accent-[#4B371C]"
-                  />
-                  <input
-                    type="range"
-                    min="0"
-                    max="10000000"
-                    value={filters.priceRange[1]}
-                    onChange={(e) => handlePriceChange(1, e.target.value)}
-                    className="w-full accent-[#4B371C]"
-                  />
-                </div>
-              </div>
-
-              {/* Category Filter */}
-              <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Categories</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {allCategories.map(category => (
-                    <label key={category} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={filters.categories.includes(category)}
-                        onChange={() => handleFilterChange('categories', category)}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                      />
-                      <span className="ml-2 text-sm text-gray-700">{category}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Size Filter */}
-              <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Sizes</h4>
-                <div className="grid grid-cols-4 gap-2">
-                  {allSizes.map(size => (
-                    <label key={size} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={filters.sizes.includes(size)}
-                        onChange={() => handleFilterChange('sizes', size)}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                      />
-                      <span className="ml-2 text-sm text-gray-700">EU {size}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Width Filter */}
-              <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Widths</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {allWidths.map(width => (
-                    <label key={width} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={filters.widths.includes(width)}
-                        onChange={() => handleFilterChange('widths', width)}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                      />
-                      <span className="ml-2 text-sm text-gray-700">{width}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Color Filter */}
-              <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Colors</h4>
-                <div className="grid grid-cols-4 gap-2">
-                  {allColors.map(color => (
-                    <label key={color} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={filters.colors.includes(color)}
-                        onChange={() => handleFilterChange('colors', color)}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                      />
-                      <span className="ml-2 text-sm text-gray-700">{color}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Material Filter */}
-              <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Materials</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {allMaterials.map(material => (
-                    <label key={material} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={filters.materials.includes(material)}
-                        onChange={() => handleFilterChange('materials', material)}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                      />
-                      <span className="ml-2 text-sm text-gray-700">{material}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Sole Filter */}
-              <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Soles</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {allSoles.map(sole => (
-                    <label key={sole} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={filters.soles.includes(sole)}
-                        onChange={() => handleFilterChange('soles', sole)}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                      />
-                      <span className="ml-2 text-sm text-gray-700">{sole}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Last Filter */}
-              <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Lasts</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {allLasts.map(last => (
-                    <label key={last} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={filters.lasts.includes(last)}
-                        onChange={() => handleFilterChange('lasts', last)}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                      />
-                      <span className="ml-2 text-sm text-gray-700">{last}</span>
-                    </label>
-                  ))}
-                </div>
+              {/* Accordion Filters */}
+              <div className="space-y-2">
+                {filterSections.map((section) => (
+                  <div key={section.id} className="border-b border-gray-200">
+                    <button
+                      className="flex justify-between items-center w-full py-3 text-left text-sm font-medium text-gray-700 focus:outline-none"
+                      onClick={() => toggleAccordion(section.id)}
+                    >
+                      <span>{section.title}</span>
+                      <svg
+                        className={`h-5 w-5 transform transition-transform ${
+                          activeAccordion === section.id ? 'rotate-180' : ''
+                        }`}
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ${
+                        activeAccordion === section.id ? 'max-h-96 py-2' : 'max-h-0'
+                      }`}
+                    >
+                      {section.content}
+                    </div>
+                  </div>
+                ))}
               </div>
 
               {/* Action Buttons */}
-              <div className="flex justify-between">
+              <div className="flex justify-between mt-6">
                 <button
                   onClick={resetFilters}
                   className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"

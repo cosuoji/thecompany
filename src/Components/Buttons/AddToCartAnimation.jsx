@@ -6,7 +6,7 @@ import { useCartStore } from '../../store/useCartStore';
 
 gsap.registerPlugin(MorphSVGPlugin);
 
-const AddToCartAnimation = ({ label, productId, productType }) => {
+const AddToCartAnimation = ({ label, productId, }) => {
   const buttonRef = useRef(null);
   const morphRef = useRef(null);
   const shirtRefs = useRef([]);
@@ -186,7 +186,7 @@ const AddToCartAnimation = ({ label, productId, productType }) => {
       <button 
         ref={buttonRef}
         className="add-to-cart"
-        onClick={() => addToCart(productId, productType)}
+        onClick={() => addToCart(productId)}
 
       >
         <span>{label}</span>
