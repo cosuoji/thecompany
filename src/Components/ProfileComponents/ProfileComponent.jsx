@@ -1,11 +1,14 @@
 import { useUserStore } from "../../store/useUserStore";
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
+import useDocumentTitle from "../../hooks/useDocumentTitle";
 
  
 const ProfilePage = () => {
   const { user, updateProfile } = useUserStore();
   const [isDisabled, setDisabled] = useState(true);
+
+  useDocumentTitle(`Profile - ${user?.profile?.firstName} ${user?.profile?.lastName} |`)
 
   const [formData, setFormData] = useState({
     firstName: user?.profile?.firstName || '',
@@ -23,6 +26,7 @@ const ProfilePage = () => {
       toast.error(error.message);
     }
   };
+
 
   return (
     <div>

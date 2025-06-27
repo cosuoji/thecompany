@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useUserStore } from '../../store/useUserStore';
 import { toast } from 'react-hot-toast';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const AddressesPage = () => {
   const { user, addAddress, updateAddress, deleteAddress, setDefaultAddress } = useUserStore();
@@ -16,6 +17,9 @@ const AddressesPage = () => {
     isDefault: false
   });
 
+  useDocumentTitle(`Profile - ${user?.profile?.firstName} ${user?.profile?.lastName} |`)
+
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

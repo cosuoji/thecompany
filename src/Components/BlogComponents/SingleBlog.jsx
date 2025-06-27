@@ -6,6 +6,7 @@ import {useUserStore} from '../../store/useUserStore';
 import BlogContentRenderer from "./BlogContentRenderer"
 import BlogAdminActions from './BlogAdminActions';
 import { useNavigate, useParams } from 'react-router-dom';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const SingleBlogPost = () => {
   const navigate = useNavigate()
@@ -13,8 +14,7 @@ const SingleBlogPost = () => {
   const { user, checkingAuth } = useUserStore();
   const [isAdmin, setIsAdmin] = useState(false);
   const { slug } = useParams();
-  
-
+  useDocumentTitle(`Blog - ${currentBlog.title}`)
   useEffect(() => {
     if (slug) {
       fetchBlogBySlug(slug);

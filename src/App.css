@@ -602,3 +602,71 @@ A muted, airy palette feels contemporary and high-end—think The Row or Bottega
 .animate-spin {
   animation: spin 1s linear infinite;
 }
+
+/* styles/currency.css */
+.currency-selector-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.currency-selector {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  font-size: 14px;
+}
+
+.loading-indicator {
+  color: #666;
+  font-size: 12px;
+}
+
+.rate-update-time {
+  color: #888;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.product-price {
+  display: flex;
+  flex-direction: column;
+}
+
+.current-price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #4B371C;
+}
+
+.original-price {
+  font-size: 0.8rem;
+  color: #888;
+  text-decoration: line-through;
+}
+
+.price-loading {
+  color: #666;
+  font-style: italic;
+}
+
+
+
+
+
+/* Add to your global CSS */
+select.currency-switcher {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E6DACD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1em;
+}
+
+/* For dark mode/light mode toggle if needed */
+.dark select.currency-switcher {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
+}

@@ -1,13 +1,25 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useCartStore } from '../store/useCartStore';
 import { FaTrash, FaPlus, FaMinus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { useCurrency } from '../context/CurrencyContext';
+import CurrencySwitcher from '../components/CurrencyComponents/CurrencySwitcher';
+import useShoeStore from '../store/useShoeStore';
+import { useProductStore } from '../store/useProductStore';
+import { useUserStore } from '../store/useUserStore';
 
 const CartPage = () => {
-  const { cart, updateCartItem, removeFromCart, fetchCart } = useCartStore();
+  const { cart, cartData, updateCartItem, removeFromCart, fetchCart, fetchCartWithProductData } = useCartStore();
+  const {getSingleShoe} = useShoeStore();
+  const {fetchMagazine} = useProductStore()
+  const { currency, formatPrice } = useCurrency();
+  const [disabled, setDisabled] = useState(true)
+  const {user} = useUserStore()
 
   useEffect(() => {
     fetchCart();
+    fetchCartWithProductData()
+    user ? setDisabled(false) : null
   }, []);
 
   const handleQuantityChange = async (itemId, newQuantity) => {
@@ -19,53 +31,47 @@ const CartPage = () => {
     }
   };
 
+
   const calculateTotal = () => {
     return cart?.items?.reduce((total, item) => total + (item.price * item.quantity), 0) || 0;
   };
 
-  // Stable image URL getter
   const getProductImage = (item) => {
-    // Handle magazine cover image (now properly checks for object/string)
-    if (item.product?.productType === 'magazine') {
-      const coverImage = item.product?.magazineData?.coverImage;
+    if (item.productType === 'magazine') {
+     
+      const coverImage = item.product?.details?.magazineData?.coverImage.url;
       return typeof coverImage === 'string' ? coverImage : coverImage?.url;
     }
-    //console.log(item.variant.color.images[0].url)
-    // Handle regular product image
-    return item.variant.color.images[0].url
+
+    return item.variant.color.images[0]?.url || '/placeholder-product.jpg';
   };
+
+  
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-8 text-left">Cart</h1>
       
-      {cart?.items?.length > 0 ? (
+      {cartData?.items?.length > 0 ? (
         <div className="space-y-6">
           {/* Cart Items */}
           <div className="space-y-4">
-            {cart.items.map((item) => {
+            {cartData.items.map((item) => {
               const imageUrl = getProductImage(item);
+              
               return (
                 <div key={`${item._id}-${item.quantity}`} className="flex items-start border-b pb-4">
-                  {/* Product Image with stable rendering */}
+                  {/* Product Image */}
                   <div className="w-20 h-20 flex-shrink-0 mr-4">
-                    {imageUrl ? (
-                      <img 
-                        src={imageUrl}
-                        alt={item.product?.name || 'Product image'}
-                        className="w-full h-full object-cover rounded"
-                        key={`img-${imageUrl}`}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = '/placeholder-product.jpg';
-                        }}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gray-200 rounded flex items-center justify-center">
-                        <span className="text-gray-500">No Image</span>
-                      </div>
-                    )}
+                    <img 
+                      src={imageUrl}
+                      alt={item.product?.details?.name || 'Product image'}
+                      className="w-full h-full object-cover rounded"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = '/placeholder-product.jpg';
+                      }}
+                      loading="lazy"
+                    />
                   </div>
 
                   {/* Product Info */}
@@ -73,14 +79,16 @@ const CartPage = () => {
                     <div className="flex justify-between">
                       <div>
                         <h3 className="font-medium">
-                          {item.product?.name}
-                          {item.product?.productType === 'magazine' && (
+                          {item.product?.details?.name}
+                          {item.productType === 'magazine' && (
                             <span className="text-gray-600 ml-2">
-                              (Issue #{item.product.magazineData?.issueNumber})
+                              (Issue #{item.product.details.magazineData?.issueNumber})
                             </span>
                           )}
                         </h3>
-                        <p className="text-gray-600">₦{item.price.toFixed(2)}</p>
+                        <p className="text-gray-600 font-medium">
+                          {formatPrice(item.price)}
+                        </p>
                       </div>
                       <button 
                         onClick={() => removeFromCart(item._id)}
@@ -118,15 +126,23 @@ const CartPage = () => {
             <div className="flex justify-end">
               <div className="w-full md:w-1/3 space-y-4">
                 <div className="flex justify-between text-lg font-semibold">
-                  <span>Total:</span>
-                  <span>₦{calculateTotal().toFixed(2)}</span>
+                  <span>Subtotal:</span>
+                  <span>{formatPrice(calculateTotal())}</span>
                 </div>
+                <div className="flex justify-between text-sm text-gray-500">
+                </div>
+                <div className="border-t pt-2 flex justify-between font-bold">
+                  <span>Total:</span>
+                  <span>{formatPrice(calculateTotal())}</span>
+                </div>
+                <Link to="/checkout">
                 <button
-                  disabled
-                  className=" bg-gray-400 text-white py-3 px-6 rounded-lg font-medium cursor-not-allowed"
+                  disabled={disabled}
+                  className="w-full bg-[#4B371C] text-white py-3 px-6 rounded-lg font-medium cursor-not-allowed"
                 >
                   CHECKOUT
                 </button>
+                </Link>
                 <Link 
                   to="/store" 
                   className="block text-center underline hover:underline mt-4"
@@ -142,7 +158,7 @@ const CartPage = () => {
           <p className="text-gray-500 text-lg">Your cart is empty</p>
           <Link 
             to="/store" 
-            className="text-blue-600 hover:underline mt-2 inline-block"
+            className="mt-4 inline-block px-6 py-2 bg-[#4B371C] text-[#E6DACD] rounded hover:bg-[#3a2b15] transition-colors"
           >
             Browse Store
           </Link>

@@ -42,6 +42,9 @@ const useShoeStore = create((set, get) => ({
         toast.error('Failed to fetch shoe details');
       }
     },
+
+    
+
   
     // Create shoe
     createShoe: async (shoeData) => {

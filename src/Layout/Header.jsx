@@ -7,6 +7,10 @@ import { useCartStore } from "../store/useCartStore";
 import { toast } from "react-hot-toast";
 import CartPage from "../Pages/Cart";
 import BentoMenu from "../Components/Menus/BentoMenu";
+import CurrencySwitcher from "../Components/CurrencyComponents/CurrencySwitcher";
+import { useRedirect } from "../hooks/useRedirect";
+
+
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,6 +28,8 @@ const Header = () => {
   } = useCartStore();
   
   const cartItemCount = cart?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
+  const { setRedirect } = useRedirect();
+
 
   // Handle body overflow when either modal is open
   useEffect(() => {
@@ -85,7 +91,10 @@ const Header = () => {
         </Link>
 
         {/* ICONS GROUP */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 sm:gap-6">
+          <div className="">
+            <CurrencySwitcher />
+          </div>
           {/* CART ICON */}
           <button 
             className="relative p-1 text-[#E6DACD] hover:text-[#f0e5d8] transition-colors"
@@ -100,10 +109,14 @@ const Header = () => {
           </button>
 
           {/* USER ICON */}
+
           <Link 
             to={user ? "/account" : "/login"} 
             className="p-1 text-[#E6DACD] hover:text-[#f0e5d8] transition-colors"
             onClick={() => {
+              if (!user) {
+                setRedirect(); // Store current path before redirecting to login
+              }
               setIsMenuOpen(false);
               setIsCartOpen(false);
             }}

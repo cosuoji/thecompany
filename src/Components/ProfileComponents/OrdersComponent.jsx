@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useUserStore } from '../../store/useUserStore';
-
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const OrdersPage = () => {
   const { user, orders, getOrders } = useUserStore();
+ 
+  useDocumentTitle(`Profile - ${user?.profile?.firstName} ${user?.profile?.lastName} |`)
 
   useEffect(() => {
     if (user && !orders) {

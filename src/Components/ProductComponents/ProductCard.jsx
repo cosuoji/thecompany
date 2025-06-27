@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useUserStore } from '../../store/useUserStore';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import PriceDisplay from '../CurrencyComponents/PriceDisplay';
+
 
 export const ProductCard = ({ product, className = '' }) => {
   const { user, addToWishlist, removeFromWishlist, fetchUserData } = useUserStore();
@@ -26,7 +28,7 @@ export const ProductCard = ({ product, className = '' }) => {
       }
       await fetchUserData()
     } catch (error) {
-      if(!user) toast.error("Please login")
+      if(!user) toast.error("Sign in to add to wishlist")
       console.error("Wishlist error:", error);
     }
   };
@@ -38,9 +40,7 @@ export const ProductCard = ({ product, className = '' }) => {
   };
 
   // Calculate displayed price
-  const price = product?.basePrice != null
-  ? product.basePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-  : '0.00';
+  const price = product?.basePrice
 
   return (
     <Link 
@@ -81,10 +81,14 @@ export const ProductCard = ({ product, className = '' }) => {
         )}
       </div>
 
+
       {/* Product Info */}
       <div className="p-4">
         <h3 className="font-medium text-lg mb-1 truncate">{product?.name}</h3>
-        <p className="font-bold text-xl mb-3">₦{price}</p>
+        <PriceDisplay 
+          price={price} 
+          className="font-bold text-xl mb-3" 
+        />
 
         {/* Color Options */}
         {product?.colorOptions?.length > 1 && (

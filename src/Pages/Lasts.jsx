@@ -1,13 +1,12 @@
 import React from 'react'
 import useDocumentTitle from '../hooks/useDocumentTitle'
-
-const FAQ = () => {
-  useDocumentTitle("F.A.Q - ")
+const Lasts = () => {
+  useDocumentTitle("Lasts")
   return (
     <>
-    <div>FAQ</div>
+    <div>Lasts</div>
     </>
   )
 }
 
-export default FAQ
+export default Lasts

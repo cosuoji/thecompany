@@ -4,12 +4,16 @@ import ElegantButton from "../Components/Buttons/ElegantButton";
 import { Article } from "../Components/ArticleComponents";
 import useBlogStore from "../store/blogStore";
 import { Link } from "react-router-dom";
+import useDocumentTitle from "../hooks/useDocumentTitle";
+
 
 export default function Blog() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const categories = ["all", "news", "masters-of-the-craft", "moving-hands", "our-advice"];
   const { blogs, loading, error, fetchBlogs, currentPage, totalPages } = useBlogStore();
+
+  useDocumentTitle("Blog")
 
   useEffect(() => {
     fetchBlogs(currentPage);

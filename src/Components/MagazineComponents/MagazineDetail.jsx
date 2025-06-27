@@ -9,6 +9,10 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { useUserStore } from '../../store/useUserStore';
 import { useCartStore } from '../../store/useCartStore';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
+import PriceDisplay from '../CurrencyComponents/PriceDisplay';
+import { useCurrency } from '../../context/CurrencyContext';
+
 
 const MagazineDetail = () => {
     const { issueNumber } = useParams();
@@ -18,7 +22,10 @@ const MagazineDetail = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
     const { addToCart } = useCartStore();
-    const { isAdmin } = useUserStore(); // Using your existing isAdmin method
+    const { isAdmin, user } = useUserStore(); // Using your existing isAdmin method
+    const { currency } = useCurrency();
+
+    useDocumentTitle(`Magazine Issue ${issueNumber} - `)
 
     const fetchData = async (search = '') => {
         setLoading(true);
@@ -43,7 +50,7 @@ const MagazineDetail = () => {
     };
 
     const handleAddToCart = () => {
-        addToCart(data.magazine._id, 'magazine');
+        !user ? toast.error("Sign in to add to Cart") : addToCart(data.magazine._id, 'magazine', currency);
     };
 
     const handleDelete = () => {
@@ -68,6 +75,7 @@ const MagazineDetail = () => {
         });
     };
 
+
   
 
     if (loading) return <div className="text-center py-8">Loading...</div>;
@@ -84,7 +92,7 @@ const MagazineDetail = () => {
                     <FaArrowLeft /> Back to All Issues
                 </button>
                 
-                {isAdmin() && ( // Using your isAdmin method
+                {user?.role === 'admin' && ( // Using your isAdmin method
                     <div className="flex gap-2">
                         <button
                             onClick={handleDelete}
@@ -95,7 +103,6 @@ const MagazineDetail = () => {
                     </div>
                 )}
             </div>
-
             {/* Rest of your magazine detail UI remains the same */}
             <div className="flex flex-col md:flex-row gap-8 mb-12">
                 <div className="md:w-1/3">
@@ -110,8 +117,7 @@ const MagazineDetail = () => {
                     <h1 className="text-3xl font-bold">{data.magazine.name}</h1>
                     <p className="text-xl">Issue #{issueNumber}</p>
                     <p className="text-gray-600">{data.magazine.description}</p>
-                    <p className="text-2xl font-semibold">₦ {data.magazine.price}</p>
-                    
+                    <PriceDisplay  price={data?.magazine?.price}  className="text-2xl font-semibold"/>
                     <div className="flex flex-col sm:flex-row gap-4 pt-4">
                         <button
                             onClick={handleAddToCart}

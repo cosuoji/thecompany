@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { MagazineCard } from '../Components/MagazineComponents/MagazineCard';
 import { useProductStore } from '../store/useProductStore';
 import { Link } from 'react-router-dom';
-
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 const MagazineListPage = () => {
   const { magazines,fetchProducts, loading } = useProductStore();
@@ -12,6 +12,7 @@ const MagazineListPage = () => {
     fetchProducts({ productType: 'magazine' });
   }, []);
   
+  useDocumentTitle("Magazine Issues")
   
   if (loading) return <div>Loading magazines...</div>;
 

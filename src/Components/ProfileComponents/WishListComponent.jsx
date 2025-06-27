@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom';
 import { useWishlist } from '../../hooks/useWishlist';
 import toast from 'react-hot-toast';
 import { useUserStore } from '../../store/useUserStore';
-
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 const WishlistPage = () => {
   const { fullInfo, isLoading, error, removeFromWishlist } = useWishlist();
-  const { fetchUserData } = useUserStore();
+  const { fetchUserData, user } = useUserStore();
 
   if (isLoading) {
     return (
@@ -15,7 +15,8 @@ const WishlistPage = () => {
     );
   }
 
-  console.log(fullInfo)
+  useDocumentTitle(`Profile - ${user?.profile?.firstName} ${user?.profile?.lastName} |`)
+
   const handleRemove = async (productId) => {
     try {
       await removeFromWishlist(productId);

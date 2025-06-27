@@ -2,11 +2,15 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom'; // Added Link import
 import { useUserStore } from '../store/useUserStore';
 import { toast } from 'react-hot-toast';
+import useDocumentTitle from '../hooks/useDocumentTitle';
+import { useRedirect } from '../hooks/useRedirect';
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation()
   const [error, setError] = useState(null);
+  const { redirect } = useRedirect();
+
 
   const { login, loading, user} = useUserStore();
   const [formData, setFormData] = useState({
@@ -14,8 +18,9 @@ const Login = () => {
     password: ''
   });
 
+  useDocumentTitle("Login - The Company")
 
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -23,7 +28,7 @@ const Login = () => {
     const success = await login(formData.email, formData.password);
     if (success) {
       toast.success('Logged in successfully!');
-      navigate(location.state?.from || '/account', { replace: true });
+      redirect()
     }
 
     if (!success) {
@@ -34,6 +39,14 @@ const Login = () => {
   }
     
   };
+
+  useEffect(() => {
+    if (user) {
+      redirect(); // Redirect back if already logged in
+    }
+  }, [user, redirect]);
+
+
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#B6B09F] px-6 md:px-20 py-20 space-y-14 animate-fadeUp">

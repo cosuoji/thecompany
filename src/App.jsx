@@ -43,21 +43,24 @@ import ResetPassword from './Pages/ResetPassword';
 import ImageKitProvider from './Components/ImageKitProvider';
 import ProductPage from './Pages/ProductPage';
 import ScrollToTop from './Components/ScrollToTop';
-
+import Lasts from './Pages/Lasts';
+import { CurrencyProvider } from './context/CurrencyContext';
 
 function App() {
   const location = useLocation();
-  const { user, init, checkingAuth } = useUserStore();
+  const { user, checkingAuth } = useUserStore();
 
   useEffect(() => {
     useUserStore.getState().init(); // only checks if there's a token
   }, []);
+
 
   if (checkingAuth) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
   return (
+    <CurrencyProvider>
     <ImageKitProvider>
     <div className='min-h-screen flex flex-col'>
       <CursorErrorBoundary>
@@ -126,7 +129,7 @@ function App() {
               <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
               <Route path='/contact' element={<PageTransition><Contact /></PageTransition>} />
               <Route path='/podcast' element={<PageTransition><Podcast /></PageTransition>} />
-              
+              <Route path="/lasts" element={<PageTransition><Lasts /></PageTransition>} />
 
            <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
             <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
@@ -147,6 +150,7 @@ function App() {
       }} />
     </div>
     </ImageKitProvider>
+    </CurrencyProvider>
   );
 }
 

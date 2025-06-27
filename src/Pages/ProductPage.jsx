@@ -3,6 +3,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from "../lib/axios";
 import { FaArrowLeft } from 'react-icons/fa';
 import { useCartStore } from '../store/useCartStore';
+import SizeGuide from '../Components/SizeGuide';
+import useDocumentTitle from '../hooks/useDocumentTitle';
+import PriceDisplay from '../Components/CurrencyComponents/PriceDisplay';
+import { useUserStore } from '../store/useUserStore';
+import toast from 'react-hot-toast';
+import { useCurrency } from '../context/CurrencyContext';
+
 
 const ProductPage = () => {
   const { slug } = useParams();
@@ -21,6 +28,12 @@ const ProductPage = () => {
   const [activeTab, setActiveTab] = useState('description');
   const navigate = useNavigate();
   const {addToCartShoes} = useCartStore()
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const {user} = useUserStore()
+  const { currency } = useCurrency();
+
+  
+  useDocumentTitle(`Store - ${product?.name} `)
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -84,8 +97,8 @@ const ProductPage = () => {
 
 
     // Add to cart logic here
-    addToCartShoes(product._id, variant, 1)
-    console.log('Adding to cart:', product._id, variant);
+    !user ? toast.error("Sign in to add to Cart") : addToCartShoes(product._id, variant, 1, currency)
+    
     // You would typically call your addToCart function here
   };
 
@@ -140,6 +153,7 @@ const ProductPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+
       {/* Back Button */}
       <div className="flex justify-between items-center py-4 gap-4">
         <button 
@@ -193,14 +207,12 @@ const ProductPage = () => {
         <div className="space-y-6">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
-            <p className="text-xl text-gray-900">
-            ₦{product.discountedPrice || product.basePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              {product.discountedPrice && (
-                <span className="ml-2 text-sm text-gray-500 line-through">
-                  ₦{product.basePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </span>
-              )}
-            </p>
+            <PriceDisplay
+              price={product.basePrice}
+              discountedPrice={product.discountedPrice}
+              className="text-xl text-gray-900"
+              originalPriceClass="text-gray-500"
+            />
           </div>
 
           {/* Color Selection */}
@@ -222,26 +234,35 @@ const ProductPage = () => {
             </div>
           </div>
 
-          {/* Size Selection */}
-          <div className="space-y-2">
-            <label htmlFor="size" className="text-sm font-medium text-gray-900">
-              Size*
-            </label>
-            <select
-              id="size"
-              value={selectedOptions.size}
-              onChange={(e) => handleOptionChange('size', e.target.value)}
-              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[#4B371C] focus:border-[#4B371C] sm:text-sm rounded-md"
-              required
-            >
-              <option value="">Select your size</option>
-              {product.sizeOptions.map((size) => (
-                <option key={size} value={size}>
-                  EU {size}
-                </option>
-              ))}
-            </select>
-          </div>
+        {/* Size Selection */}
+        <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                <label htmlFor="size" className="text-sm font-medium text-gray-900">
+                    Size*
+                </label>
+                <button 
+                    type="button"
+                    onClick={() => setIsSizeGuideOpen(true)}
+                    className="text-sm text-[#4B371C] hover:underline"
+                >
+                    What's my size?
+                </button>
+                </div>
+                <select
+                id="size"
+                value={selectedOptions.size}
+                onChange={(e) => handleOptionChange('size', e.target.value)}
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[#4B371C] focus:border-[#4B371C] sm:text-sm rounded-md"
+                required
+                >
+                <option value="">Select your size</option>
+                {product.sizeOptions.map((size) => (
+                    <option key={size} value={size}>
+                    EU {size}
+                    </option>
+                ))}
+                </select>
+            </div>
 
           {/* Width Selection */}
           {product.widthOptions?.length > 0 && (
@@ -470,6 +491,28 @@ const ProductPage = () => {
           {allOptionsSelected ? 'Add to Cart Now' : 'Complete Your Selection'}
         </button>
       </div>
+
+        {/* Size Guide Modal */}
+        {isSizeGuideOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center border-b p-4">
+              <h3 className="text-lg font-bold">Size Guide</h3>
+              <button 
+                onClick={() => setIsSizeGuideOpen(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="p-4">
+              <SizeGuide />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

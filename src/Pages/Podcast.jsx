@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FaApple, FaSpotify, FaYoutube } from "react-icons/fa";
-import PodcastSubscriptionForm from "../Components/Forms/PodcastSubscription"
 import PodcastSubsriptionForm from "../Components/Forms/PodcastSubscription";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 const PodcastPage = () => {
+  useDocumentTitle("Podcasts")
   return (
     <div className="w-full">
       {/* Header with Background Image ONLY */}

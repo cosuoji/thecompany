@@ -1,8 +1,15 @@
 import React, { useState } from 'react'
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 
 const Homepage = () => {
- return <></>
+
+useDocumentTitle("Homepage - Home")
+
+ return (
+    <>
+    </>
+ )
         
 };
 export default Homepage
