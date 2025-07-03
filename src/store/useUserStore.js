@@ -34,60 +34,68 @@ export const useUserStore = create((set, get) => ({
     try {
       await store.checkAuth(); // Always try to check auth
     } catch (err) {
-      // silently fail
+      set({ user: null, checkingAuth: false });
     }
   
     set({ _initialized: true });
   },
   
   checkAuth: async (force = false) => {
+    console.log("🔍 Starting checkAuth");
+  
     if (get().user && !force) {
+      console.log("✅ Already authenticated user");
       set({ checkingAuth: false });
       return;
     }
   
     set({ checkingAuth: true });
+    console.log("🔄 checkingAuth set to true");
   
     try {
-      await get().fetchUserData(); // ✅ always fetch full data
+      await get().fetchUserData(); // This may fail
+      console.log("✅ fetchUserData succeeded");
     } catch (err) {
-      set({
-        user: null,
-        addresses: [],
-        cart: null,
-        orders: [],
-        checkingAuth: false,
-      });
-      console.error("checkAuth failed:", err);
+      console.error("❌ fetchUserData failed in checkAuth:", err);
+      set({ user: null, checkingAuth: false });
     } finally {
+      console.log("🟢 Reached finally block in checkAuth");
       set({ checkingAuth: false });
     }
-  },
+  },  
   
 
   refreshToken: async () => {
-    if (get().checkingAuth) return Promise.reject('Refresh already in progress');
-
+    const state = get();
+    if (state.checkingAuth || isRefreshing) {
+      return Promise.reject(new Error("Refresh already in progress"));
+    }
+  
     set({ checkingAuth: true });
-
+    isRefreshing = true;
+  
     try {
       const res = await axiosInstance.post("/auth/refresh-token", {}, {
-        _shouldRetry: false
+        _shouldRetry: false // prevent infinite loop
       });
-      set({ checkingAuth: false });
+  
       return res.data;
     } catch (err) {
+      console.error("❌ Refresh token failed", err);
+      // Force logout if refresh fails
       set({
         user: null,
-        checkingAuth: false,
         cart: null,
-        addresses: [],
+        wishlist: [],
         orders: [],
       });
       toast.error('Session expired. Please login again.');
       throw err;
+    } finally {
+      isRefreshing = false;
+      set({ checkingAuth: false });
     }
-  },
+  },  
 
   login: async (email, password) => {
     set({ loading: true });
@@ -146,9 +154,16 @@ export const useUserStore = create((set, get) => ({
         loading: false,
       });
     } catch (err) {
-      set({ loading: false });
-      console.error('fetchUserData failed:', err);
-    }
+      console.error('❌ fetchUserData error:', err);
+    set({
+      user: null,
+      cart: null,
+      wishlist: [],
+      orders: [],
+      loading: false,
+    });
+    throw err; // allow checkAuth to catch it
+  }
   },
   addToWishlist: async (productId) => {
     try {
@@ -366,39 +381,32 @@ function setupAxiosInterceptor() {
       const originalRequest = error.config;
       const currentPath = window.location.pathname;
 
+      // Don't retry for public routes
       const isPublic = publicRoutes.some(route =>
         new RegExp('^' + route.replace(/:\w+/g, '[^/]+') + '$').test(currentPath)
       );
-
       if (isPublic) return Promise.reject(error);
 
+      // Already tried refresh
       if (error.response?.status !== 401 || originalRequest._retry) {
         return Promise.reject(error);
       }
 
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        }).then(() => axiosInstance(originalRequest));
-      }
-
+      // Prevent infinite retry
       originalRequest._retry = true;
-      isRefreshing = true;
 
       try {
         await useUserStore.getState().refreshToken();
-        processQueue(null);
         return axiosInstance(originalRequest);
       } catch (err) {
+        console.warn("🔁 Token refresh failed, logging out...");
         useUserStore.getState().logout();
-        processQueue(err);
         return Promise.reject(err);
-      } finally {
-        isRefreshing = false;
       }
     }
   );
 }
+
 
 // Call `init()` at app start
 useUserStore.getState().init();

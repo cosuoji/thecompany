@@ -5,22 +5,21 @@ import { LoadingScreen } from "../LoadingScreen";
 
 const AdminRoute = ({ children }) => {
     const { user, checkingAuth } = useUserStore();
-    const location = useLocation();
-    console.log("Auth check:", checkingAuth, "User:", user);
-
-  
-    if (checkingAuth) {
+ 
+     if (checkingAuth) {
       return <LoadingScreen message="Checking admin access..." />;
     }
     
-  
-    if (!user) {
-      return <Navigate to="/login" state={{ from: location }} replace />;    }
-  
-    if (user.user.role !== 'admin') {
-      return <Navigate to="/login" state={{ from: location }} replace />;
+
+
+    if (checkingAuth) {
+      return <div className="text-center py-10">Checking admin access...</div>;
     }
-  
+    
+    if (!user || user.role !== 'admin') {
+      return <Navigate to="/login" />;
+    }
+    
     return children;
   };
   
