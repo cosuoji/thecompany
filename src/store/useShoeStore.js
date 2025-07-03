@@ -107,7 +107,6 @@ const useShoeStore = create((set, get) => ({
      fetchOptions: async () => {
       set({ loading: true, options: { ...get().options, loading: true } });
       try {
-        console.log('Starting options fetch...'); // Debug log
         
         const endpoints = [
           '/shoes/categories',

@@ -24,6 +24,7 @@ export const ProductCard = ({ product, className = '' }) => {
       if (isWishlisted) {
         await removeFromWishlist(product.id);
       } else {
+        console.log(product.id)
         await addToWishlist(product.id);
       }
       await fetchUserData()

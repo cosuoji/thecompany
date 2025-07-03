@@ -2,7 +2,7 @@
 import { useCurrency } from "../../context/CurrencyContext";
 
 const CurrencySwitcher = () => {
-  const { currency, setCurrency } = useCurrency();
+  const { currency = "NGN", setCurrency } = useCurrency();
   
   return (
     <div className="relative group">

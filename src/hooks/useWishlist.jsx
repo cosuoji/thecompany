@@ -31,7 +31,6 @@ export const useWishlist = () => {
   useEffect(() => {
     const fetchFullProductDetails = async () => {
       if (products.length === 0) return;
-      console.log(products)
       try {
         setIsLoading(true);
         const requests = products.map(product => 

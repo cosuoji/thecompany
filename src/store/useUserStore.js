@@ -19,8 +19,8 @@ export const useUserStore = create((set, get) => ({
   cart: null,
   wishlist: [],
   wishlistProducts: [],
-  orders: [],
   addresses: [],
+  orders: [],
   loading: false,
   checkingAuth: true,
   _initialized: false,
@@ -28,50 +28,46 @@ export const useUserStore = create((set, get) => ({
   init: async () => {
     const store = get();
     if (store._initialized) return;
-
+  
     setupAxiosInterceptor();
-    const hasToken = localStorage.getItem('accessToken');
-
-    if (hasToken) {
-      try {
-        await store.checkAuth();
-      } catch (_) {
-        // fallback
-      }
-    } else {
-      set({ checkingAuth: false });
+  
+    try {
+      await store.checkAuth(); // Always try to check auth
+    } catch (err) {
+      // silently fail
     }
-
+  
     set({ _initialized: true });
   },
-
+  
   checkAuth: async (force = false) => {
     if (get().user && !force) {
       set({ checkingAuth: false });
       return;
     }
-
+  
     set({ checkingAuth: true });
+  
     try {
-      const res = await axiosInstance.get("/auth/profile");
-      set({
-        user: res.data.user,
-        addresses: res.data.addresses || [],
-        orders: res.data.orders || [],
-        checkingAuth: false
-      });
-    } catch (error) {
+      await get().fetchUserData(); // ✅ always fetch full data
+    } catch (err) {
       set({
         user: null,
         addresses: [],
+        cart: null,
         orders: [],
-        checkingAuth: false
+        checkingAuth: false,
       });
+      console.error("checkAuth failed:", err);
+    } finally {
+      set({ checkingAuth: false });
     }
   },
+  
 
   refreshToken: async () => {
     if (get().checkingAuth) return Promise.reject('Refresh already in progress');
+
     set({ checkingAuth: true });
 
     try {
@@ -97,22 +93,25 @@ export const useUserStore = create((set, get) => ({
     set({ loading: true });
     try {
       const res = await axiosInstance.post("/auth/login", { email, password });
-      const userData = res.data.user;
+      if (res.data?._id) {
+        // ✅ After successful login, fetch full user-related data including orders
+        await get().fetchUserData(); // call the fetchUserData from the store
 
-      if (userData) {
-        set({ user: userData, loading: false });
+        set({ loading: false });
         return true;
       }
 
-      const profile = await axiosInstance.get("/auth/profile");
-      set({ user: profile.data.user, loading: false });
-      return true;
+      toast.error("Login failed: No user data returned.");
+      return false;
+  
     } catch (err) {
       set({ user: null, loading: false, checkingAuth: false });
       toast.error(err.response?.data?.message || "Login failed");
       return false;
     }
   },
+  
+  
 
   logout: async () => {
     try {
@@ -121,26 +120,225 @@ export const useUserStore = create((set, get) => ({
     } catch (_) {}
     set({ user: null, cart: null, addresses: [], orders: [] });
   },
-
   fetchUserData: async () => {
     try {
       set({ loading: true });
-      const [user, cart, wishlist] = await Promise.all([
+  
+      const promises = [
         axiosInstance.get('/auth/profile'),
         axiosInstance.get('/cart'),
-        axiosInstance.get('/user/wishlist/products')
-      ]);
+        axiosInstance.get('/user/wishlist/products'),
+      ];
+  
+      if (get().orders.length === 0) {
+        promises.push(axiosInstance.get('/orders/myorders'));
+      } else {
+        promises.push(Promise.resolve({ data: get().orders }));
+      }
+  
+      const [user, cart, wishlist, orders] = await Promise.all(promises);
+  
       set({
         user: user.data,
         cart: cart.data,
         wishlist: wishlist.data,
-        loading: false
+        orders: orders.data,
+        loading: false,
       });
     } catch (err) {
       set({ loading: false });
       console.error('fetchUserData failed:', err);
     }
   },
+  addToWishlist: async (productId) => {
+    try {
+      set({ loading: true });
+      
+      // Optimistic update
+      set(state => ({
+      user: {
+        ...state.user,
+        wishlist: [...(state.user?.wishlist || []), productId]
+      },
+      wishlistProducts: [
+        ...state.wishlistProducts,
+        { _id: productId } // Temporary placeholder until we fetch full product
+      ]
+      }));
+    
+      const res = await axiosInstance.post('/user/wishlist', { productId });
+    
+      // Proper update after API response
+      set({
+      wishlist: res.data,
+      loading: false
+      });
+    
+      // Fetch updated user data to ensure everything is in sync
+      await get().fetchUserData();
+      
+      toast.success('Added to wishlist');
+      return true;
+    } catch (error) {
+      // Rollback on error
+      set(state => ({
+      user: {
+        ...state.user,
+        wishlist: state.user?.wishlist?.filter(id => id !== productId)
+      },
+      wishlistProducts: state.wishlistProducts.filter(p => p._id !== productId),
+      loading: false
+      }));
+      
+      toast.error(error.response?.data?.message || 'Failed to add to wishlist');
+      return false;
+    }
+    },
+    removeFromWishlist: async (productId) => {
+    try {
+      set({ loading: true });
+      
+      // Optimistic update
+      set(state => ({
+      user: {
+        ...state.user,
+        wishlist: state.user?.wishlist?.filter(id => id !== productId)
+      },
+      wishlistProducts: state.wishlistProducts.filter(p => p._id !== productId)
+      }));
+    
+      const { data: updatedWishlist } = await axiosInstance.delete(`/user/wishlist/${productId}`);
+    
+      // Proper update after API response
+      set({
+      wishlist: updatedWishlist,
+      loading: false
+      });
+    
+      // Fetch updated user data to ensure everything is in sync
+      await get().fetchUserData();
+      
+      toast.success('Removed from wishlist');
+      return true;
+    } catch (error) {
+      // Rollback on error
+      set(state => ({
+      user: {
+        ...state.user,
+        wishlist: [...(state.user?.wishlist || []), productId]
+      },
+      wishlistProducts: [
+        ...state.wishlistProducts,
+        { _id: productId } // Temporary placeholder
+      ],
+      loading: false
+      }));
+      
+      toast.error(error.response?.data?.message || 'Failed to remove item');
+      return false;
+    }
+    },
+    addAddress: async (addressData) => {
+      try {
+        set({ loading: true });
+        const res = await axiosInstance.post('/user/address', addressData);
+  
+        set(state => ({
+          user: {
+            ...state.user,
+            addresses: res.data
+          },
+          loading: false
+        }));
+        return res.data;
+      } catch (error) {
+        set({ loading: false });
+        toast.error(error.response?.data?.message || 'Failed to add address');
+        throw error;
+      }
+    },
+  
+    updateAddress: async (addressId, addressData) => {
+      try {
+        set({ loading: true });
+        const res = await axiosInstance.put(`/user/address/${addressId}`, addressData);
+  
+        set(state => ({
+          user: {
+            ...state.user,
+            addresses: res.data
+          },
+          loading: false
+        }));
+        toast.success('Address updated successfully');
+        return res.data;
+      } catch (error) {
+        set({ loading: false });
+        toast.error(error.response?.data?.message || 'Failed to update address');
+        throw error;
+      }
+    },
+  
+    deleteAddress: async (addressId) => {
+      try {
+        set({ loading: true });
+        const res = await axiosInstance.delete(`/user/address/${addressId}`);
+  
+        set(state => ({
+          user: {
+            ...state.user,
+            addresses: res.data
+          },
+          loading: false
+        }));
+        toast.success('Address deleted successfully');
+        return res.data;
+      } catch (error) {
+        set({ loading: false });
+        toast.error(error.response?.data?.message || 'Failed to delete address');
+        throw error;
+      }
+    },
+  
+    updateProfile: async (profileData) => {
+    try {
+      set({ loading: true });
+      const res = await axiosInstance.put('/user/profile', profileData);
+      set(state => ({
+      user: {
+        ...state.user,
+        ...res.data
+      },
+      loading: false
+      }));
+      return res.data;
+    } catch (error) {
+      set({ loading: false });
+      throw error;
+    }
+    },
+  
+    setDefaultAddress: async (addressId) => {
+      try {
+        set({ loading: true });
+        const res = await axiosInstance.put(`/user/address/${addressId}/set-default`);
+  
+        set(state => ({
+          user: {
+            ...state.user,
+            addresses: res.data
+          },
+          loading: false
+        }));
+        toast.success('Default address updated');
+        return res.data;
+      } catch (error) {
+        set({ loading: false });
+        toast.error(error.response?.data?.message || 'Failed to set default address');
+        throw error;
+      }
+    },
+  
 
   // All other methods (cart, wishlist, orders, address, etc.) remain unchanged...
   // You can reuse your own versions directly here.

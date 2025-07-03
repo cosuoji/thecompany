@@ -9,6 +9,8 @@ import PriceDisplay from '../Components/CurrencyComponents/PriceDisplay';
 import { useUserStore } from '../store/useUserStore';
 import toast from 'react-hot-toast';
 import { useCurrency } from '../context/CurrencyContext';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
+
 
 
 const ProductPage = () => {
@@ -29,8 +31,14 @@ const ProductPage = () => {
   const navigate = useNavigate();
   const {addToCartShoes} = useCartStore()
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
-  const {user} = useUserStore()
+  const {
+    user,
+    addToWishlist,
+    removeFromWishlist,
+    wishlistProducts
+  } = useUserStore();
   const { currency } = useCurrency();
+  
 
   
   useDocumentTitle(`Store - ${product?.name} `)
@@ -73,8 +81,24 @@ const ProductPage = () => {
       }
     };
     
-    fetchProduct();
+    const loadData = async () => {
+      await fetchProduct(); // extract it to return the product
+      await useUserStore.getState().fetchUserData();
+    };
+  
+    loadData();
+
   }, [slug]);
+
+  const [isWishlisted, setIsWishlisted] = useState(false);
+
+useEffect(() => {
+  if (product && wishlistProducts) {
+    const match = wishlistProducts.some(p => p._id === product._id);
+    setIsWishlisted(match);
+  }
+}, [product, wishlistProducts]);
+
 
   const handleOptionChange = (optionType, value) => {
     setSelectedOptions(prev => ({
@@ -101,6 +125,23 @@ const ProductPage = () => {
     
     // You would typically call your addToCart function here
   };
+
+  const handleWishlistToggle = async () => {
+    if (!user) {
+      toast.error("Sign in to save to wishlist");
+      return;
+    }
+  
+    if (isWishlisted) {
+      await removeFromWishlist(product._id);
+      setIsWishlisted(false);
+    } else {
+      await addToWishlist(product._id);
+      setIsWishlisted(true);
+    }
+  };
+  
+  
 
   const currentColor = product?.colorOptions[selectedOptions.color];
   const currentImages = currentColor?.images || [];
@@ -167,6 +208,8 @@ const ProductPage = () => {
       {/* Main Product Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         {/* Left Column - Product Images */}
+        
+        
         <div className="space-y-4">
           {/* Main Image */}
           <div className="bg-gray-100 rounded-lg overflow-hidden aspect-square">
@@ -205,6 +248,21 @@ const ProductPage = () => {
 
         {/* Right Column - Product Info */}
         <div className="space-y-6">
+        <div className="flex items-center justify-between">
+  <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+        <button
+          onClick={handleWishlistToggle}
+          className="text-[#4B371C] hover:text-[#6a5131] transition-colors"
+          aria-label="Add to wishlist"
+        >
+          {isWishlisted ? (
+            <FaHeart className="w-6 h-6 text-red-500" />
+          ) : (
+            <FaRegHeart className="w-6 h-6" />
+          )}
+        </button>
+      </div>
+
           <div>
             <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
             <PriceDisplay
@@ -289,7 +347,7 @@ const ProductPage = () => {
           {product.lastOptions?.length > 0 && (
             <div className="space-y-2">
               <label htmlFor="last" className="text-sm font-medium text-gray-900">
-                Last (Shape)
+                Last Type
               </label>
               <select
                 id="last"

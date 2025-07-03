@@ -199,5 +199,6 @@ export const useCartStore = create((set, get) => ({
     const { cartData } = get();
     if (!cartData?.items) return 0;
     return cartData.items.reduce((count, item) => count + item.quantity, 0);
-  }
+  },
+  
 }));

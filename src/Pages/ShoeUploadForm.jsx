@@ -35,7 +35,6 @@ const ShoeUploadForm = () => {
   
   useEffect(() => {
     fetchOptions().then(() => {
-      console.log('fetchOptions completed'); // Debug 2
     });
   }, [fetchOptions]);
 
@@ -133,7 +132,6 @@ const ShoeUploadForm = () => {
       publicId: res.fileId,
       isPrimary: updatedColors[colorIndex].images.length === 0
     });
-    console.log('Upload response:', res)
     setFormData({ ...formData, colorOptions: updatedColors });
     toast.success('Image uploaded!');
   };

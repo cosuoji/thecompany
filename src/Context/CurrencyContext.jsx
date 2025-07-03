@@ -38,7 +38,6 @@ export const CurrencyProvider = ({ children }) => {
         });
         
         setLastUpdated(new Date());
-        console.log('Exchange rates updated:', data.rates);
       } catch (error) {
         console.error("Failed to fetch exchange rates, using fallback:", error);
       } finally {

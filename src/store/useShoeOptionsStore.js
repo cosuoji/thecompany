@@ -25,6 +25,8 @@ const useShoeOptionsStore = create((set) => ({
         axiosInstance.get('/shoes/lasts'),
         axiosInstance.get('/shoes/collections')
       ]);
+
+     
       
       set({
         categories: categories.data,

@@ -45,6 +45,13 @@ import ProductPage from './Pages/ProductPage';
 import ScrollToTop from './Components/ScrollToTop';
 import Lasts from './Pages/Lasts';
 import { CurrencyProvider } from './context/CurrencyContext';
+import Checkout from './Pages/Checkout';
+import CheckoutSuccess from './Components/CheckoutComponents/CheckoutSuccess';
+import useDocumentTitle from './hooks/useDocumentTitle';
+import CheckoutFailed from './Components/CheckoutComponents/CheckoutFailure';
+import SingleOrderPage from './Pages/SingleOrderPage';
+import AdminOrdersPage from './Pages/AdminOrdersPage';
+
 
 function App() {
   const location = useLocation();
@@ -54,11 +61,8 @@ function App() {
     useUserStore.getState().init(); // only checks if there's a token
   }, []);
 
-
-  if (checkingAuth) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  }
-
+  useDocumentTitle("Homepage - ")
+ 
   return (
     <CurrencyProvider>
     <ImageKitProvider>
@@ -103,6 +107,8 @@ function App() {
                 <Route path='profile'  element={<ProfilePage />} />
                 <Route path='addresses'  element={<AddressesPage />} />
                 <Route path='orders'  element={<OrdersPage />} />
+                <Route path="orders/:id" element={<SingleOrderPage/>} />
+
                 <Route path='wishlist'  element={<WishlistPage />} />
               </Route>
 
@@ -124,19 +130,24 @@ function App() {
                   <Route path='options' element={<AdminRoute><ProductOptionsForm /></AdminRoute>} /> 
                   <Route path='shoes/:slug' element={<ProductPage />} />
                </Route>
+
+               <Route path='/order-dashboard' element={<AdminRoute><AdminOrdersPage /></AdminRoute>}/> 
  
               <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
               <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
               <Route path='/contact' element={<PageTransition><Contact /></PageTransition>} />
               <Route path='/podcast' element={<PageTransition><Podcast /></PageTransition>} />
               <Route path="/lasts" element={<PageTransition><Lasts /></PageTransition>} />
+              <Route path="/checkout" element={<PageTransition><Checkout /></PageTransition>} />
+              <Route path="/checkout-success" element={<PageTransition><CheckoutSuccess/></PageTransition>} />
+              <Route path="/checkout-failure" element={<PageTransition><CheckoutFailed/></PageTransition>} />
+
 
            <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
             <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
             <Route path="/forgot" element={!user ? <ForgotPassword /> : <Navigate to="/" />} />
             <Route path="/reset/:token" element={!user ? <ResetPassword /> : <Navigate to="/" />} />
             <Route path="*" element={<Navigate to={"/"} />} /> 
-
             </Routes>
           </AnimatePresence>
         </Layout>

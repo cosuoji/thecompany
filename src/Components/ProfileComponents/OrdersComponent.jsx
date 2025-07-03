@@ -1,24 +1,19 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useUserStore } from '../../store/useUserStore';
-import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const OrdersPage = () => {
-  const { user, orders, getOrders } = useUserStore();
- 
-  useDocumentTitle(`Profile - ${user?.profile?.firstName} ${user?.profile?.lastName} |`)
+  const {orders, loading } = useUserStore();
 
-  useEffect(() => {
-    if (user && !orders) {
-      getOrders();
-    }
-  }, [user, orders, getOrders]);
+  if (loading) return <div className="text-[#B6B09F]">Loading orders...</div>;
+
 
   return (
     <div>
       <h1 className="text-2xl font-bold text-[#EAE4D5] mb-6">Order History</h1>
-      
-      {orders?.length > 0 ? (
+
+      {loading ? (
+        <p className="text-[#B6B09F]">Loading orders...</p>
+      ) : orders?.length > 0 ? (
         <div className="space-y-4">
           {orders.map((order) => (
             <div key={order._id} className="border border-[#B6B09F]/30 rounded-lg p-4">
@@ -33,14 +28,14 @@ const OrdersPage = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-[#EAE4D5] font-medium">
-                    ${order.total.toFixed(2)}
+                    ₦{order?.total?.toLocaleString()}
                   </p>
                   <p className={`text-sm ${
                     order.status === 'delivered' ? 'text-green-500' : 
                     order.status === 'cancelled' ? 'text-red-500' : 
                     'text-[#B6B09F]'
                   }`}>
-                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                    {order?.status?.charAt(0).toUpperCase() + order?.status?.slice(1)}
                   </p>
                 </div>
               </div>

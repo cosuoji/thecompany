@@ -17,7 +17,7 @@ const AddressesPage = () => {
     isDefault: false
   });
 
-  useDocumentTitle(`Profile - ${user?.profile?.firstName} ${user?.profile?.lastName} |`)
+  useDocumentTitle(`Profile - ${user?.user?.profile?.firstName} ${user?.user?.profile?.lastName} |`)
 
   
   const handleSubmit = async (e) => {
