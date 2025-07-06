@@ -14,7 +14,6 @@ export const CurrencySelector = () => {
         >
           <option value="NGN">₦ NGN</option>
           <option value="USD">$ USD</option>
-          <option value="GBP">£ GBP</option>
         </select>
         
         {isLoadingRates && (

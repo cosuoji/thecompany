@@ -1,44 +1,50 @@
 import { useState } from 'react';
-import { toast } from 'react-hot-toast';
-import axiosInstance from '../lib/axios';
+import { useUserStore } from '../store/useUserStore';
 
-export default function ForgotPassword() {
+const ForgotPassword = () => {
   const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleForgot = async (e) => {
+  const forgotPassword = useUserStore((state) => state.forgotPassword);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setMessage('');
     try {
-      await axiosInstance.post('/auth/forgot-password', { email });
-      toast.success('Check your email for a reset link!');
+      await forgotPassword(email);
+      setMessage('Reset link sent! Check your email.');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Error sending reset link.');
+      setMessage(err.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <form onSubmit={handleForgot} className="bg-white p-8 rounded shadow max-w-md w-full">
-        <h2 className="text-2xl font-bold mb-4">Forgot Password</h2>
+    <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow">
+      <h2 className="text-2xl font-bold mb-4">Forgot Password</h2>
+      <form onSubmit={handleSubmit}>
         <input
           type="email"
-          placeholder="Your email"
-          className="w-full border p-3 mb-4 rounded"
+          placeholder="Enter your email"
+          className="w-full border px-3 py-2 rounded mb-4"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
         <button
           type="submit"
+          className="w-full bg-[#4B371C] text-white py-2 rounded"
           disabled={loading}
-          className="w-full bg-black text-white p-3 rounded"
         >
           {loading ? 'Sending...' : 'Send Reset Link'}
         </button>
       </form>
+      {message && <p className="mt-4 text-center text-sm text-gray-700">{message}</p>}
     </div>
   );
-}
+};
+
+export default ForgotPassword;

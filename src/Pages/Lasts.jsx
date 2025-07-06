@@ -4,7 +4,7 @@ const Lasts = () => {
   useDocumentTitle("Lasts")
   return (
     <>
-    <div>Lasts</div>
+    <div>Lasts and Lasts Shapes</div>
     </>
   )
 }

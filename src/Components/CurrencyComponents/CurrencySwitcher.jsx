@@ -13,7 +13,6 @@ const CurrencySwitcher = () => {
       >
         <option value="NGN" className="bg-[#4B371C] text-[#E6DACD]">₦</option>
         <option value="USD" className="bg-[#4B371C] text-[#E6DACD]">$</option>
-        <option value="GBP" className="bg-[#4B371C] text-[#E6DACD]">£</option>
       </select>
       <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-[#E6DACD]">
         <svg 

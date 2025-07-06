@@ -51,6 +51,10 @@ import useDocumentTitle from './hooks/useDocumentTitle';
 import CheckoutFailed from './Components/CheckoutComponents/CheckoutFailure';
 import SingleOrderPage from './Pages/SingleOrderPage';
 import AdminOrdersPage from './Pages/AdminOrdersPage';
+import CookieConsentBanner from "./Components/CookieComponents/CookieConsentBanner";
+import AnalyticsLoader from './Components/CookieComponents/AnalyticsLoader';
+import CookieSettingsPage from './Pages/CookieSettingsPage';
+
 
 
 function App() {
@@ -65,6 +69,8 @@ function App() {
  
   return (
     <CurrencyProvider>
+      <AnalyticsLoader />
+      <CookieConsentBanner />
     <ImageKitProvider>
     <div className='min-h-screen flex flex-col'>
       <CursorErrorBoundary>
@@ -138,6 +144,8 @@ function App() {
               <Route path='/contact' element={<PageTransition><Contact /></PageTransition>} />
               <Route path='/podcast' element={<PageTransition><Podcast /></PageTransition>} />
               <Route path="/lasts" element={<PageTransition><Lasts /></PageTransition>} />
+              <Route path="/cookies" element={<PageTransition><CookieSettingsPage/></PageTransition>} />
+              <Route path="/lasts" element={<PageTransition><Lasts /></PageTransition>} />
               <Route path="/checkout" element={<PageTransition><Checkout /></PageTransition>} />
               <Route path="/checkout-success" element={<PageTransition><CheckoutSuccess/></PageTransition>} />
               <Route path="/checkout-failure" element={<PageTransition><CheckoutFailed/></PageTransition>} />
@@ -146,7 +154,7 @@ function App() {
            <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
             <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
             <Route path="/forgot" element={!user ? <ForgotPassword /> : <Navigate to="/" />} />
-            <Route path="/reset/:token" element={!user ? <ResetPassword /> : <Navigate to="/" />} />
+            <Route path="/reset-password/:token" element={!user ? <ResetPassword /> : <Navigate to="/" />} />
             <Route path="*" element={<Navigate to={"/"} />} /> 
             </Routes>
           </AnimatePresence>

@@ -16,7 +16,9 @@ const Footer = ({ navLinks = [] }) => {
         { name: 'FAQ', path: '/faq' },
         { name: 'Shipping', path: '/shipping' },
         { name: 'Terms', path: '/terms' },
-        { name: 'Privacy', path: '/privacy' }
+        { name: 'Privacy', path: '/privacy' },
+        { name: 'Cookies', path: '/cookies' },
+        { name: 'Our Lasts', path: '/lasts' }
       ];
     
     const footerLinks = navLinks.length > 0 ? navLinks : defaultNavigation;  
@@ -137,9 +139,9 @@ const Footer = ({ navLinks = [] }) => {
 
       {/* Div 4: Logo + Copyright */}
       <div className="pt-8 border-t border-gray-200 text-center pb-6">
-        <Link to="/"><div className="text-2xl font-semibold tracking-wide mb-2 text-chocolate">LUXURY FASHION</div></Link>
+        <Link to="/"><div className="text-2xl font-semibold tracking-wide mb-2 text-chocolate">THE COMPANY</div></Link>
         <div className="text-xs text-chocolate opacity-70">
-          © {new Date().getFullYear()} Luxury Fashion. All Rights Reserved.
+          © {new Date().getFullYear()} THE COMPANY . All Rights Reserved.
         </div>
       </div>
     </footer>

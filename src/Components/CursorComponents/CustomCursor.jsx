@@ -5,15 +5,8 @@ const CustomCursor = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const handleLoad = () => setIsVisible(true);
-
-    if (document.readyState === 'complete') {
-      setIsVisible(true);
-    } else {
-      window.addEventListener('load', handleLoad);
-    }
-
-    return () => window.removeEventListener('load', handleLoad);
+    // Mount cursor after component is rendered
+    setIsVisible(true);
   }, []);
 
   if (!isVisible) return null;

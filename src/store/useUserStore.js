@@ -353,10 +353,29 @@ export const useUserStore = create((set, get) => ({
         throw error;
       }
     },
+    forgotPassword: async (email) => {
+      try {
+        const res = await axiosInstance.post('/auth/forgot-password', { email });
+        toast.success(res.data.message || 'Reset link sent to your email');
+        return true;
+      } catch (err) {
+        toast.error(err.response?.data?.message || 'Failed to send reset link');
+        throw err;
+      }
+    },
+    
+    resetPassword: async (token, password) => {
+      try {
+        const res = await axiosInstance.post(`/auth/reset-password/${token}`, { password });
+        toast.success(res.data.message || 'Password reset successfully');
+        return true;
+      } catch (err) {
+        toast.error(err.response?.data?.message || 'Reset failed');
+        throw err;
+      }
+    },
+    
   
-
-  // All other methods (cart, wishlist, orders, address, etc.) remain unchanged...
-  // You can reuse your own versions directly here.
 }));
 
 // Axios Interceptor Setup

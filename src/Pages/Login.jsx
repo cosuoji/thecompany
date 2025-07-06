@@ -81,7 +81,16 @@ const Login = () => {
             required
             disabled={loading}
           />
+          <div className="text-right mt-2">
+          <Link 
+            to="/forgot"
+            className="text-sm text-[#EAE4D5] hover:underline"
+          >
+            Forgot Password? Reset here
+          </Link>
         </div>
+        </div>
+
         <button
           type="submit"
           disabled={loading}

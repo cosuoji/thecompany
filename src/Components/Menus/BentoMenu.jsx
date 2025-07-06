@@ -16,7 +16,7 @@ const BentoMenu = ({ onClose }) => {
       link: '/blog',
       background: blogsBg,
       description: 'Thoughtful articles on craftsmanship',
-      size: 'md:col-span-2'
+   
     },
     {
       id: 's2',
@@ -24,7 +24,7 @@ const BentoMenu = ({ onClose }) => {
       link: '/podcast',
       background: podcastBg,
       description: 'Conversations with artisans',
-      size: ''
+      
     },
     {
       id: 's3',
@@ -32,7 +32,7 @@ const BentoMenu = ({ onClose }) => {
       link: '/store',
       background: storeBg,
       description: 'Handcrafted leather goods',
-      size: 'md:row-span-2'
+   
     },
     {
       id: 's4',
@@ -40,7 +40,7 @@ const BentoMenu = ({ onClose }) => {
       link: '/magazine',
       background: magazineBg,
       description: 'Quarterly print edition',
-      size: ''
+      
     },
   ];
 
@@ -52,19 +52,18 @@ const BentoMenu = ({ onClose }) => {
   return (
     <div className="fixed inset-0 bg-[#F8F4EF] pt-20 md:pt-28 lg:pt-32 overflow-y-auto">
       <div className="min-h-[calc(100vh-5rem)] p-4 md:p-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 pb-12">
-          {sections.map((section) => (
-            <button
-              key={section.id}
-              onClick={() => handleClick(section.link)}
-              className={`relative rounded-3xl overflow-hidden shadow-lg
-                flex flex-col items-start justify-end p-6
-                transition-all duration-300 hover:scale-[1.02]
-                h-60 md:h-auto min-h-[15rem]
-                ${section.size}
-                group
-              `}
-            >
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 pb-12">
+        {sections.map((section) => (
+          <button
+            key={section.id}
+            onClick={() => handleClick(section.link)}
+            className={`relative rounded-3xl overflow-hidden shadow-lg
+              flex flex-col items-start justify-end p-6
+              transition-all duration-300 hover:scale-[1.02]
+              h-60 md:h-[20rem] min-h-[15rem]
+              group
+            `}
+          >
               {/* Background Image */}
               <img
                 src={section.background}
