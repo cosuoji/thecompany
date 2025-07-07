@@ -12,7 +12,6 @@ export const CurrencyProvider = ({ children }) => {
   const [exchangeRates, setExchangeRates] = useState({
     NGN: 1,
     USD: 0.00067, // Fallback rates in case API fails
-    GBP: 0.00052
   });
   
   const [isLoadingRates, setIsLoadingRates] = useState(true);
