@@ -1,18 +1,20 @@
 import React from 'react';
 import InstagramCarousel from './Carousel';
-
+import one from "../assets/one.jpg"
+import two from "../assets/two.jpg"
+import three from "../assets/three.jpg"
 const InstagramSection = () => {
   const items = [
     {
-      image: "",
+      image: one,
       link: '',
     },
     {
-      image: "",
+      image: two,
       link: '',
     },
     {
-      image: "",
+      image: three,
       link: '',
     },
   ];

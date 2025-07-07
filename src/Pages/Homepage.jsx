@@ -2,15 +2,17 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import useDocumentTitle from '../hooks/useDocumentTitle';
-import heroImage from "../assets/hero.jpg"
+import heroImage from "../assets/hero.webp"
 import storeImage from "../assets/shoestore.jpg"
 import magazineImage from "../assets/magazineimage.jpg"
-import podcastImage from "../assets/podcastimage.jpg"
+import podcastImage from "../assets/podcastimage.webp"
 import editorialImage from "../assets/editorialimage.jpg"
 import useBlogStore from '../store/blogStore';
 import { useProductStore } from '../store/useProductStore';
 import { motion } from 'framer-motion';
 import { MagazineCard } from '../Components/MagazineComponents/MagazineCard';
+import InstagramCarousel from '../Components/Carousel';
+import InstagramSection from '../Components/InstagramSection';
 
 const pillars = [
   { label: 'Store', link: '/store', bg: storeImage },
@@ -120,6 +122,7 @@ const Homepage = () => {
           )}
         </motion.div>
       </section>
+      <InstagramSection />
     </div>
   );
 };
