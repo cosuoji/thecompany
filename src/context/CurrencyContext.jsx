@@ -6,7 +6,7 @@ const CurrencyContext = createContext();
 export const CurrencyProvider = ({ children }) => {
   const [currency, setCurrency] = useState(() => {
     // Initialize from localStorage or default to NGN
-    return localStorage.getItem('currency') || '₦';
+    return localStorage.getItem('currency') || 'NGN';
   });
   
   const [exchangeRates, setExchangeRates] = useState({
