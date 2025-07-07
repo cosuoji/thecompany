@@ -17,6 +17,10 @@ const InstagramSection = () => {
       image: three,
       link: '',
     },
+    {
+      image: three,
+      link: '',
+    },
   ];
 
   return <InstagramCarousel items={items} />;
