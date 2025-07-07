@@ -44,7 +44,7 @@ import ImageKitProvider from './Components/ImageKitProvider';
 import ProductPage from './Pages/ProductPage';
 import ScrollToTop from './Components/ScrollToTop';
 import Lasts from './Pages/Lasts';
-import { CurrencyProvider } from './context/CurrencyContext';
+import { CurrencyProvider } from './context/CurrencyContext.jsx';
 import Checkout from './Pages/Checkout';
 import CheckoutSuccess from './Components/CheckoutComponents/CheckoutSuccess';
 import useDocumentTitle from './hooks/useDocumentTitle';
