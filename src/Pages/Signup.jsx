@@ -23,7 +23,6 @@ const Signup = () => {
 
     const success = await signup(formData);
     if (success) {
-      toast.success('Account created successfully!');
       navigate('/account');
     } 
   };

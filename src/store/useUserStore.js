@@ -131,7 +131,7 @@ export const useUserStore = create((set, get) => ({
         // ✅ Now fetch full user data
         await get().fetchUserData();
   
-        toast.success("Signup successful!");
+        toast.success("Signup successful! Please update your profile information");
         set({ loading: false });
   
         return true;
