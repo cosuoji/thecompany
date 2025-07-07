@@ -54,6 +54,7 @@ import AdminOrdersPage from './Pages/AdminOrdersPage';
 import CookieConsentBanner from "./Components/CookieComponents/CookieConsentBanner";
 import AnalyticsLoader from './Components/CookieComponents/AnalyticsLoader';
 import CookieSettingsPage from './Pages/CookieSettingsPage';
+import NotFound from './Components/NotFound.jsx';
 //
 
 
@@ -156,7 +157,7 @@ function App() {
             <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
             <Route path="/forgot" element={!user ? <ForgotPassword /> : <Navigate to="/" />} />
             <Route path="/reset-password/:token" element={!user ? <ResetPassword /> : <Navigate to="/" />} />
-            <Route path="*" element={<Navigate to={"/"} />} /> 
+            <Route path="*" element={<NotFound />} /> 
             </Routes>
           </AnimatePresence>
         </Layout>
