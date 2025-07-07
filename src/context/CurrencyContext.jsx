@@ -33,7 +33,6 @@ export const CurrencyProvider = ({ children }) => {
         setExchangeRates({
           NGN: 1,
           USD: data.rates.USD,
-          GBP: data.rates.GBP
         });
         
         setLastUpdated(new Date());
@@ -57,24 +56,14 @@ export const CurrencyProvider = ({ children }) => {
   }, [currency]);
 
   const formatPrice = (price) => {
-    if (isLoadingRates) {
-      return 'Loading...';
-    }
+    if (isLoadingRates) return 'Loading...';
   
-    const convertedPrice = price * exchangeRates[currency];
-    
-    // Custom formatting for Naira
-    if (currency === 'NGN') {
-      return `₦${convertedPrice.toLocaleString('en-NG', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      })}`;
-    }
-    
-    // Default Intl formatting for other currencies
-    return new Intl.NumberFormat(undefined, {
+    const rate = exchangeRates[currency] || 1;
+    const convertedPrice = price * rate;
+  
+    return new Intl.NumberFormat('en', {
       style: 'currency',
-      currency: currency,
+      currency: currency, // <-- "NGN", "USD", etc
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }).format(convertedPrice);

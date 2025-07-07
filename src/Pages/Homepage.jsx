@@ -11,7 +11,6 @@ import useBlogStore from '../store/blogStore';
 import { useProductStore } from '../store/useProductStore';
 import { motion } from 'framer-motion';
 import { MagazineCard } from '../Components/MagazineComponents/MagazineCard';
-import InstagramCarousel from '../Components/Carousel';
 import InstagramSection from '../Components/InstagramSection';
 
 const pillars = [
