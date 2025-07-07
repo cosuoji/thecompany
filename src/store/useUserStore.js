@@ -119,6 +119,37 @@ export const useUserStore = create((set, get) => ({
     }
   },
   
+  signup: async (formData) => {
+    set({ loading: true });
+    try {
+      const res = await axiosInstance.post("/auth/signup", formData);
+  
+      if (res.data?._id) {
+        // ✅ Make a quick call to check cookies are now valid
+        await axiosInstance.get("/auth/profile"); // force cookie sync
+  
+        // ✅ Now fetch full user data
+        await get().fetchUserData();
+  
+        toast.success("Signup successful!");
+        set({ loading: false });
+  
+        return true;
+      }
+  
+      toast.error("Signup failed: No user data returned.");
+      set({ loading: false });
+      return false;
+  
+    } catch (err) {
+      set({ user: null, loading: false, checkingAuth: false });
+      toast.error(err.response?.data?.message || "Signup failed");
+      return false;
+    }
+  },
+  
+  
+  
   
 
   logout: async () => {
