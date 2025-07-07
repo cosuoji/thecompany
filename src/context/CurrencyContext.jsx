@@ -13,6 +13,11 @@ export const CurrencyProvider = ({ children }) => {
     NGN: 1,
     USD: 0.00067, // Fallback rates in case API fails
   });
+
+  const currencySymbols = {
+    NGN: '₦',
+    USD: '$',
+  };
   
   const [isLoadingRates, setIsLoadingRates] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
@@ -61,12 +66,13 @@ export const CurrencyProvider = ({ children }) => {
     const rate = exchangeRates[currency] || 1;
     const convertedPrice = price * rate;
   
-    return new Intl.NumberFormat('en', {
-      style: 'currency',
-      currency: currency, // <-- "NGN", "USD", etc
+    const formattedNumber = new Intl.NumberFormat('en', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }).format(convertedPrice);
+
+    return `${currencySymbols[currency] || ''}${formattedNumber}`;
+
   };
   
   return (
