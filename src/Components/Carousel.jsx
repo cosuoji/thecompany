@@ -20,7 +20,7 @@ const InstagramCarousel = ({ items }) => {
 <div className="relative pt-28 pb-12 px-4 md:px-8">
 {/* Instagram Heading */}
 <h2 
-  className="absolute z-40 top-1/9 left-4 md:left-8 text-[14vw] sm:text-[10vw] md:text-[6vw] font-bold tracking-wider text-[#4B371C] pointer-events-none leading-none"
+  className="absolute z-30 top-1/9 left-4 md:left-8 text-[14vw] sm:text-[10vw] md:text-[6vw] font-bold tracking-wider text-[#4B371C] pointer-events-none leading-none"
   style={{ whiteSpace: 'nowrap' }}
 >
   INSTAGRAM
