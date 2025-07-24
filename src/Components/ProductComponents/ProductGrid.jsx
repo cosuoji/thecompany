@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ProductCard } from './ProductCard';
+import { shallow } from 'zustand/shallow';
 import useShoeStore from '../../store/useShoeStore';
 
 export const ProductGrid = () => {

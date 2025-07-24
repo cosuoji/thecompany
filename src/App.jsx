@@ -63,6 +63,8 @@ function App() {
   const location = useLocation();
   const { user, checkingAuth } = useUserStore();
 
+  
+
   useEffect(() => {
     useUserStore.getState().init(); // only checks if there's a token
   }, []);
@@ -147,7 +149,6 @@ function App() {
               <Route path='/podcast' element={<PageTransition><Podcast /></PageTransition>} />
               <Route path="/lasts" element={<PageTransition><Lasts /></PageTransition>} />
               <Route path="/cookies" element={<PageTransition><CookieSettingsPage/></PageTransition>} />
-              <Route path="/lasts" element={<PageTransition><Lasts /></PageTransition>} />
               <Route path="/checkout" element={<PageTransition><Checkout /></PageTransition>} />
               <Route path="/checkout-success" element={<PageTransition><CheckoutSuccess/></PageTransition>} />
               <Route path="/checkout-failure" element={<PageTransition><CheckoutFailed/></PageTransition>} />

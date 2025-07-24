@@ -14,7 +14,9 @@ const SingleBlogPost = () => {
   const { user, checkingAuth } = useUserStore();
   const [isAdmin, setIsAdmin] = useState(false);
   const { slug } = useParams();
-  useDocumentTitle(`Blog - ${currentBlog.title}`)
+   
+  useDocumentTitle(`Blog - ${currentBlog?.title}`)
+
   useEffect(() => {
     if (slug) {
       fetchBlogBySlug(slug);
@@ -22,7 +24,7 @@ const SingleBlogPost = () => {
   }, [slug, fetchBlogBySlug]);
 
   useEffect(() => {
-    setIsAdmin(user?.role === 'admin');
+    setIsAdmin(user?.user?.role === 'admin');
   }, [user]);
 
 

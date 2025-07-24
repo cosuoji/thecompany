@@ -67,11 +67,11 @@ export const ProductCard = ({ product, className = '' }) => {
     </button>
 
       {/* Product Image */}
-      <div className="relative aspect-square overflow-hidden bg-gray-100">
+      <div className="relative overflow-hidden bg-gray-100">
         {primaryImage?.url ? (
           <img
             src={primaryImage.url}
-            className="w-full h-full object-cover"
+            className="w-full aspect-[3/4] object-cover"
             alt={product.name}
             loading="lazy"
           />

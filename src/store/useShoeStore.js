@@ -43,7 +43,19 @@ const useShoeStore = create((set, get) => ({
       }
     },
 
-    
+    // Get single shoe by slug
+      fetchShoeBySlug: async (slug) => {
+        set({ loading: true });
+        try {
+          const { data } = await axiosInstance.get(`/shoes/slug/${slug}`);
+          set({ currentShoe: data, loading: false });
+          return data;
+        } catch (error) {
+          set({ error: error.message, loading: false });
+          toast.error('Failed to fetch shoe details');
+        }
+      },
+          
 
   
     // Create shoe

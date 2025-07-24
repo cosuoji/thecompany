@@ -74,6 +74,8 @@ export const CurrencyProvider = ({ children }) => {
     return `${currencySymbols[currency] || ''}${formattedNumber}`;
 
   };
+
+  
   
   return (
     <CurrencyContext.Provider 

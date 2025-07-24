@@ -7,6 +7,10 @@ module.exports = {
         chocolate: '#4B371C',
         'dark-chocolate': '#3A2E26',
       },
+      aspectRatio: {
+        '3/4': '3 / 4',
+        '4/3': '4 / 3',
+      },
       keyframes: {
         grow: {
           '0%': { transform: 'scale(1)' },

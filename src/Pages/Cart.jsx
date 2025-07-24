@@ -21,12 +21,13 @@ const CartPage = () => {
     materials: []
   });
 
-  useDocumentTitle("Cart - ")
 
-  useEffect(() => {
+ useEffect(() => {
+  if (user) {
     fetchCart();
-    fetchCartWithProductData();
-  }, []);
+    if (cart?.items?.length) fetchCartWithProductData();
+  }
+}, [user, cart?.items?.length]);
 
   const handleQuantityChange = async (itemId, newQuantity) => {
     if (newQuantity < 1) return;

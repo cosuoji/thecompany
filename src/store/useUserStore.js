@@ -429,20 +429,14 @@ function setupAxiosInterceptor() {
     res => res,
     async error => {
       const originalRequest = error.config;
-      const currentPath = window.location.pathname;
-
-      // Don't retry for public routes
-      const isPublic = publicRoutes.some(route =>
-        new RegExp('^' + route.replace(/:\w+/g, '[^/]+') + '$').test(currentPath)
-      );
-      if (isPublic) return Promise.reject(error);
-
-      // Already tried refresh
-      if (error.response?.status !== 401 || originalRequest._retry) {
+      if (
+        error.response?.status !== 401 ||
+        originalRequest._retry ||
+        originalRequest.url === '/auth/refresh-token'
+      ) {
         return Promise.reject(error);
       }
 
-      // Prevent infinite retry
       originalRequest._retry = true;
 
       try {
@@ -456,7 +450,6 @@ function setupAxiosInterceptor() {
     }
   );
 }
-
 
 // Call `init()` at app start
 useUserStore.getState().init();

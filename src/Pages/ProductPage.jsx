@@ -232,13 +232,13 @@ useEffect(() => {
               {currentImages.map((image, index) => (
                 <button
                   key={index}
-                  className={`aspect-square bg-gray-100 rounded overflow-hidden ${selectedImage === index ? 'ring-2 ring-[#4B371C]' : ''}`}
+                  className={`bg-gray-100 rounded overflow-hidden ${selectedImage === index ? 'ring-2 ring-[#4B371C]' : ''}`}
                   onClick={() => setSelectedImage(index)}
                 >
                   <img
                     src={image.url}
                     alt={`${product.name} - ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    className="w-full aspect-[3/4] object-cover"
                   />
                 </button>
               ))}

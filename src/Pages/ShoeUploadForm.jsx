@@ -233,7 +233,7 @@ const ShoeUploadForm = () => {
                 <IKImage
                   src={coverImage.url}
                   transformation={[{ height: 100, width: 100, crop: 'fit' }]}
-                  urlEndpoint="https://ik.imagekit.io/ldhzgky9pk"
+                  urlEndpoint={import.meta.env.VITE_IMAGEKIT_ENDPOINT || "https://ik.imagekit.io/ldhzgky9pk"}
                   className="h-24 w-24 object-cover rounded border"
                 />
                 <button
@@ -368,7 +368,7 @@ const ShoeUploadForm = () => {
                           width: 100,
                           crop: 'fit'
                         }]}
-                         urlEndpoint="https://ik.imagekit.io/ldhzgky9pk"
+                         urlEndpoint={import.meta.env.VITE_IMAGEKIT_ENDPOINT || "https://ik.imagekit.io/ldhzgky9pk"}
                         className="h-24 w-24 object-cover rounded border"
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">

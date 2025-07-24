@@ -166,7 +166,7 @@ const CreateBlog = () => {
       <h1 className="text-3xl font-bold mb-8">Create New Blog Post</h1>
       
       <IKContext
-        urlEndpoint="https://ik.imagekit.io/ldhzgky9pk"
+        urlEndpoint={import.meta.env.VITE_IMAGEKIT_ENDPOINT || "https://ik.imagekit.io/ldhzgky9pk"}
         publicKey="public_Y9ne/saJW/xkRygZ4ZR/GXn6W9Q="
         authenticator={async () => {
          try {

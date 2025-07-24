@@ -4,7 +4,7 @@ import { IKContext } from 'imagekitio-react';
 const ImageKitProvider = ({ children }) => {
   return (
     <IKContext
-      urlEndpoint="https://ik.imagekit.io/ldhzgky9pk"
+      urlEndpoint={import.meta.env.VITE_IMAGEKIT_ENDPOINT || "https://ik.imagekit.io/ldhzgky9pk"}
       publicKey="public_Y9ne/saJW/xkRygZ4ZR/GXn6W9Q="
       authenticator={async () => {
         try {

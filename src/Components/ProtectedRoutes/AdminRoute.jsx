@@ -16,7 +16,7 @@ const AdminRoute = ({ children }) => {
       return <div className="text-center py-10">Checking admin access...</div>;
     }
     
-    if (!user || user.role !== 'admin') {
+    if (!user || user.user.role !== 'admin') {
       return <Navigate to="/login" />;
     }
     
