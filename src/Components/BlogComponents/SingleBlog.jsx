@@ -28,6 +28,7 @@ const SingleBlogPost = () => {
   }, [user]);
 
 
+  console.log(currentBlog)
 
   const handleShare = (platform) => {
     const shareUrl = window.location.href;
@@ -78,7 +79,7 @@ const SingleBlogPost = () => {
               })}
             </span>
             <span className="post-author text-gray-700 font-medium">
-              By {currentBlog.author?.name || 'Unknown'}
+              By {currentBlog?.author || 'Unknown'}
             </span>
           </div>
           
