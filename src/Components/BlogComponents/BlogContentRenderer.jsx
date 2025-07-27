@@ -10,12 +10,14 @@ const BlogContentRenderer = ({ contentBlocks }) => {
     <div className="blog-content space-y-6">
       {contentBlocks.map((block, index) => {
         switch (block.type) {
-          case 'text':
+        case 'text':
             return (
               <div 
                 key={index} 
                 className="prose max-w-none"
-                dangerouslySetInnerHTML={{ __html: block.content || '' }} 
+                dangerouslySetInnerHTML={{
+                  __html: (block.content || '').replace(/\n/g, '<br />')
+                }} 
               />
             );
             

@@ -31,6 +31,8 @@ const Homepage = () => {
     fetchProducts({ productType: 'magazine' });
   }, []);
 
+  console.log(blogs)
+
   return (
     <div className="bg-[#F8F4EF] text-[#1a1a1a]">
 
@@ -88,7 +90,7 @@ const Homepage = () => {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {blogs.slice(0, 5).map((blog) => (
               <Link to={`/blog/${blog.slug}`} key={blog._id} className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition">
-                <img src={blog.coverImage} alt={blog.title} className="w-full h-40 object-cover" />
+                <img src={blog.headerImage} alt={blog.title} className="w-full h-40 object-cover" />
                 <div className="p-4">
                   <h3 className="text-lg font-semibold">{blog.title}</h3>
                   <p className="text-sm text-gray-600 mt-1 line-clamp-2">{blog.excerpt}</p>
