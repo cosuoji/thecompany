@@ -425,6 +425,16 @@ function processQueue(error, token = null) {
 }
 
 function setupAxiosInterceptor() {
+  // 1) REQUEST interceptor (new)
+  axiosInstance.interceptors.request.use((cfg) => {
+    const hasCookie = document.cookie.includes('accessToken=');
+    if (!hasCookie) {
+      const fb = localStorage.getItem('refreshToken');
+      if (fb) cfg.headers['Authorization'] = `Bearer ${fb}`;
+    }
+    return cfg;
+  });
+
   axiosInstance.interceptors.response.use(
     res => res,
     async error => {
