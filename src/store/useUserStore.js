@@ -89,93 +89,71 @@ export const useUserStore = create((set, get) => ({
     }
   },  
 
-  login: async (email, password) => {
-    set({ loading: true });
-    try {
-      const res = await axiosInstance.post("/auth/login", { email, password },
-        {
-          withCredentials: true,
-        _shouldRetry: false,
-        }
-      );
+// inside login
+login: async (email, password) => {
+  set({ loading: true });
+  try {
+    const res = await axiosInstance.post("/auth/login", { email, password }, {
+      withCredentials: true,
+      _shouldRetry: false,
+    });
 
-      console.log('localStorage.refreshToken:', localStorage.getItem('refreshToken'));
-      console.log('cookie refreshToken:', document.cookie.includes('refreshToken'));
+    // ① broader iOS check (covers Chrome, Safari, Edge on iOS)
+    const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent);
 
-      // iOS cookie-block fallback
-     const isMobileSafari =
-      /iP(hone|od|ad)/.test(navigator.userAgent) &&
-      /Safari/.test(navigator.userAgent) &&
-      !/Chrome/.test(navigator.userAgent);
-
-    await new Promise(r => setTimeout(r, 300)); // small delay so browser can set cookie
+    await new Promise(r => setTimeout(r, 300));
     const hasCookie = document.cookie.includes('refreshToken=');
-    if (isMobileSafari && !hasCookie && res.data.refreshToken) {
+
+    if (isIOS && !hasCookie && res.data?.refreshToken) {
       localStorage.setItem('refreshToken', res.data.refreshToken);
     }
 
-      if (res.data?._id) {
-        // ✅ After successful login, fetch full user-related data including orders
-        await get().fetchUserData(); // call the fetchUserData from the store
-
-        set({ loading: false });
-        return true;
-      }
-
-  
-
-      toast.error("Login failed: No user data returned.");
-      return false;
-  
-    } catch (err) {
-      set({ user: null, loading: false, checkingAuth: false });
-      toast.error(err.response?.data?.message || "Login failed");
-      return false;
-    }
-  },
-  
-  signup: async (formData) => {
-    set({ loading: true });
-    try {
-      const res = await axiosInstance.post("/auth/signup", formData, { withCredentials: true });
-
-      // iOS cookie-block fallback
-      const isMobileSafari =
-      /iP(hone|od|ad)/.test(navigator.userAgent) &&
-      /Safari/.test(navigator.userAgent) &&
-      !/Chrome/.test(navigator.userAgent);
-
-        await new Promise(r => setTimeout(r, 300)); // small delay so browser can set cookie
-        const hasCookie = document.cookie.includes('refreshToken=');
-        if (isMobileSafari && !hasCookie && res.data.refreshToken) {
-          localStorage.setItem('refreshToken', res.data.refreshToken);
-        }
-  
-      if (res.data?._id) {
-        // ✅ Make a quick call to check cookies are now valid
-        await axiosInstance.get("/auth/profile"); // force cookie sync
-  
-        // ✅ Now fetch full user data
-        await get().fetchUserData();
-  
-        toast.success("Signup successful! Please update your profile information");
-        set({ loading: false });
-  
-        return true;
-      }
-  
-      toast.error("Signup failed: No user data returned.");
+    if (res.data?._id) {
+      await get().fetchUserData();
       set({ loading: false });
-      return false;
-  
-    } catch (err) {
-      set({ user: null, loading: false, checkingAuth: false });
-      toast.error(err.response?.data?.message || "Signup failed");
-      return false;
+      return true;
     }
-  },
-  
-  
+
+    toast.error("Login failed: No user data returned.");
+    return false;
+  } catch (err) {
+    set({ user: null, loading: false, checkingAuth: false });
+    toast.error(err.response?.data?.message || "Login failed");
+    return false;
+  }
+},
+
+// inside signup
+signup: async (formData) => {
+  set({ loading: true });
+  try {
+    const res = await axiosInstance.post("/auth/signup", formData, { withCredentials: true });
+
+    const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent);
+    await new Promise(r => setTimeout(r, 300));
+    const hasCookie = document.cookie.includes('refreshToken=');
+
+    if (isIOS && !hasCookie && res.data?.refreshToken) {
+      localStorage.setItem('refreshToken', res.data.refreshToken);
+    }
+
+    if (res.data?._id) {
+      await axiosInstance.get("/auth/profile");
+      await get().fetchUserData();
+      toast.success("Signup successful! Please update your profile information");
+      set({ loading: false });
+      return true;
+    }
+
+    toast.error("Signup failed: No user data returned.");
+    set({ loading: false });
+    return false;
+  } catch (err) {
+    set({ user: null, loading: false, checkingAuth: false });
+    toast.error(err.response?.data?.message || "Signup failed");
+    return false;
+  }
+},
   
   
 
