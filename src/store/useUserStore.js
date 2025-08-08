@@ -1,18 +1,10 @@
 import { create } from "zustand";
 import { toast } from "react-hot-toast";
-import axiosInstance from "../lib/axios";
+import axiosInstance, { setupAxiosInterceptor } from "../lib/axios";
 
-const publicRoutes = [
-  '/',
-  '/login',
-  '/register',
-  '/products',
-  '/product/:id',
-  '/magazine',
-  '/blog',
-  '/store',
-  "/store/shoes/:slug"
-];
+
+
+
 
 export const useUserStore = create((set, get) => ({
   user: null,
@@ -42,6 +34,7 @@ export const useUserStore = create((set, get) => ({
   
   checkAuth: async (force = false) => {
     console.log("🔍 Starting checkAuth");
+    
   
     if (get().user && !force) {
       console.log("✅ Already authenticated user");
@@ -99,15 +92,25 @@ export const useUserStore = create((set, get) => ({
   login: async (email, password) => {
     set({ loading: true });
     try {
-      const res = await axiosInstance.post("/auth/login", { email, password });
+      const res = await axiosInstance.post("/auth/login", { email, password },
+        {
+          withCredentials: true,
+        _shouldRetry: false,
+        }
+      );
 
       // iOS cookie-block fallback
-    await new Promise(r => setTimeout(r, 300));
-    const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent);
+     const isMobileSafari =
+      /iP(hone|od|ad)/.test(navigator.userAgent) &&
+      /Safari/.test(navigator.userAgent) &&
+      !/Chrome/.test(navigator.userAgent);
+
+    await new Promise(r => setTimeout(r, 300)); // small delay so browser can set cookie
     const hasCookie = document.cookie.includes('refreshToken=');
-    if (isIOS && !hasCookie && res.data?.refreshToken) {
+    if (isMobileSafari && !hasCookie && res.data.refreshToken) {
       localStorage.setItem('refreshToken', res.data.refreshToken);
     }
+
       if (res.data?._id) {
         // ✅ After successful login, fetch full user-related data including orders
         await get().fetchUserData(); // call the fetchUserData from the store
@@ -129,15 +132,19 @@ export const useUserStore = create((set, get) => ({
   signup: async (formData) => {
     set({ loading: true });
     try {
-      const res = await axiosInstance.post("/auth/signup", formData);
+      const res = await axiosInstance.post("/auth/signup", formData, { withCredentials: true });
 
       // iOS cookie-block fallback
-      await new Promise(r => setTimeout(r, 300));
-      const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent);
-      const hasCookie = document.cookie.includes('refreshToken=');
-      if (isIOS && !hasCookie && res.data?.refreshToken) {
-        localStorage.setItem('refreshToken', res.data.refreshToken);
-      }
+      const isMobileSafari =
+      /iP(hone|od|ad)/.test(navigator.userAgent) &&
+      /Safari/.test(navigator.userAgent) &&
+      !/Chrome/.test(navigator.userAgent);
+
+        await new Promise(r => setTimeout(r, 300)); // small delay so browser can set cookie
+        const hasCookie = document.cookie.includes('refreshToken=');
+        if (isMobileSafari && !hasCookie && res.data.refreshToken) {
+          localStorage.setItem('refreshToken', res.data.refreshToken);
+        }
   
       if (res.data?._id) {
         // ✅ Make a quick call to check cookies are now valid
@@ -424,57 +431,7 @@ export const useUserStore = create((set, get) => ({
   
 }));
 
-// Axios Interceptor Setup
-let isRefreshing = false;
-let failedQueue = [];
 
-function processQueue(error, token = null) {
-  failedQueue.forEach(prom => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
-    }
-  });
-  failedQueue = [];
-}
-
-function setupAxiosInterceptor() {
-  // 1) REQUEST interceptor (new)
-  axiosInstance.interceptors.request.use((cfg) => {
-    const hasCookie = document.cookie.includes('accessToken=');
-    if (!hasCookie) {
-      const fb = localStorage.getItem('refreshToken');
-      if (fb) cfg.headers['Authorization'] = `Bearer ${fb}`;
-    }
-    return cfg;
-  });
-
-  axiosInstance.interceptors.response.use(
-    res => res,
-    async error => {
-      const originalRequest = error.config;
-      if (
-        error.response?.status !== 401 ||
-        originalRequest._retry ||
-        originalRequest.url === '/auth/refresh-token'
-      ) {
-        return Promise.reject(error);
-      }
-
-      originalRequest._retry = true;
-
-      try {
-        await useUserStore.getState().refreshToken();
-        return axiosInstance(originalRequest);
-      } catch (err) {
-        console.warn("🔁 Token refresh failed, logging out...");
-        useUserStore.getState().logout();
-        return Promise.reject(err);
-      }
-    }
-  );
-}
 
 // Call `init()` at app start
 useUserStore.getState().init();
