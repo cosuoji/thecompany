@@ -31,8 +31,6 @@ const Homepage = () => {
     fetchProducts({ productType: 'magazine' });
   }, []);
 
-  console.log(blogs)
-
   return (
     <div className="bg-[#F8F4EF] text-[#1a1a1a]">
 

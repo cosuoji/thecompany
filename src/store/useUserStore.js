@@ -99,6 +99,9 @@ export const useUserStore = create((set, get) => ({
         }
       );
 
+      console.log('localStorage.refreshToken:', localStorage.getItem('refreshToken'));
+      console.log('cookie refreshToken:', document.cookie.includes('refreshToken'));
+
       // iOS cookie-block fallback
      const isMobileSafari =
       /iP(hone|od|ad)/.test(navigator.userAgent) &&
@@ -118,6 +121,8 @@ export const useUserStore = create((set, get) => ({
         set({ loading: false });
         return true;
       }
+
+  
 
       toast.error("Login failed: No user data returned.");
       return false;
