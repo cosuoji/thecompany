@@ -89,7 +89,6 @@ export const useUserStore = create((set, get) => ({
         wishlist: [],
         orders: [],
       });
-      toast.error('Session expired. Please login again.');
       throw err;
     } finally {
       isRefreshing = false;
