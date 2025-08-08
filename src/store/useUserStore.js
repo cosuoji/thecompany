@@ -101,6 +101,14 @@ export const useUserStore = create((set, get) => ({
     set({ loading: true });
     try {
       const res = await axiosInstance.post("/auth/login", { email, password });
+
+      // iOS cookie-block fallback
+    await new Promise(r => setTimeout(r, 300));
+    const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent);
+    const hasCookie = document.cookie.includes('refreshToken=');
+    if (isIOS && !hasCookie && res.data?.refreshToken) {
+      localStorage.setItem('refreshToken', res.data.refreshToken);
+    }
       if (res.data?._id) {
         // ✅ After successful login, fetch full user-related data including orders
         await get().fetchUserData(); // call the fetchUserData from the store
@@ -123,6 +131,14 @@ export const useUserStore = create((set, get) => ({
     set({ loading: true });
     try {
       const res = await axiosInstance.post("/auth/signup", formData);
+
+      // iOS cookie-block fallback
+      await new Promise(r => setTimeout(r, 300));
+      const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent);
+      const hasCookie = document.cookie.includes('refreshToken=');
+      if (isIOS && !hasCookie && res.data?.refreshToken) {
+        localStorage.setItem('refreshToken', res.data.refreshToken);
+      }
   
       if (res.data?._id) {
         // ✅ Make a quick call to check cookies are now valid
