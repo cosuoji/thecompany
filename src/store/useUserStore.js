@@ -164,33 +164,36 @@ signup: async (formData) => {
     } catch (_) {}
     set({ user: null, cart: null, addresses: [], orders: [] });
   },
-  fetchUserData: async () => {
-    try {
-      set({ loading: true });
-  
-      const promises = [
-        axiosInstance.get('/auth/profile'),
-        axiosInstance.get('/cart'),
-        axiosInstance.get('/user/wishlist/products'),
-      ];
-  
-      if (get().orders.length === 0) {
-        promises.push(axiosInstance.get('/orders/myorders'));
-      } else {
-        promises.push(Promise.resolve({ data: get().orders }));
-      }
-  
-      const [user, cart, wishlist, orders] = await Promise.all(promises);
-  
-      set({
-        user: user.data,
-        cart: cart.data,
-        wishlist: wishlist.data,
-        orders: orders.data,
-        loading: false,
-      });
-    } catch (err) {
-      console.error('❌ fetchUserData error:', err);
+ fetchUserData: async () => {
+  set({ loading: true });
+
+  try {
+    console.log('➡️  /auth/profile');
+    const user = await axiosInstance.get('/auth/profile');
+
+    console.log('➡️  /cart');
+    const cart = await axiosInstance.get('/cart');
+
+    console.log('➡️  /user/wishlist/products');
+    const wishlist = await axiosInstance.get('/user/wishlist/products');
+
+    let orders;
+    if (get().orders.length === 0) {
+      console.log('➡️  /orders/myorders');
+      orders = await axiosInstance.get('/orders/myorders');
+    } else {
+      orders = { data: get().orders };
+    }
+
+    set({
+      user: user.data,
+      cart: cart.data,
+      wishlist: wishlist.data,
+      orders: orders.data,
+      loading: false,
+    });
+  } catch (err) {
+    console.error('❌ fetchUserData error:', err);
     set({
       user: null,
       cart: null,
@@ -198,9 +201,9 @@ signup: async (formData) => {
       orders: [],
       loading: false,
     });
-    throw err; // allow checkAuth to catch it
+    throw err;
   }
-  },
+},
   addToWishlist: async (productId) => {
     try {
       set({ loading: true });
