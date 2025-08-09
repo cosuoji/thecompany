@@ -165,28 +165,22 @@ signup: async (formData) => {
     set({ user: null, cart: null, addresses: [], orders: [] });
   },
  
-  fetchUserData: async () => {
-  set({ loading: true });
+fetchUserData: async () => {
+  console.log('fetchUserData axios instance:', axiosInstance);
+  console.log('Request interceptors:', axiosInstance.interceptors.request.handlers);
+  console.log('Response interceptors:', axiosInstance.interceptors.response.handlers);
 
   try {
-    console.log('➡️  /auth/profile');
     const user = await axiosInstance.get('/auth/profile');
-
-    console.log('➡️  /cart');
     const cart = await axiosInstance.get('/cart');
-
-    console.log('➡️  /user/wishlist/products');
     const wishlist = await axiosInstance.get('/user/wishlist/products');
 
     let orders;
     if (get().orders.length === 0) {
-      console.log('➡️  /orders/myorders');
       orders = await axiosInstance.get('/orders/myorders');
     } else {
       orders = { data: get().orders };
     }
-
-    console.log('fetchUserData axios instance:', axiosInstance.interceptors.request.handlers.length);
 
     set({
       user: user.data,
