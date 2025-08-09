@@ -43,6 +43,10 @@ export const setupAxiosInterceptor = () => {
 
   //console.log('📤 interceptor running, hasCookie:', document.cookie.includes('accessToken='));
 
+  console.log('Axios instance:', axiosInstance);
+console.log('Request interceptors:', axiosInstance.interceptors.request.handlers);
+console.log('Response interceptors:', axiosInstance.interceptors.response.handlers);
+
   // 2) RESPONSE interceptor (your existing one)
   axiosInstance.interceptors.response.use(
 	(res) => res,

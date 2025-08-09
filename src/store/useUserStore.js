@@ -164,16 +164,23 @@ signup: async (formData) => {
     } catch (_) {}
     set({ user: null, cart: null, addresses: [], orders: [] });
   },
- fetchUserData: async () => {
+ 
+  fetchUserData: async () => {
   set({ loading: true });
 
   try {
+    console.log('➡️  /auth/profile');
     const user = await axiosInstance.get('/auth/profile');
+
+    console.log('➡️  /cart');
     const cart = await axiosInstance.get('/cart');
+
+    console.log('➡️  /user/wishlist/products');
     const wishlist = await axiosInstance.get('/user/wishlist/products');
 
     let orders;
     if (get().orders.length === 0) {
+      console.log('➡️  /orders/myorders');
       orders = await axiosInstance.get('/orders/myorders');
     } else {
       orders = { data: get().orders };
@@ -200,6 +207,7 @@ signup: async (formData) => {
     throw err;
   }
 },
+
   addToWishlist: async (productId) => {
     try {
       set({ loading: true });
