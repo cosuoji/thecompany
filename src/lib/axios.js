@@ -35,12 +35,12 @@ export const setupAxiosInterceptor = () => {
   axiosInstance.interceptors.request.use(cfg => {
   const hasCookie = document.cookie.includes('accessToken=');
   const fb = localStorage.getItem('refreshToken');
-  console.log('📤 interceptor:', cfg.url, 'hasCookie:', hasCookie, 'token:', fb);
+  //console.log('📤 interceptor:', cfg.url, 'hasCookie:', hasCookie, 'token:', fb);
   if (!hasCookie && fb) cfg.headers['Authorization'] = `Bearer ${fb}`;
   return cfg;
 });
 
-  console.log('📤 interceptor running, hasCookie:', document.cookie.includes('accessToken='));
+  //console.log('📤 interceptor running, hasCookie:', document.cookie.includes('accessToken='));
 
   // 2) RESPONSE interceptor (your existing one)
   axiosInstance.interceptors.response.use(
