@@ -174,11 +174,12 @@ signup: async (formData) => {
 
     let orders;
     if (get().orders.length === 0) {
-      console.log('➡️  /orders/myorders');
       orders = await axiosInstance.get('/orders/myorders');
     } else {
       orders = { data: get().orders };
     }
+
+    console.log('fetchUserData axios instance:', axiosInstance.interceptors.request.handlers.length);
 
     set({
       user: user.data,
