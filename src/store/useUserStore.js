@@ -118,7 +118,7 @@ login: async (email, password) => {
     return false;
   } catch (err) {
     set({ user: null, loading: false, checkingAuth: false });
-    toast.error(err.response?.data?.message || "Login failed");
+    toast.error(err.response?.data || "Login failed");
     return false;
   }
 },

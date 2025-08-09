@@ -7,6 +7,7 @@ const axiosInstance = axios.create({
 	withCredentials: true, // send cookies to the server
 });
 
+
 const publicRoutes = [
   '/',
   '/login',
