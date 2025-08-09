@@ -32,14 +32,15 @@ const isPublicRoute = (url) => {
 
 export const setupAxiosInterceptor = () => {
   // 1) REQUEST interceptor (new)
-  axiosInstance.interceptors.request.use((cfg) => {
-	const hasCookie = document.cookie.includes('accessToken=');
-	if (!hasCookie) {
-	  const fb = localStorage.getItem('refreshToken');
-	  if (fb) cfg.headers['Authorization'] = `Bearer ${fb}`;
-	}
-	return cfg;
-  });
+  axiosInstance.interceptors.request.use(cfg => {
+  const hasCookie = document.cookie.includes('accessToken=');
+  const fb = localStorage.getItem('refreshToken');
+  console.log('📤 interceptor:', cfg.url, 'hasCookie:', hasCookie, 'token:', fb);
+  if (!hasCookie && fb) cfg.headers['Authorization'] = `Bearer ${fb}`;
+  return cfg;
+});
+
+  console.log('📤 interceptor running, hasCookie:', document.cookie.includes('accessToken='));
 
   // 2) RESPONSE interceptor (your existing one)
   axiosInstance.interceptors.response.use(
