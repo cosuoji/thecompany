@@ -18,7 +18,8 @@ const Footer = ({ navLinks = [] }) => {
         { name: 'Terms', path: '/terms' },
         { name: 'Privacy', path: '/privacy' },
         { name: 'Cookies', path: '/cookies' },
-        { name: 'Our Lasts', path: '/lasts' }
+        { name: 'Our Lasts', path: '/lasts' },
+        { name: 'Glossary', path: '/glossary' }
       ];
     
     const footerLinks = navLinks.length > 0 ? navLinks : defaultNavigation;  
@@ -139,9 +140,9 @@ const Footer = ({ navLinks = [] }) => {
 
       {/* Div 4: Logo + Copyright */}
       <div className="pt-8 border-t border-gray-200 text-center pb-6">
-        <Link to="/"><div className="text-2xl font-semibold tracking-wide mb-2 text-chocolate">THE COMPANY</div></Link>
+        <Link to="/"><div className="text-2xl font-semibold tracking-wide mb-2 text-chocolate">OLU THE MAKER</div></Link>
         <div className="text-xs text-chocolate opacity-70">
-          © {new Date().getFullYear()} THE COMPANY . All Rights Reserved.
+          © {new Date().getFullYear()} OLU THE MAKER . All Rights Reserved.
         </div>
       </div>
     </footer>

@@ -21,7 +21,7 @@ const pillars = [
 ];
 
 const Homepage = () => {
-  useDocumentTitle('Home - The Company');
+  useDocumentTitle('Home - Olu the Maker');
 
   const {blogs, fetchBlogs} = useBlogStore()
   const { magazines, fetchProducts } = useProductStore();
@@ -44,7 +44,7 @@ const Homepage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          The Company
+          OLU THE MAKER
         </motion.h1>
         <motion.button
           onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}

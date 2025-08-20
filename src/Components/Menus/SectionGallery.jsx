@@ -123,7 +123,7 @@ const SectionGallery = ({ onClose }) => {
       {/* Bottom text */}
       <div className="absolute bottom-4 w-full px-4 text-center text-xl sm:text-3xl md:text-5xl font-bold text-[#4B371C] leading-tight z-10">
         <span className="break-words block">
-          EXPLORE THE WORLD OF THE COMPANY
+          EXPLORE THE WORLD OF OLU THE MAKER
         </span>
       </div>
     </div>

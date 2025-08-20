@@ -86,7 +86,7 @@ const Header = () => {
           setIsCartOpen(false);
         }}>
           <h1 className="text-xl sm:text-3xl font-bold text-[#E6DACD]">
-            THE COMPANY
+            OLU THE MAKER
           </h1>
         </Link>
 

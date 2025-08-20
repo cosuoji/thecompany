@@ -55,6 +55,9 @@ import CookieConsentBanner from "./Components/CookieComponents/CookieConsentBann
 import AnalyticsLoader from './Components/CookieComponents/AnalyticsLoader';
 import CookieSettingsPage from './Pages/CookieSettingsPage';
 import NotFound from './Components/NotFound.jsx';
+import GlossaryDetail from './Components/GlossaryDetail.jsx';
+import GlossaryList from './Components/GlossaryList.jsx';
+
 
 
 
@@ -86,7 +89,8 @@ function App() {
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<PageTransition><Homepage /></PageTransition>} />
               <Route path="/about" element={<PageTransition><About /></PageTransition>} />
-              <Route path="/shipping" element={<PageTransition><Shipping /></PageTransition>} />
+              <Route path="/glossary" element={<GlossaryList />} />
+              <Route path="/glossary/:term" element={<GlossaryDetail />} />              <Route path="/shipping" element={<PageTransition><Shipping /></PageTransition>} />
               <Route path="/faq" element={<PageTransition><FAQ /></PageTransition>} />
               <Route path='/magazine' >
                   <Route index element={<PageTransition><MagazineListPage /></PageTransition>} />

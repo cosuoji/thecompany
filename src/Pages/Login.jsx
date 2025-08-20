@@ -18,7 +18,7 @@ const Login = () => {
     password: ''
   });
 
-  useDocumentTitle("Login - The Company")
+  useDocumentTitle("Login - Olu the Maker")
 
   
   const handleSubmit = async (e) => {
