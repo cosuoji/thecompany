@@ -5,7 +5,6 @@ import { Link, useParams } from 'react-router-dom';
 import { useCurrency } from '../context/CurrencyContext';
 import { useUserStore } from '../store/useUserStore';
 import useShoeStore from '../store/useShoeStore';
-import useDocumentTitle from '../hooks/useDocumentTitle';
 
 
 const CartPage = () => {

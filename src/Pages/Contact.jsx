@@ -1,10 +1,15 @@
 import React from 'react'
 import SendMessage from '../Components/SendMessage'
-import useDocumentTitle from '../hooks/useDocumentTitle'
+import SEO from '../Components/SEO'
 const Contact = () => {
-  useDocumentTitle("Contact Us")
   return (
     <div>
+       <SEO 
+        title="Contact Us"
+        description="Contact Us, Send Us A Message"
+        url="https://yourdomain.com/blog"
+      />
+
 
         <SendMessage />
     </div>

@@ -6,7 +6,7 @@ import {useUserStore} from '../../store/useUserStore';
 import BlogContentRenderer from "./BlogContentRenderer"
 import BlogAdminActions from './BlogAdminActions';
 import { useNavigate, useParams } from 'react-router-dom';
-import useDocumentTitle from '../../hooks/useDocumentTitle';
+import SEO from '../SEO';
 
 const SingleBlogPost = () => {
   const navigate = useNavigate()
@@ -15,7 +15,6 @@ const SingleBlogPost = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const { slug } = useParams();
    
-  useDocumentTitle(`Blog - ${currentBlog?.title}`)
 
   useEffect(() => {
     if (slug) {
@@ -28,7 +27,6 @@ const SingleBlogPost = () => {
   }, [user]);
 
 
-  console.log(currentBlog)
 
   const handleShare = (platform) => {
     const shareUrl = window.location.href;
@@ -64,6 +62,12 @@ const SingleBlogPost = () => {
 
   return (
     <div className="single-blog-post max-w-6xl mx-auto px-4 py-8">
+          <SEO 
+              title={currentBlog.title}
+              description={currentBlog.description}
+              url="https://yourdomain.com/blog"
+            />
+      
       {/* Header Section */}
       <header className="post-header mb-12 text-center">
         <div className="header-content">

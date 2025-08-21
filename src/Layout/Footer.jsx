@@ -140,9 +140,9 @@ const Footer = ({ navLinks = [] }) => {
 
       {/* Div 4: Logo + Copyright */}
       <div className="pt-8 border-t border-gray-200 text-center pb-6">
-        <Link to="/"><div className="text-2xl font-semibold tracking-wide mb-2 text-chocolate">OLU THE MAKER</div></Link>
+        <Link to="/"><div className="text-2xl font-semibold tracking-wide mb-2 text-chocolate">OLÚ THE MAKER</div></Link>
         <div className="text-xs text-chocolate opacity-70">
-          © {new Date().getFullYear()} OLU THE MAKER . All Rights Reserved.
+          © {new Date().getFullYear()} OLÚ THE MAKER . All Rights Reserved.
         </div>
       </div>
     </footer>

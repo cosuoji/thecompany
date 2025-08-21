@@ -2,14 +2,19 @@ import React from 'react'
 import ProductShowCase from '../Components/ProductComponents/ProductShowCase'
 import { slides } from '../Components/ProductComponents/ProductSliderList'
 import { ProductGrid } from '../Components/ProductComponents/ProductGrid'
-import useDocumentTitle from '../hooks/useDocumentTitle'
+import SEO from '../Components/SEO'
+
 
 
 const Store = () => {
-  useDocumentTitle("Store - ")
   return (
     
     <>
+            <SEO 
+              title="Store"
+              description="The Olu The Maker Official Store"
+              url="https://yourdomain.com/blog"
+            />
     <ProductShowCase slides={slides}/>
     <ProductGrid />
     </>

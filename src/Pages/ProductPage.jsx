@@ -4,12 +4,12 @@ import axiosInstance from "../lib/axios";
 import { FaArrowLeft } from 'react-icons/fa';
 import { useCartStore } from '../store/useCartStore';
 import SizeGuide from '../Components/SizeGuide';
-import useDocumentTitle from '../hooks/useDocumentTitle';
 import PriceDisplay from '../Components/CurrencyComponents/PriceDisplay';
 import { useUserStore } from '../store/useUserStore';
 import toast from 'react-hot-toast';
 import { useCurrency } from '../context/CurrencyContext';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import SEO from '../Components/SEO';
 
 
 
@@ -41,7 +41,6 @@ const ProductPage = () => {
   
 
   
-  useDocumentTitle(`Store - ${product?.name} `)
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -194,6 +193,12 @@ useEffect(() => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <SEO 
+        title={product.name}
+        description={slug}
+        url="https://yourdomain.com/blog"
+      />
+
 
       {/* Back Button */}
       <div className="flex justify-between items-center py-4 gap-4">

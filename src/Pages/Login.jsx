@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom'; // Added Link import
 import { useUserStore } from '../store/useUserStore';
 import { toast } from 'react-hot-toast';
-import useDocumentTitle from '../hooks/useDocumentTitle';
 import { useRedirect } from '../hooks/useRedirect';
+import SEO from '../Components/SEO';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,7 +18,6 @@ const Login = () => {
     password: ''
   });
 
-  useDocumentTitle("Login - Olu the Maker")
 
   
   const handleSubmit = async (e) => {
@@ -50,6 +49,12 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#B6B09F] px-6 md:px-20 py-20 space-y-14 animate-fadeUp">
+            <SEO 
+              title="Login"
+              description="Login Page for Olu the Maker"
+              url="https://yourdomain.com/blog"
+            />
+      
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-[#EAE4D5] mb-1">

@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { MagazineCard } from "./MagazineCard";
 
 
 // components/MagazineList.jsx

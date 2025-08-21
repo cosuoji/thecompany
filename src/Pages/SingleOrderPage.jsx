@@ -5,7 +5,6 @@ import { format } from "date-fns";
 import { FaArrowLeft } from "react-icons/fa";
 import useShoeStore from "../store/useShoeStore";
 
-
 const SingleOrderPage = ({ orderId: propOrderId, isAdminView }) => {
   const params = useParams();
   const orderId = params.id || propOrderId;

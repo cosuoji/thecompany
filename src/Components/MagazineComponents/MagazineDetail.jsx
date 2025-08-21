@@ -9,9 +9,10 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { useUserStore } from '../../store/useUserStore';
 import { useCartStore } from '../../store/useCartStore';
-import useDocumentTitle from '../../hooks/useDocumentTitle';
 import PriceDisplay from '../CurrencyComponents/PriceDisplay';
 import { useCurrency } from '../../context/CurrencyContext';
+import SEO from '../SEO';
+
 
 
 const MagazineDetail = () => {
@@ -25,7 +26,6 @@ const MagazineDetail = () => {
     const { isAdmin, user } = useUserStore(); // Using your existing isAdmin method
     const { currency } = useCurrency();
 
-    useDocumentTitle(`Magazine Issue ${issueNumber} - `)
 
     const fetchData = async (search = '') => {
         setLoading(true);
@@ -84,6 +84,11 @@ const MagazineDetail = () => {
 
     return (
         <div className="max-w-6xl mx-auto px-4 py-8">
+         <SEO 
+              title={data.magazine.name}
+              description={data.magazine.description}
+              url="https://yourdomain.com/blog"
+            />
             <div className="flex justify-between items-center py-4 gap-4">
                 <button 
                     onClick={() => navigate('/magazine')}

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import SEO from './SEO';
+
 
 const SizeGuide = () => {
   const [activeTab, setActiveTab] = useState('size');
@@ -18,6 +20,11 @@ const SizeGuide = () => {
 
   return (
     <div className="max-w-md mx-auto pt-2 bg-white rounded-lg shadow-md overflow-hidden">
+      <SEO 
+        title="Size Guide"
+        description="Not sure about your size? Olu the Maker Suize Guide will help"
+        url="https://yourdomain.com/blog"
+      />
       {/* Tab Navigation */}
       <div className="flex border-b">
         <button

@@ -1,9 +1,15 @@
 import React from 'react'
-import useDocumentTitle from '../hooks/useDocumentTitle'
+import SEO from '../Components/SEO'
+
 const Lasts = () => {
-  useDocumentTitle("Lasts")
   return (
     <>
+      <SEO 
+        title="Lasts"
+        description="A insightful page for out lasts and last shapes"
+        url="https://yourdomain.com/blog"
+      />
+
     <div>Lasts and Lasts Shapes</div>
     </>
   )

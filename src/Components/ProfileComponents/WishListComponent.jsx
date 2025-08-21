@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { useWishlist } from '../../hooks/useWishlist';
 import toast from 'react-hot-toast';
 import { useUserStore } from '../../store/useUserStore';
+import SEO from '../SEO';
+
 const WishlistPage = () => {
   const { fullInfo, isLoading, error, removeFromWishlist } = useWishlist();
   const { fetchUserData, user } = useUserStore();
@@ -43,6 +45,11 @@ const WishlistPage = () => {
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto">
+                  <SEO 
+              title="My Wishlist"
+              description="My WishList"
+              url="https://yourdomain.com/blog"
+            />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-[#EAE4D5]">My Wishlist</h1>
         {fullInfo.length > 0 && (

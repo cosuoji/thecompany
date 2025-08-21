@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useUserStore } from "../../store/useUserStore";
-import useDocumentTitle from "../../hooks/useDocumentTitle";
+import SEO from '../SEO';
 
 const ProfilePage = () => {
   const { user, updateProfile } = useUserStore();
@@ -14,7 +14,6 @@ const ProfilePage = () => {
     phone: '',
   });
 
-  useDocumentTitle(`Profile - ${user?.user?.profile?.firstName} ${user?.user?.profile?.lastName} |`)
 
 
 
@@ -46,6 +45,11 @@ const ProfilePage = () => {
 
   return (
     <div>
+             <SEO 
+              title="My Profile"
+              description="My Olu The Maker Profile"
+              url="https://yourdomain.com/blog"
+            />
       <h1 className="text-2xl font-bold text-[#EAE4D5] mb-6">Profile Information</h1>
       <form onSubmit={handleSubmit} className="space-y-4 max-w-lg">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

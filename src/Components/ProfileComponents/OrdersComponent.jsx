@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useUserStore } from '../../store/useUserStore';
+import SEO from '../SEO';
+
 
 const OrdersPage = () => {
   const {orders, loading } = useUserStore();
@@ -9,6 +11,11 @@ const OrdersPage = () => {
 
   return (
     <div>
+            <SEO 
+              title="My Orders"
+              description="My Orders"
+              url="https://yourdomain.com/blog"
+            />
       <h1 className="text-2xl font-bold text-[#EAE4D5] mb-6">Order History</h1>
 
       {loading ? (

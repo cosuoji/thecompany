@@ -47,7 +47,6 @@ import Lasts from './Pages/Lasts';
 import { CurrencyProvider } from './context/CurrencyContext.jsx';
 import Checkout from './Pages/Checkout';
 import CheckoutSuccess from './Components/CheckoutComponents/CheckoutSuccess';
-import useDocumentTitle from './hooks/useDocumentTitle';
 import CheckoutFailed from './Components/CheckoutComponents/CheckoutFailure';
 import SingleOrderPage from './Pages/SingleOrderPage';
 import AdminOrdersPage from './Pages/AdminOrdersPage';
@@ -57,6 +56,7 @@ import CookieSettingsPage from './Pages/CookieSettingsPage';
 import NotFound from './Components/NotFound.jsx';
 import GlossaryDetail from './Components/GlossaryDetail.jsx';
 import GlossaryList from './Components/GlossaryList.jsx';
+import SEO from './Components/SEO.jsx';
 
 
 
@@ -71,12 +71,12 @@ function App() {
     useUserStore.getState().init(); // only checks if there's a token
   }, []);
 
-  useDocumentTitle("Homepage - ")
  
   return (
     <CurrencyProvider>
       <AnalyticsLoader />
       <CookieConsentBanner />
+      <SEO />
     <ImageKitProvider>
     <div className='min-h-screen flex flex-col'>
       <CursorErrorBoundary>

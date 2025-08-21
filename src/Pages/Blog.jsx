@@ -4,7 +4,8 @@ import ElegantButton from "../Components/Buttons/ElegantButton";
 import { Article } from "../Components/ArticleComponents";
 import useBlogStore from "../store/blogStore";
 import { Link } from "react-router-dom";
-import useDocumentTitle from "../hooks/useDocumentTitle";
+import SEO from "../Components/SEO";
+
 
 
 export default function Blog() {
@@ -13,7 +14,6 @@ export default function Blog() {
   const categories = ["all", "news", "masters-of-the-craft", "moving-hands", "our-advice"];
   const { blogs, loading, error, fetchBlogs, currentPage, totalPages } = useBlogStore();
 
-  useDocumentTitle("Blog")
 
   useEffect(() => {
     fetchBlogs(currentPage);
@@ -47,6 +47,13 @@ export default function Blog() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <SEO 
+        title="Blog"
+        description="Our thoughts, stories, experiences, all in one page"
+        url="https://yourdomain.com/blog"
+      />
+
+
       {/* Header Section with Main Featured Article */}
       {mainFeatured && (
         <div className="relative w-full h-screen max-h-[800px]">

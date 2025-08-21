@@ -1,10 +1,15 @@
 import React from 'react'
-import useDocumentTitle from '../hooks/useDocumentTitle'
+import SEO from '../Components/SEO'
+
 
 const Shipping = () => {
-  useDocumentTitle("Shipping and Return - ")
   return (
     <>
+                <SEO 
+                  title="Shipping Information"
+                  description="Shipping Information for Olu The Maker"
+                  url="https://yourdomain.com/blog"
+                />
     <div>Shipping</div>
     </>
   )

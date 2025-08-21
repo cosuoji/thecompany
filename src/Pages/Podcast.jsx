@@ -2,12 +2,18 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FaApple, FaSpotify, FaYoutube } from "react-icons/fa";
 import PodcastSubsriptionForm from "../Components/Forms/PodcastSubscription";
-import useDocumentTitle from "../hooks/useDocumentTitle";
+import SEO from "../Components/SEO";
+
 const PodcastPage = () => {
-  useDocumentTitle("Podcasts")
   return (
     <div className="w-full">
       {/* Header with Background Image ONLY */}
+            <SEO 
+              title="Podcasts"
+              description="Podcasts Page for Olu The Maker, sometimes we like to record our conversations. You can get them wherever you get your podcasts"
+              url="https://yourdomain.com/blog"
+            />
+      
       <header 
           className="w-full aspect-[16/9] bg-cover bg-center"
           style={{ backgroundImage: "url('https://placehold.co/1800x910')" }}

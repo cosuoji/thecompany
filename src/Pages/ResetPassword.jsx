@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/useUserStore';
+import SEO from '../Components/SEO';
+
 
 const ResetPassword = () => {
   const { token } = useParams();
@@ -28,6 +30,11 @@ const ResetPassword = () => {
 
   return (
     <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow">
+                  <SEO 
+                    title="Reset Password"
+                    description="Forgot Your Password? Reset it here"
+                    url="https://yourdomain.com/blog"
+                  />
       <h2 className="text-2xl font-bold mb-4">Reset Password</h2>
       <form onSubmit={handleSubmit}>
         <input

@@ -1,5 +1,7 @@
 // pages/CookieSettingsPage.jsx
 import toast from "react-hot-toast";
+import SEO from "../Components/SEO";
+
 const CookieSettingsPage = () => {
     let consent = localStorage.getItem("cookieConsent");
   
@@ -13,7 +15,12 @@ const CookieSettingsPage = () => {
   
     
     return (
-      <div className="p-6 max-w-2xl mx-auto">
+      <div className="p-6 pt-14 max-w-2xl mx-auto">
+                    <SEO 
+              title="Cookie Preference"
+              description="Adjust your cookie settings here"
+              url="https://yourdomain.com/blog"
+            />
         <h1 className="text-2xl font-bold mb-4">Cookie Preferences</h1>
         <p className="mb-4">You previously selected: <strong>{consent || "no choice"}</strong></p>
         <div className="flex gap-4">

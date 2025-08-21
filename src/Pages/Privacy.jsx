@@ -1,10 +1,16 @@
 import React from 'react'
-import useDocumentTitle from '../hooks/useDocumentTitle'
+import SEO from '../Components/SEO'
+
 
 const Privacy = () => {
-  useDocumentTitle("Privacy")
   return (
     <>
+          <SEO 
+            title="Privacy"
+            description="Privacy Policy"
+            url="https://yourdomain.com/blog"
+          />
+    
     <div>Privacy</div>
     </>
   )

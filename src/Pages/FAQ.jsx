@@ -1,10 +1,15 @@
 import React from 'react'
-import useDocumentTitle from '../hooks/useDocumentTitle'
+import SEO from '../Components/SEO'
 
 const FAQ = () => {
-  useDocumentTitle("F.A.Q - ")
   return (
     <>
+          <SEO 
+            title="Frequently Asked Questions"
+            description="Here we answer all your frequently asked questions"
+            url="https://yourdomain.com/blog"
+          />
+    
     <div>FAQ</div>
     </>
   )

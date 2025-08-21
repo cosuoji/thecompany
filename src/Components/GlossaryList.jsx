@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { glossary } from "../data/glossaryData";
+import { Helmet } from "react-helmet-async";
 
 export default function GlossaryList() {
   const [search, setSearch] = useState("");
@@ -21,6 +22,41 @@ export default function GlossaryList() {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
+      {/* SEO Head */}
+      <Helmet>
+        <title>Shoe Glossary | Shoe Company</title>
+        <meta
+          name="description"
+          content="Explore our shoe glossary: a complete A–Z dictionary of footwear terms, styles, and materials to help you understand the world of shoes."
+        />
+        <link rel="canonical" href="https://www.yourshoedomain.com/glossary" />
+        <meta property="og:title" content="Shoe Glossary | Shoe Company" />
+        <meta
+          property="og:description"
+          content="A complete glossary of footwear terms, styles, and materials."
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://www.yourshoedomain.com/glossary"
+        />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "DefinedTermSet",
+            "name": "Shoe Glossary",
+            "description":
+              "An A–Z glossary of footwear terminology, styles, and materials by Shoe Company.",
+            "url": "https://www.yourshoedomain.com/glossary",
+            "hasDefinedTerm": glossary.map((item) => ({
+              "@type": "DefinedTerm",
+              "name": item.term,
+              "url": `https://www.yourshoedomain.com/glossary/${item.term.toLowerCase()}`
+            }))
+          })}
+        </script>
+      </Helmet>
+
       <h1 className="text-3xl font-bold text-center mb-8">Shoe Glossary</h1>
 
       {/* Search */}

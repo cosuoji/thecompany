@@ -1,11 +1,16 @@
 import React from 'react'
-import useDocumentTitle from '../hooks/useDocumentTitle'
+import SEO from '../Components/SEO'
+SEO
 
 const Terms = () => {
-  useDocumentTitle("Terms")
   return (
     <>
-    
+      <SEO 
+      title="Terms and Conditions"
+      description="Olu the Maker, Terms and Conditions"
+      url="https://yourdomain.com/blog"
+    />
+
     <div>Terms</div>
     </>
   )

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom'; // Added Link and useLocation
 import { useUserStore } from '../store/useUserStore';
 import { toast } from 'react-hot-toast';
+import SEO from '../Components/SEO';
+
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -29,6 +31,11 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#B6B09F] px-6 md:px-20 py-20 space-y-14 animate-fadeUp">
+           <SEO 
+              title="SignUp"
+              description="Signup for Olu The Maker"
+              url="https://yourdomain.com/blog"
+            />
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-[#EAE4D5] mb-1">

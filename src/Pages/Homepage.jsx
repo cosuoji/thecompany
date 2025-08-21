@@ -1,7 +1,6 @@
 // Homepage.jsx
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import useDocumentTitle from '../hooks/useDocumentTitle';
 import heroImage from "../assets/hero.webp"
 import storeImage from "../assets/shoestore.jpg"
 import magazineImage from "../assets/magazineimage.jpg"
@@ -12,6 +11,8 @@ import { useProductStore } from '../store/useProductStore';
 import { motion } from 'framer-motion';
 import { MagazineCard } from '../Components/MagazineComponents/MagazineCard';
 import InstagramSection from '../Components/InstagramSection';
+import SEO from '../Components/SEO';
+
 
 const pillars = [
   { label: 'Store', link: '/store', bg: storeImage },
@@ -21,7 +22,6 @@ const pillars = [
 ];
 
 const Homepage = () => {
-  useDocumentTitle('Home - Olu the Maker');
 
   const {blogs, fetchBlogs} = useBlogStore()
   const { magazines, fetchProducts } = useProductStore();
@@ -33,6 +33,12 @@ const Homepage = () => {
 
   return (
     <div className="bg-[#F8F4EF] text-[#1a1a1a]">
+            <SEO 
+              title="Home"
+              description="The Home of the premier shoe brand in Nigeria, Olu The Maker represent the culture"
+              url="https://yourdomain.com/blog"
+            />
+      
 
       {/* Hero Section with Background */}
       <section className="h-screen relative flex flex-col justify-center items-center text-white">
@@ -44,7 +50,7 @@ const Homepage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          OLU THE MAKER
+          OLÚ THE MAKER
         </motion.h1>
         <motion.button
           onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}

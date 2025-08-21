@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useUserStore } from '../../store/useUserStore';
 import { toast } from 'react-hot-toast';
-import useDocumentTitle from '../../hooks/useDocumentTitle';
+import SEO from '../SEO';
+
 
 const AddressesPage = () => {
   const { user, addAddress, updateAddress, deleteAddress, setDefaultAddress } = useUserStore();
@@ -17,7 +18,6 @@ const AddressesPage = () => {
     isDefault: false
   });
 
-  useDocumentTitle(`Profile - ${user?.user?.profile?.firstName} ${user?.user?.profile?.lastName} |`)
 
   
   const handleSubmit = async (e) => {
@@ -62,6 +62,11 @@ const AddressesPage = () => {
 
   return (
     <div>
+            <SEO 
+              title="My Addresses"
+              description="Addresses"
+              url="https://yourdomain.com/blog"
+            />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-[#EAE4D5]">My Addresses</h1>
         <button
