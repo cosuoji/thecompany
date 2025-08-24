@@ -31,7 +31,7 @@ const Footer = ({ navLinks = [] }) => {
         <div className="flex flex-col md:flex-row justify-center gap-16 mb-12">
         {/* England */}
         <div className="flex items-center gap-6">
-          <h3 className="font-medium text-3xl text-[#4B371C] whitespace-nowrap">+44</h3>
+          <h3 className="font-medium text-3xl text-[#4B371C] whitespace-nowrap">44</h3>
           <AnalogClock timezoneOffset={0} />
           <div className="text-sm leading-relaxed text-[#4B371C] ml-4">
             <p>123 Madison Avenue</p>
@@ -43,7 +43,7 @@ const Footer = ({ navLinks = [] }) => {
 
         {/* Lagos */}
         <div className="flex items-center gap-6">
-          <h3 className="font-medium text-3xl text-[#4B371C] whitespace-nowrap">+234</h3>
+          <h3 className="font-medium text-3xl text-[#4B371C] whitespace-nowrap">234</h3>
           <AnalogClock timezoneOffset={0} />
           <div className="text-sm leading-relaxed text-[#4B371C] ml-4">
             <p>123 Madison Avenue</p>

@@ -82,28 +82,44 @@ const Homepage = () => {
         ))}
       </section>
 
-      {/* Blog Articles Section */}
-      <section className="px-4 md:px-8 py-12">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="text-3xl font-bold mb-6">Latest Articles</h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {blogs.slice(0, 5).map((blog) => (
-              <Link to={`/blog/${blog.slug}`} key={blog._id} className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition">
-                <img src={blog.headerImage} alt={blog.title} className="w-full h-40 object-cover" />
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold">{blog.title}</h3>
-                  <p className="text-sm text-gray-600 mt-1 line-clamp-2">{blog.excerpt}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </motion.div>
-      </section>
+{/* Blog Articles Section */}
+<section className="px-4 md:px-8 py-12">
+  <motion.div
+    initial={{ opacity: 0, y: 40 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6 }}
+    viewport={{ once: true }}
+  >
+    <h2 className="text-3xl font-bold mb-6">Latest Articles</h2>
+
+    {blogs.length === 0 ? (
+      <p>Loading articles...</p>
+    ) : (
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {blogs.slice(0, 5).map((blog) => (
+          <Link
+            to={`/blog/${blog.slug}`}
+            key={blog._id}
+            className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition"
+          >
+            <img
+              src={blog.headerImage}
+              alt={blog.title}
+              className="w-full h-40 object-cover"
+            />
+            <div className="p-4">
+              <h3 className="text-lg font-semibold">{blog.title}</h3>
+              <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                {blog.excerpt}
+              </p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    )}
+  </motion.div>
+</section>
+
 
       {/* Featured Magazine Section */}
       <section className="px-4 md:px-8 py-12 bg-[#f0ebe4]">
