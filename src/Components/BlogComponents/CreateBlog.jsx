@@ -6,6 +6,8 @@ import useBlogStore from '../../store/blogStore';
 import { useUserStore } from '../../store/useUserStore';
 import { slugify } from '../../utils/slugify';
 import { PullQuote } from './PullQuote';
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 
 const CreateBlog = () => {
@@ -441,14 +443,20 @@ const CreateBlog = () => {
                 </button>
 
                 {block.type === 'text' ? (
-                  <div>
+                 <div>
                     <label className="block mb-2 font-medium">Text Content*</label>
-                    <textarea
+                    <ReactQuill
                       value={block.content}
-                      onChange={(e) => updateContentBlock(index, { content: e.target.value })}
-                      className="w-full p-3 border rounded-lg min-h-[150px]"
-                      required
-                      placeholder="Write your content here..."
+                      onChange={(val) => updateContentBlock(index, { content: val })}
+                      className="bg-white"
+                      theme="snow"
+                      modules={{
+                        toolbar: [
+                          ["bold", "italic", "underline"], // enable B/I/U
+                          [{ list: "ordered" }, { list: "bullet" }],
+                          ["link"]
+                        ]
+                      }}
                     />
                   </div>
                 ) : block.type === 'image' ? (
