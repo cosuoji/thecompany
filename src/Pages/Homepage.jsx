@@ -90,8 +90,9 @@ const Homepage = () => {
     transition={{ duration: 0.6 }}
     viewport={{ once: true }}
   >
+    <Link to="/blog">
     <h2 className="text-3xl font-bold mb-6">Latest Articles</h2>
-
+      </Link>
     {blogs.length === 0 ? (
       <p>Loading articles...</p>
     ) : (
@@ -129,7 +130,9 @@ const Homepage = () => {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
+          <Link to="/magazine">
           <h2 className="text-3xl font-bold mb-6">Magazines</h2>
+          </Link>
           {magazines.length === 0 ? (
             <p>Loading magazines...</p>
           ) : (
