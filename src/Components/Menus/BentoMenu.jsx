@@ -1,11 +1,21 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+
+
 
 // Background images
 import blogsBg from '../../assets/slidermenu/blogs.jpg';
 import magazineBg from '../../assets/slidermenu/magazine.jpg';
 import podcastBg from '../../assets/slidermenu/podcasts.jpg';
 import storeBg from '../../assets/slidermenu/store.jpg';
+
+import storeImage from "../../assets/shoestore.jpg"
+import magazineImage from "../../assets/magazineimage.jpg"
+import podcastImage from "../../assets/podcastimage.webp"
+import editorialImage from "../../assets/editorialimage.jpg"
+
 
 const BentoMenu = ({ onClose }) => {
   const navigate = useNavigate();
@@ -44,6 +54,14 @@ const BentoMenu = ({ onClose }) => {
     },
   ];
 
+  const pillars = [
+    { label: 'Store', link: '/store', bg: storeImage },
+    { label: 'Magazine', link: '/magazine', bg: magazineImage },
+    { label: 'Editorials', link: '/blog', bg: editorialImage },
+    { label: 'Podcast', link: '/podcast', bg: podcastImage },
+  ];
+
+
   const handleClick = (link) => {
     if (onClose) onClose();
     navigate(link);
@@ -52,43 +70,33 @@ const BentoMenu = ({ onClose }) => {
   return (
     <div className="fixed inset-0 bg-[#F8F4EF] pt-20 md:pt-28 lg:pt-32 overflow-y-auto">
       <div className="min-h-[calc(100vh-5rem)] p-4 md:p-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 pb-12">
-        {sections.map((section) => (
-          <button
-            key={section.id}
-            onClick={() => handleClick(section.link)}
-            className={`relative rounded-3xl overflow-hidden shadow-lg
-              flex flex-col items-start justify-end p-6
-              transition-all duration-300 hover:scale-[1.02]
-              h-60 md:h-[20rem] min-h-[15rem]
-              group
-            `}
-          >
-              {/* Background Image */}
-              <img
-                src={section.background}
-                alt=""
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-              
-              {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/30 group-hover:from-black/60 group-hover:to-black/20 transition-all duration-300" />
-              
-              {/* Content */}
-              <div className="relative z-10 text-left w-full">
-                <h3 className="text-2xl md:text-3xl font-bold text-white mb-1">
-                  {section.label}
-                </h3>
-                <p className="text-white/90 text-sm md:text-base mb-3">
-                  {section.description}
-                </p>
-                <span className="inline-block px-4 py-2 bg-white text-[#4B371C] rounded-full text-sm font-medium hover:bg-opacity-90 transition">
-                  {section.id === 's3' ? 'Shop Now' : 'Explore'}
-                </span>
-              </div>
-            </button>
-          ))}
-        </div>
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 md:px-12 py-12 max-w-6xl mx-auto">
+            {pillars.map((pillar, i) => (
+              <Link to={pillar.link} key={pillar.label}>
+                <motion.div
+                  className="relative rounded-2xl overflow-hidden h-80 md:h-96 cursor-pointer group shadow-lg"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.15 }}
+                  viewport={{ once: true }}
+                >
+                  <img
+                    src={pillar.bg}
+                    alt={pillar.label}
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition" />
+                  <div className="relative z-10 h-full flex flex-col justify-end p-6 text-white">
+                    <h3 className="text-3xl font-bold tracking-wide">{pillar.label}</h3>
+                    <p className="text-sm md:text-base opacity-90 mt-2">
+                      {/* Optional: short description */}
+                    </p>
+                  </div>
+                </motion.div>
+              </Link>
+            ))}
+          </section>
+
       </div>
     </div>
   );

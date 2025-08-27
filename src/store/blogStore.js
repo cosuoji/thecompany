@@ -83,10 +83,24 @@ const useBlogStore = create((set) => ({
       throw errorMessage;
     }
   },
-
-  
-
-
+  // store/blogStore.js
+searchBlogs: async (query) => {
+  set({ loading: true, error: null });
+  try {
+    const { data } = await axiosInstance.get(`/blogs/search?q=${encodeURIComponent(query)}`);
+    set({
+      blogs: data,
+      currentPage: 1,
+      totalPages: 1,
+      loading: false,
+    });
+  } catch (err) {
+    set({
+      error: err.response?.data?.message || err.message,
+      loading: false,
+    });
+  }
+},
 
   // Delete a blog by slug
   deleteBlog: async (slug) => {

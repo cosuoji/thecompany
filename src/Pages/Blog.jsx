@@ -11,8 +11,9 @@ import SEO from "../Components/SEO";
 export default function Blog() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [search, setSearch] = useState("");  // <-- search state
   const categories = ["all", "news", "masters-of-the-craft", "moving-hands", "our-advice"];
-  const { blogs, loading, error, fetchBlogs, currentPage, totalPages } = useBlogStore();
+  const { blogs, loading, error, fetchBlogs, currentPage, totalPages, searchBlogs } = useBlogStore();
 
 
   useEffect(() => {
@@ -25,6 +26,15 @@ export default function Blog() {
     }
   };
   
+    const handleSearch = (e) => {
+    e.preventDefault();
+    if (search.trim()) {
+      searchBlogs(search);
+    } else {
+      fetchBlogs(1); // reset to all blogs
+    }
+  };
+
   const handleNext = () => {
     if (currentPage < totalPages) {
       fetchBlogs(currentPage + 1);
@@ -52,6 +62,8 @@ export default function Blog() {
         description="Our thoughts, stories, experiences, all in one page"
         url="https://yourdomain.com/blog"
       />
+
+
 
 
       {/* Header Section with Main Featured Article */}
@@ -176,6 +188,43 @@ export default function Blog() {
         </div>
       </nav>
 
+{/* SEARCH BAR */}
+<form onSubmit={handleSearch} className="max-w-3xl mx-auto px-6 py-6 flex gap-2">
+  <input
+    type="text"
+    placeholder="Search articles..."
+    className="flex-grow border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#4B371C]"
+    value={search}
+    onChange={(e) => {
+      setSearch(e.target.value);
+      if (e.target.value.trim() === "") {
+        fetchBlogs(1); // auto-reset if input cleared
+      }
+    }}
+  />
+  
+  <button 
+    type="submit" 
+    className="px-6 py-3 bg-[#4B371C] text-white rounded-lg hover:bg-[#3A2C18] transition"
+  >
+    Search
+  </button>
+
+  {search && (
+    <button 
+      type="button"
+      onClick={() => {
+        setSearch("");
+        fetchBlogs(1); // reload all blogs
+      }}
+      className="px-6 py-3 bg-gray-200 text-black rounded-lg hover:bg-gray-300 transition"
+    >
+      Clear
+    </button>
+  )}
+</form>
+
+
       {/* FILTERED ARTICLES GRID */}
       <div className="px-8 py-12 max-w-7xl mx-auto w-full">
         <h2 className="text-3xl font-bold mb-8 text-center">
@@ -209,7 +258,7 @@ export default function Blog() {
           <p className="text-lg text-center">No articles found in this category.</p>
         )}
       </div>
-      { totalPages > 0 && <div className="flex justify-center items-center gap-4 mt-12">
+      { totalPages > 0 && <div className="flex justify-center pb-5 items-center gap-4 mt-12">
         <button 
           onClick={handlePrev}
           disabled={currentPage === 1}
