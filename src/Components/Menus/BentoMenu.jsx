@@ -1,105 +1,191 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-
-
+import React, { useState, useRef, useEffect } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useTransform,
+} from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { FiInstagram, FiTwitter, FiMail } from "react-icons/fi";
 
 // Background images
-import blogsBg from '../../assets/slidermenu/blogs.jpg';
-import magazineBg from '../../assets/slidermenu/magazine.jpg';
-import podcastBg from '../../assets/slidermenu/podcasts.jpg';
-import storeBg from '../../assets/slidermenu/store.jpg';
+import blogsBg from "../../assets/slidermenu/blogs.jpg";
+import magazineBg from "../../assets/slidermenu/magazine.jpg";
+import storeBg from "../../assets/slidermenu/store.jpg";
 
-import storeImage from "../../assets/shoestore.jpg"
-import magazineImage from "../../assets/magazineimage.jpg"
-import podcastImage from "../../assets/podcastimage.webp"
-import editorialImage from "../../assets/editorialimage.jpg"
+const menuItems = [
+  { label: "EDITORIALS", link: "/blog", bg: blogsBg },
+  { label: "STORE", link: "/store", bg: storeBg },
+  { label: "MAGAZINE", link: "/magazine", bg: magazineBg },
+];
 
+const letterVariants = {
+  hidden: { y: "100%", opacity: 0 },
+  visible: (i) => ({
+    y: "0%",
+    opacity: 1,
+    transition: {
+      delay: i * 0.05,
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  }),
+};
 
-const BentoMenu = ({ onClose }) => {
+const HoverBackgroundMenu = ({ onClose }) => {
   const navigate = useNavigate();
-  const sections = [
-    {
-      id: 's1',
-      label: 'EDITORIALS',
-      link: '/blog',
-      background: blogsBg,
-      description: 'Thoughtful articles on craftsmanship',
-   
-    },
-    {
-      id: 's2',
-      label: 'PODCAST',
-      link: '/podcast',
-      background: podcastBg,
-      description: 'Conversations with artisans',
-      
-    },
-    {
-      id: 's3',
-      label: 'STORE',
-      link: '/store',
-      background: storeBg,
-      description: 'Handcrafted leather goods',
-   
-    },
-    {
-      id: 's4',
-      label: 'MAGAZINE',
-      link: '/magazine',
-      background: magazineBg,
-      description: 'Quarterly print edition',
-      
-    },
-  ];
+  const containerRef = useRef(null);
 
-  const pillars = [
-    { label: 'Store', link: '/store', bg: storeImage },
-    { label: 'Magazine', link: '/magazine', bg: magazineImage },
-    { label: 'Editorials', link: '/blog', bg: editorialImage },
-    { label: 'Podcast', link: '/podcast', bg: podcastImage },
-  ];
+  const [activeItem, setActiveItem] = useState(menuItems[0]);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
+  const pendingRoute = useRef(null);
 
+  /* --------------------------------------------
+     PARALLAX
+  -------------------------------------------- */
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
-  const handleClick = (link) => {
-    if (onClose) onClose();
-    navigate(link);
+  const bgX = useTransform(mouseX, [-0.5, 0.5], ["-3%", "3%"]);
+  const bgY = useTransform(mouseY, [-0.5, 0.5], ["-3%", "3%"]);
+
+  const handleMouseMove = (e) => {
+    if (isMobile || isExiting) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    mouseX.set((e.clientX - rect.width / 2) / rect.width);
+    mouseY.set((e.clientY - rect.height / 2) / rect.height);
+  };
+
+  /* --------------------------------------------
+     MOBILE DETECTION
+  -------------------------------------------- */
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  /* --------------------------------------------
+     CLOSE ON ESC
+  -------------------------------------------- */
+  useEffect(() => {
+    const onEsc = (e) => {
+      if (e.key === "Escape" && !isExiting) onClose?.();
+    };
+    window.addEventListener("keydown", onEsc);
+    return () => window.removeEventListener("keydown", onEsc);
+  }, [onClose, isExiting]);
+
+  /* --------------------------------------------
+     PAGE TRANSITION HANDLER
+  -------------------------------------------- */
+  const handleNavigate = (link) => {
+    if (isExiting) return;
+    pendingRoute.current = link;
+    setIsExiting(true);
+
+    setTimeout(() => {
+      onClose?.();
+      navigate(pendingRoute.current);
+    }, 600);
   };
 
   return (
-    <div className="fixed inset-0 bg-[#F8F4EF] pt-20 md:pt-28 lg:pt-32 overflow-y-auto">
-      <div className="min-h-[calc(100vh-5rem)] p-4 md:p-8">
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 md:px-12 py-12 max-w-6xl mx-auto">
-            {pillars.map((pillar, i) => (
-              <Link to={pillar.link} key={pillar.label}>
-                <motion.div
-                  className="relative rounded-2xl overflow-hidden h-80 md:h-96 cursor-pointer group shadow-lg"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.15 }}
-                  viewport={{ once: true }}
-                >
-                  <img
-                    src={pillar.bg}
-                    alt={pillar.label}
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition" />
-                  <div className="relative z-10 h-full flex flex-col justify-end p-6 text-white">
-                    <h3 className="text-3xl font-bold tracking-wide">{pillar.label}</h3>
-                    <p className="text-sm md:text-base opacity-90 mt-2">
-                      {/* Optional: short description */}
-                    </p>
-                  </div>
-                </motion.div>
-              </Link>
-            ))}
-          </section>
+    <motion.div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onClick={() => !isExiting && onClose?.()}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 bg-black overflow-hidden"
+    >
+      {/* BACKGROUND */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeItem.bg}
+          initial={{ opacity: 0, scale: 1.08 }}
+          animate={{
+            opacity: 1,
+            scale: isExiting ? 1.15 : 1,
+          }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          style={!isMobile ? { x: bgX, y: bgY } : {}}
+          className="absolute inset-0"
+        >
+          <img
+            src={activeItem.bg}
+            alt={activeItem.label}
+            className="w-full h-full object-cover"
+          />
 
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-black/55" />
+
+          {/* Grain overlay */}
+          <div
+            className="absolute inset-0 opacity-[0.06] mix-blend-overlay pointer-events-none"
+            style={{
+              backgroundImage:
+                "url('https://grainy-gradients.vercel.app/noise.svg')",
+            }}
+          />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* CONTENT */}
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative z-10 h-full flex flex-col items-center justify-center gap-16 px-6 md:px-16 text-center"
+      >
+        {/* MENU */}
+        <nav className="flex flex-col gap-10 md:gap-8 items-center">
+          {menuItems.map((item) => (
+            <motion.div
+              key={item.label}
+              onMouseEnter={() => setActiveItem(item)}
+              className="overflow-hidden"
+            >
+              <button
+                onClick={() => handleNavigate(item.link)}
+                disabled={isExiting}
+                className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-wide text-[#E6DACD] hover:text-white transition-colors"
+              >
+                {item.label.split("").map((char, i) => (
+                  <motion.span
+                    key={i}
+                    custom={i}
+                    variants={letterVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="inline-block"
+                  >
+                    {char === " " ? "\u00A0" : char}
+                  </motion.span>
+                ))}
+              </button>
+            </motion.div>
+          ))}
+        </nav>
+
+        {/* SOCIALS */}
+        <div className="flex gap-6 text-[#E6DACD] justify-center">
+          <a href="https://instagram.com" target="_blank" rel="noreferrer">
+            <FiInstagram size={22} className="hover:text-white transition" />
+          </a>
+          <a href="https://twitter.com" target="_blank" rel="noreferrer">
+            <FiTwitter size={22} className="hover:text-white transition" />
+          </a>
+          <a href="mailto:hello@oluthemaker.com">
+            <FiMail size={22} className="hover:text-white transition" />
+          </a>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
-export default BentoMenu;
+export default HoverBackgroundMenu;

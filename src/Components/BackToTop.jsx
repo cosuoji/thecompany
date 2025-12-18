@@ -29,7 +29,7 @@ const BackToTop = () => {
     >
       {/* Button with new colors */}
       <motion.button
-        className="p-3 rounded-full bg-[#4B371C] text-[#E0E0E0] shadow-md"
+        className="p-3 rounded-full bg-black text-[#E0E0E0] shadow-md"
         onClick={scrollToTop}
         aria-label="Back to top"
       >

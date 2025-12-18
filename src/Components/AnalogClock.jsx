@@ -21,7 +21,7 @@ const AnalogClock = ({ timezoneOffset = 0, size = 50 }) => {
   
     return (
       <div
-        className="relative border-2 border-[#4B371C] opacity-60 rounded-full"
+        className="relative border-2 border-black opacity-60 rounded-full"
         style={{
           width: size,
           height: size,
@@ -29,7 +29,7 @@ const AnalogClock = ({ timezoneOffset = 0, size = 50 }) => {
       >
         {/* Hour Hand */}
         <div
-          className="absolute w-[2px] bg-[#4B371C] left-1/2 bottom-1/2 origin-bottom z-10"
+          className="absolute w-[2px] bg-black left-1/2 bottom-1/2 origin-bottom z-10"
           style={{
             height: size * 0.3,
             transform: `translateX(-50%) rotate(${hourDeg}deg)`,
@@ -37,7 +37,7 @@ const AnalogClock = ({ timezoneOffset = 0, size = 50 }) => {
         />
         {/* Minute Hand */}
         <div
-          className="absolute w-[2px] bg-[#4B371C] left-1/2 bottom-1/2 origin-bottom z-10"
+          className="absolute w-[2px] bg-black left-1/2 bottom-1/2 origin-bottom z-10"
           style={{
             height: size * 0.4,
             transform: `translateX(-50%) rotate(${minuteDeg}deg)`,
@@ -45,7 +45,7 @@ const AnalogClock = ({ timezoneOffset = 0, size = 50 }) => {
         />
         {/* Second Hand */}
         <div
-          className="absolute w-[2px] bg-[#4B371C] left-1/2 bottom-1/2 origin-bottom z-10"
+          className="absolute w-[2px] bg-black left-1/2 bottom-1/2 origin-bottom z-10"
           style={{
             height: size * 0.3,
             transform: `translateX(-50%) rotate(${secondDeg}deg)`,

@@ -90,7 +90,7 @@ const Homepage = () => {
   </Link>
 </section>
 
-{/* Blog Articles Section */}
+{/* Blog Articles Section
 <section className="px-4 md:px-8 py-12">
   <motion.div
     initial={{ opacity: 0, y: 40 }}
@@ -127,10 +127,10 @@ const Homepage = () => {
       </div>
     )}
   </motion.div>
-</section>
+</section> */}
 
 
-{/* Featured Magazine Section */}
+{/* Featured Magazine Section
 <section className="px-4 md:px-8 py-12 bg-[#f0ebe4]">
   <motion.div
     initial={{ opacity: 0, y: 40 }}
@@ -153,9 +153,9 @@ const Homepage = () => {
       </div>
     )}
   </motion.div>
-</section>
+</section> */}
 
-{/* {Podcast Section} */}
+{/* {Podcast Section}
 <section className="px-4 md:px-8 py-12 bg-white">
   <motion.div
     initial={{ opacity: 0, y: 40 }}
@@ -193,9 +193,9 @@ const Homepage = () => {
       ))}
     </div>
   </motion.div>
-</section>
+</section> */}
 
-      <InstagramSection />
+      {/* <InstagramSection /> */}
     </div>
   );
 };

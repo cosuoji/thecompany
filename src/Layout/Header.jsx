@@ -6,9 +6,9 @@ import { useUserStore } from "../store/useUserStore";
 import { useCartStore } from "../store/useCartStore";
 import { toast } from "react-hot-toast";
 import CartPage from "../Pages/Cart";
-import BentoMenu from "../Components/Menus/BentoMenu";
 import CurrencySwitcher from "../Components/CurrencyComponents/CurrencySwitcher";
 import { useRedirect } from "../hooks/useRedirect";
+import HoverBackgroundMenu from "../Components/Menus/BentoMenu";
 
 
 
@@ -79,7 +79,7 @@ const Header = () => {
   return (
     <>
       {/* HEADER */}
-      <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-4 bg-[#4B371C]">
+      <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-4 bg-black">
         {/* LOGO */}
         <Link to="/" onClick={() => {
           setIsMenuOpen(false);
@@ -159,7 +159,7 @@ const Header = () => {
             className="fixed inset-0 z-40"
           >
             {/* <SectionGallery onClose={() => setIsMenuOpen(false)} /> */}
-            <BentoMenu onClose={() => setIsMenuOpen(false)} />
+            <HoverBackgroundMenu onClose={() => setIsMenuOpen(false)} />
           </motion.div>
         )}
       </AnimatePresence>
