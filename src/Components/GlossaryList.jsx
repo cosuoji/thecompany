@@ -24,13 +24,13 @@ export default function GlossaryList() {
     <div className="max-w-4xl mx-auto px-6 py-12">
       {/* SEO Head */}
       <Helmet>
-        <title>Shoe Glossary | Shoe Company</title>
+        <title> Glossary | Olu The Maker</title>
         <meta
           name="description"
-          content="Explore our shoe glossary: a complete A–Z dictionary of footwear terms, styles, and materials to help you understand the world of shoes."
+          content="Explore our  glossary: a complete A–Z dictionary of footwear terms, styles, and materials to help you understand the world of shoes."
         />
         <link rel="canonical" href="https://www.yourshoedomain.com/glossary" />
-        <meta property="og:title" content="Shoe Glossary | Shoe Company" />
+        <meta property="og:title" content="Shoe Glossary | Olu The Maker" />
         <meta
           property="og:description"
           content="A complete glossary of footwear terms, styles, and materials."
@@ -57,7 +57,8 @@ export default function GlossaryList() {
         </script>
       </Helmet>
 
-      <h1 className="text-3xl font-bold text-center mb-8">Shoe Glossary</h1>
+      <h1 className="text-3xl font-bold text-center">Shoe Glossary</h1>
+      <p className="text-center mb-8">An extensive description of terms used on the website</p>
 
       {/* Search */}
       <input

@@ -45,7 +45,7 @@ const About = () => {
           <h1 className="text-3xl font-bold mb-6">About Us</h1>
           <p className="text-lg text-gray-700 leading-relaxed">
             At <strong>Olú the Maker</strong>, we believe shoes are more than just 
-            footwear — they’re a statement of style, comfort, and identity. 
+            footwear, they’re a statement of style, comfort, and identity. 
             Founded in [Year], our mission is to craft timeless designs that fit seamlessly 
             into your lifestyle.
           </p>

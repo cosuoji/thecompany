@@ -14,7 +14,7 @@ const ElegantButton = ({ label, state }) => {
         text-[#E6DACD]
         rounded-full
         transition-all duration-300 ease-in-out
-        hover:bg-[#4B371C] hover:text-[#E6DACD]
+        hover:bg-black hover:text-[#E6DACD]
         px-2 py-2 pl-2 pr-2 md:pl-4 md:pr-6
         ${isSubmitting ? 'pointer-events-none' : ''}
       `}
@@ -43,7 +43,7 @@ const ElegantButton = ({ label, state }) => {
         className="
           relative z-10 flex items-center justify-center
           w-10 h-10
-          bg-[#4B371C]
+          bg-black
           text-[#E6DACD]
           rounded-full
           transition-all duration-300
