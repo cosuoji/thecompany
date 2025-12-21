@@ -117,10 +117,17 @@ login: async (email, password) => {
     toast.error("Login failed: No user data returned.");
     return false;
   } catch (err) {
-    set({ user: null, loading: false, checkingAuth: false });
-    toast.error(err.response?.data || "Login failed");
-    return false;
-  }
+  set({ user: null, loading: false, checkingAuth: false });
+
+  const message =
+    err?.response?.data?.message ||
+    err?.message ||
+    "Login failed";
+
+  toast.error(message);
+  return false;
+}
+
 },
 
 // inside signup

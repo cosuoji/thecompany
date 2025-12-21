@@ -196,7 +196,44 @@ const Homepage = () => {
 </section> */}
 
       {/* <InstagramSection /> */}
+      {/* About Us Teaser Section */}
+<section className="bg-[#F8F4EF] py-16 px-4">
+  <div className="max-w-3xl mx-auto text-center">
+    
+    {/* Shoe Icon */}
+    <div className="flex justify-center mb-6">
+      <svg
+        width="64"
+        height="64"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#1a1a1a"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M2 16c1.5 0 4-1 6-2.5 2.5-2 3-5.5 3-7" />
+        <path d="M11 6c2.5 3 6 5 9 5v5c-6 0-10 2-18 2v-2" />
+      </svg>
     </div>
+
+    {/* Company Name */}
+    <h2 className="text-2xl md:text-3xl font-bold tracking-wide mb-4">
+      OLÚ THE MAKER
+    </h2>
+
+    {/* Placeholder Text */}
+    <p className="text-sm md:text-base text-gray-700 leading-relaxed max-w-xl mx-auto">
+      Olú The Maker is a Nigerian footwear brand rooted in craftsmanship,
+      culture, and intentional design. Each piece reflects a balance of
+      tradition and modern expression, built for those who value detail,
+      patience, and legacy.
+    </p>
+  </div>
+</section>
+
+    </div>
+    
   );
 };
 

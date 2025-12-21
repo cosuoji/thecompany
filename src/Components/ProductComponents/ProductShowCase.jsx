@@ -57,12 +57,12 @@ const ProductShowCase = ({ slides }) => {
         >
           {/* Small/Medium Layout: Buttons + Images in center */}
           <div className="flex items-center justify-center w-full lg:hidden mb-8">
-            <button
+            {/* <button
               onClick={prevSlide}
               className="w-11 h-11 flex items-center justify-center rounded-full border border-black transition transform hover:bg-black hover:text-white hover:scale-110 hover:-translate-y-1 mr-4"
             >
               <FaArrowLeft />
-            </button>
+            </button> */}
 
             <div className="relative w-72 h-72 sm:w-80 sm:h-80">
               <img
@@ -73,16 +73,16 @@ const ProductShowCase = ({ slides }) => {
               <img
                 src={slide.bottleImg}
                 alt="Bottle"
-                className="relative w-full h-full object-contain"
+                className="relative w-full h-full object-contain scale-190"
               />
             </div>
 
-            <button
+            {/* <button
               onClick={nextSlide}
               className="w-11 h-11 flex items-center justify-center rounded-full border border-black transition transform hover:bg-black hover:text-white hover:scale-110 hover:-translate-y-1 ml-4"
             >
               <FaArrowRight />
-            </button>
+            </button> */}
           </div>
 
           {/* Text Content */}
@@ -104,7 +104,7 @@ const ProductShowCase = ({ slides }) => {
             </p>
             
             <div className="flex justify-center sm:-m-4 lg:justify-start">
-             <ElegantButton label={"Shop Now"} />
+             <ElegantButton label={"VIEW"} />
           </div>
 
            

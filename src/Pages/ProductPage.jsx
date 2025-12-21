@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from "../lib/axios";
 import { FaArrowLeft } from 'react-icons/fa';
 import { useCartStore } from '../store/useCartStore';
@@ -10,6 +10,8 @@ import toast from 'react-hot-toast';
 import { useCurrency } from '../context/CurrencyContext';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import SEO from '../Components/SEO';
+import AnnotatedImage from '../Components/AnnotatedImage';
+
 
 
 
@@ -157,7 +159,7 @@ useEffect(() => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#4B371C]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
       </div>
     );
   }
@@ -169,7 +171,7 @@ useEffect(() => {
         <p className="text-gray-600 mt-2">{error}</p>
         <button 
           onClick={() => window.location.reload()}
-          className="mt-4 px-4 py-2 bg-[#4B371C] text-white rounded"
+          className="mt-4 px-4 py-2 bg-black text-white rounded"
         >
           Try Again
         </button>
@@ -183,7 +185,7 @@ useEffect(() => {
         <h2 className="text-xl font-medium text-gray-500">Product not found</h2>
         <button
           onClick={() => navigate('/store')}
-          className="mt-4 px-4 py-2 bg-[#4B371C] text-white rounded"
+          className="mt-4 px-4 py-2 bg-black text-white rounded"
         >
           Browse Products
         </button>
@@ -218,6 +220,7 @@ useEffect(() => {
         <div className="space-y-4">
           {/* Main Image */}
           <div className="bg-gray-100 rounded-lg overflow-hidden aspect-square">
+              <AnnotatedImage imageUrl={currentImages[selectedImage]?.url} />
             {currentImages[selectedImage] ? (
               <img
                 src={currentImages[selectedImage].url}
@@ -237,7 +240,7 @@ useEffect(() => {
               {currentImages.map((image, index) => (
                 <button
                   key={index}
-                  className={`bg-gray-100 rounded overflow-hidden ${selectedImage === index ? 'ring-2 ring-[#4B371C]' : ''}`}
+                  className={`bg-gray-100 rounded overflow-hidden ${selectedImage === index ? 'ring-2 ring-black' : ''}`}
                   onClick={() => setSelectedImage(index)}
                 >
                   <img
@@ -257,7 +260,7 @@ useEffect(() => {
   <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
         <button
           onClick={handleWishlistToggle}
-          className="text-[#4B371C] hover:text-[#6a5131] transition-colors"
+          className="text-black hover:text-[#6a5131] transition-colors"
           aria-label="Add to wishlist"
         >
           {isWishlisted ? (
@@ -288,7 +291,7 @@ useEffect(() => {
                     handleOptionChange('color', index);
                     setSelectedImage(0); // Reset to first image when color changes
                   }}
-                  className={`w-10 h-10 rounded-full border-2 ${selectedOptions.color === index ? 'border-[#4B371C]' : 'border-transparent'}`}
+                  className={`w-10 h-10 rounded-full border-2 ${selectedOptions.color === index ? 'border-black' : 'border-transparent'}`}
                   style={{ backgroundColor: color.hexCode }}
                   title={color.name}
                 />
@@ -305,7 +308,7 @@ useEffect(() => {
                 <button 
                     type="button"
                     onClick={() => setIsSizeGuideOpen(true)}
-                    className="text-sm text-[#4B371C] hover:underline"
+                    className="text-sm text-black hover:underline"
                 >
                     What's my size?
                 </button>
@@ -314,7 +317,7 @@ useEffect(() => {
                 id="size"
                 value={selectedOptions.size}
                 onChange={(e) => handleOptionChange('size', e.target.value)}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[#4B371C] focus:border-[#4B371C] sm:text-sm rounded-md"
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-black focus:border-black sm:text-sm rounded-md"
                 required
                 >
                 <option value="">Select your size</option>
@@ -336,7 +339,7 @@ useEffect(() => {
                 id="width"
                 value={selectedOptions.width}
                 onChange={(e) => handleOptionChange('width', e.target.value)}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[#4B371C] focus:border-[#4B371C] sm:text-sm rounded-md"
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-black focus:border-black sm:text-sm rounded-md"
               >
                 {product.widthOptions.map((width) => (
                   <option key={width} value={width}>
@@ -350,14 +353,24 @@ useEffect(() => {
           {/* Last Selection */}
           {product.lastOptions?.length > 0 && (
             <div className="space-y-2">
+              <div className='flex justify-between items'>
               <label htmlFor="last" className="text-sm font-medium text-gray-900">
                 Last Type
               </label>
+              <Link to="/lasts">
+                 <button 
+                    type="button"
+                    className="text-sm text-black hover:underline"
+                >
+                    View Our Last Collection
+                </button>
+                </Link>
+              </div>
               <select
                 id="last"
                 value={selectedOptions.last}
                 onChange={(e) => handleOptionChange('last', e.target.value)}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[#4B371C] focus:border-[#4B371C] sm:text-sm rounded-md"
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-black focus:border-black sm:text-sm rounded-md"
               >
                 {product.lastOptions.map((last) => (
                   <option key={last._id} value={last._id}>
@@ -378,7 +391,7 @@ useEffect(() => {
                 id="sole"
                 value={selectedOptions.sole}
                 onChange={(e) => handleOptionChange('sole', e.target.value)}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[#4B371C] focus:border-[#4B371C] sm:text-sm rounded-md"
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-black focus:border-black sm:text-sm rounded-md"
               >
                 {product.soleOptions.map((sole) => (
                   <option key={sole._id} value={sole._id}>
@@ -399,7 +412,7 @@ useEffect(() => {
                 id="material"
                 value={selectedOptions.material}
                 onChange={(e) => handleOptionChange('material', e.target.value)}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[#4B371C] focus:border-[#4B371C] sm:text-sm rounded-md"
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-black focus:border-black sm:text-sm rounded-md"
               >
                 {product.materialOptions.map((material) => (
                   <option key={material._id} value={material._id}>
@@ -413,7 +426,7 @@ useEffect(() => {
           {/* Add to Cart Button */}
           <button
             onClick={handleAddToCart}
-            className={`w-full py-3 px-4 rounded-md transition-colors ${allOptionsSelected ? 'bg-[#4B371C] text-white hover:bg-[#5a452a]' : 'bg-gray-200 text-gray-500 cursor-not-allowed'}`}
+            className={`w-full py-3 px-4 rounded-md transition-colors ${allOptionsSelected ? 'bg-black text-white hover:bg-[#5a452a]' : 'bg-gray-200 text-gray-500 cursor-not-allowed'}`}
             disabled={!allOptionsSelected}
           >
             {allOptionsSelected ? 'Add to Cart' : 'Please select all options'}
@@ -430,7 +443,7 @@ useEffect(() => {
               onClick={() => setActiveTab(tab)}
               className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${
                 activeTab === tab
-                  ? 'border-[#4B371C] text-[#4B371C]'
+                  ? 'border-black text-black'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -505,7 +518,7 @@ useEffect(() => {
       {/* Feature Highlights */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
         <div className="text-center p-6 bg-gray-50 rounded-lg">
-          <div className="mx-auto h-12 w-12 flex items-center justify-center bg-[#4B371C] text-white rounded-full mb-4">
+          <div className="mx-auto h-12 w-12 flex items-center justify-center bg-black text-white rounded-full mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
@@ -516,7 +529,7 @@ useEffect(() => {
           </p>
         </div>
         <div className="text-center p-6 bg-gray-50 rounded-lg">
-          <div className="mx-auto h-12 w-12 flex items-center justify-center bg-[#4B371C] text-white rounded-full mb-4">
+          <div className="mx-auto h-12 w-12 flex items-center justify-center bg-black text-white rounded-full mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -527,7 +540,7 @@ useEffect(() => {
           </p>
         </div>
         <div className="text-center p-6 bg-gray-50 rounded-lg">
-          <div className="mx-auto h-12 w-12 flex items-center justify-center bg-[#4B371C] text-white rounded-full mb-4">
+          <div className="mx-auto h-12 w-12 flex items-center justify-center bg-black text-white rounded-full mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
             </svg>
@@ -540,14 +553,14 @@ useEffect(() => {
       </div>
 
       {/* Final CTA */}
-      <div className="text-center bg-[#4B371C] text-white p-8 rounded-lg">
+      <div className="text-center bg-black text-white p-8 rounded-lg">
         <h2 className="text-2xl font-bold mb-4">Ready to Elevate Your Wardrobe?</h2>
         <p className="mb-6 max-w-2xl mx-auto">
           These aren't just shoes - they're an investment in timeless style and craftsmanship.
         </p>
         <button
           onClick={handleAddToCart}
-          className={`px-6 py-3 rounded-md transition-colors ${allOptionsSelected ? 'bg-white text-[#4B371C] hover:bg-gray-100' : 'bg-gray-400 cursor-not-allowed'}`}
+          className={`px-6 py-3 rounded-md transition-colors ${allOptionsSelected ? 'bg-white text-black hover:bg-gray-100' : 'bg-gray-400 cursor-not-allowed'}`}
           disabled={!allOptionsSelected}
         >
           {allOptionsSelected ? 'Add to Cart Now' : 'Complete Your Selection'}

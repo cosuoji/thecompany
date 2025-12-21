@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { ProductCard } from './ProductCard';
-import { shallow } from 'zustand/shallow';
 import useShoeStore from '../../store/useShoeStore';
 
 export const ProductGrid = () => {
@@ -126,7 +125,7 @@ export const ProductGrid = () => {
               max="10000000"
               value={filters.priceRange[0]}
               onChange={(e) => handlePriceChange(0, e.target.value)}
-              className="w-full accent-[#4B371C]"
+              className="w-full accent-black"
             />
             <input
               type="range"
@@ -134,7 +133,7 @@ export const ProductGrid = () => {
               max="10000000"
               value={filters.priceRange[1]}
               onChange={(e) => handlePriceChange(1, e.target.value)}
-              className="w-full accent-[#4B371C]"
+              className="w-full accent-black"
             />
           </div>
         </div>
@@ -278,16 +277,7 @@ export const ProductGrid = () => {
   return (
     <div className="px-4 py-8 bg-gray-50">
       <div className="max-w-7xl mx-auto">
-        {/* Header Section */}
-        <div className="mb-12 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Discover Our Premium Footwear Collection
-          </h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Explore our handcrafted shoes made with the finest materials and attention to detail. 
-            Each pair is designed for comfort, style, and durability.
-          </p>
-        </div>
+
 
         {/* Filter Bar */}
         <div className="flex justify-between items-center mb-8">
@@ -359,7 +349,7 @@ export const ProductGrid = () => {
                 </button>
                 <button
                   onClick={toggleFilter}
-                  className="px-4 py-2 border bg-[#4B371C] border-transparent rounded-md shadow-sm text-sm font-medium text-white"
+                  className="px-4 py-2 border bg-black border-transparent rounded-md shadow-sm text-sm font-medium text-white"
                 >
                   Apply Filters
                 </button>
@@ -410,7 +400,7 @@ export const ProductGrid = () => {
             </h2>
             <button
               onClick={resetFilters}
-              className="mt-4 px-4 py-2 bg-[#4B371C] text-white rounded-md hover:bg-[#5a452a]"
+              className="mt-4 px-4 py-2 bg-black text-white rounded-md hover:bg-[#5a452a]"
             >
               Reset Filters
             </button>

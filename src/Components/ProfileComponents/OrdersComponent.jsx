@@ -62,7 +62,7 @@ const OrdersPage = () => {
           <p>You haven't placed any orders yet.</p>
           <Link
             to="/products"
-            className="mt-2 inline-block text-[#4B371C] hover:underline"
+            className="mt-2 inline-block text-[#E6DACD] hover:underline"
           >
             Browse Products
           </Link>

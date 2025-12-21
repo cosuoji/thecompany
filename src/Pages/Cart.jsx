@@ -81,7 +81,10 @@ const CartPage = () => {
 
 
   return (
+    <div className="pt-24 min-h-screen">
     <div className="max-w-4xl mx-auto px-4 py-8">
+ 
+
       {/* Product Details Modal */}
       {showModal && selectedProduct && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -234,13 +237,14 @@ const CartPage = () => {
           <p className="text-gray-500 text-lg">Your cart is empty</p>
           <Link 
             to="/store" 
-            className="mt-4 inline-block px-6 py-2 bg-[#4B371C] text-[#E6DACD] rounded hover:bg-[#3a2b15] transition-colors"
+            className="mt-4 inline-block px-6 py-2 bg-black text-[#E6DACD] rounded hover:bg-black transition-colors"
           >
             Browse Store
           </Link>
         </div>
       )}
     </div>
+  </div>
   );
 };
 

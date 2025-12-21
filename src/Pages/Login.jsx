@@ -20,24 +20,20 @@ const Login = () => {
 
 
   
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-   try{
-    const success = await login(formData.email, formData.password);
-    if (success) {
-      toast.success('Logged in successfully!');
-      redirect()
-    }
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError(null);
 
-    if (!success) {
-      setError('Invalid credentials');
-    }
-  } catch (err) {
-    setError(err.message);
+  const success = await login(formData.email, formData.password);
+
+  if (success) {
+    redirect();
+  } else {
+    // Only update local state for UI if needed
+    setError('Invalid credentials'); 
   }
-    
-  };
+};
+
 
   useEffect(() => {
     if (user) {

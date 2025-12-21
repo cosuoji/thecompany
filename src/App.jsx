@@ -129,6 +129,9 @@ function App() {
                   <Route index element={<PageTransition><Blog /></PageTransition>} />
                   <Route path=":slug" element={<PageTransition><SingleBlogPost/></PageTransition>} />
                   
+
+                   {/* Adds new blog  post */}
+
                   <Route path='write' element={<PageTransition>
                     <AdminRoute>
                     <CreateBlog />
@@ -137,14 +140,17 @@ function App() {
               </Route>
 
               <Route path="/store">
-                  <Route index element={<PageTransition><Store /></PageTransition>} />   
+                  <Route index element={<PageTransition><Store /></PageTransition>} />  
+                   {/* Adds new shoe */} 
                   <Route path='addmagazine' element={<AdminRoute><MagazineUploadPage /></AdminRoute>} /> 
+                 {/* Adds new shoe */}
                   <Route path='addshoe' element={<AdminRoute><ShoeUploadForm /></AdminRoute>} /> 
+                  {/* Creates Different Options for Shoe Customizations */}
                   <Route path='options' element={<AdminRoute><ProductOptionsForm /></AdminRoute>} /> 
                   <Route path='shoes/:slug' element={<ProductPage />} />
                </Route>
 
-               <Route path='/order-dashboard' element={<AdminRoute><AdminOrdersPage /></AdminRoute>}/> 
+              <Route path='/order-dashboard' element={<AdminRoute><AdminOrdersPage /></AdminRoute>}/> 
  
               <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
               <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />

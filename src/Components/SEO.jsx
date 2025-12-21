@@ -2,7 +2,7 @@
 import { Helmet } from "react-helmet-async"
 
 const SEO = ({
-  title = "Shoe Glossary & Lifestyle | Olú the Maker",
+  title = "Leading Bespoke Brand in Africa",
   description = "Explore our shoe glossary, guides, and stories about footwear fashion and lifestyle. Learn everything about shoes, styles, and trends.",
   url = "https://yourdomain.com",
   image = "https://yourdomain.com/images/og-default.jpg",

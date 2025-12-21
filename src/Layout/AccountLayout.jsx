@@ -27,7 +27,7 @@ const AccountLayout = () => {
                     to={item.path}
                     className={`block px-4 py-2 rounded-md transition-colors ${
                       location.pathname === item.path
-                        ? 'bg-[#4B371C] text-[#EAE4D5]'
+                        ? 'bg-[#F8F4EF] text-black'
                         : 'text-[#B6B09F] hover:bg-[#2a2a2a]'
                     }`}
                   >

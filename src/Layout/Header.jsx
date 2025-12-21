@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
-import { FiShoppingCart, FiUser, FiX, FiPlus, FiMinus, FiTrash2 } from 'react-icons/fi';
+import { FiShoppingCart, FiUser } from 'react-icons/fi';
 import { useUserStore } from "../store/useUserStore";
 import { useCartStore } from "../store/useCartStore";
-import { toast } from "react-hot-toast";
-import CartPage from "../Pages/Cart";
 import CurrencySwitcher from "../Components/CurrencyComponents/CurrencySwitcher";
 import { useRedirect } from "../hooks/useRedirect";
 import HoverBackgroundMenu from "../Components/Menus/BentoMenu";
@@ -14,7 +12,6 @@ import HoverBackgroundMenu from "../Components/Menus/BentoMenu";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const location = useLocation();
   const { user, checkingAuth } = useUserStore();
   const { 
@@ -30,51 +27,24 @@ const Header = () => {
   const cartItemCount = cart?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
   const { setRedirect } = useRedirect();
 
-
-  // Handle body overflow when either modal is open
   useEffect(() => {
-    document.body.style.overflow = (isMenuOpen || isCartOpen) ? "hidden" : "";
-    return () => (document.body.style.overflow = "");
-  }, [isMenuOpen, isCartOpen]);
+  document.body.style.overflow = isMenuOpen ? "hidden" : "";
+  return () => (document.body.style.overflow = "");
+}, [isMenuOpen]);
+
 
   // Close modals when route changes
   useEffect(() => {
     setIsMenuOpen(false);
-    setIsCartOpen(false);
+
   }, [location]);
-
-  // Fetch cart when cart modal opens
-  useEffect(() => {
-    if (isCartOpen && user && !checkingAuth) {
-      fetchCart();
-    }
-  }, [isCartOpen, user, checkingAuth]);
-
-  const toggleCart = () => {
-    setIsCartOpen(!isCartOpen);
-    if (isMenuOpen) setIsMenuOpen(false);
-  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-    if (isCartOpen) setIsCartOpen(false);
+  
   };
 
-  const handleQuantityChange = async (itemId, newQuantity) => {
-    if (newQuantity < 1) return;
-    await updateCartItem(itemId, newQuantity);
-  };
 
-  const handleRemoveItem = async (itemId) => {
-    await removeFromCart(itemId);
-  };
-
-  const handleClearCart = async () => {
-    if (window.confirm("Are you sure you want to clear your cart?")) {
-      await clearCart();
-      toast.success("Cart cleared");
-    }
-  };
 
   return (
     <>
@@ -83,7 +53,6 @@ const Header = () => {
         {/* LOGO */}
         <Link to="/" onClick={() => {
           setIsMenuOpen(false);
-          setIsCartOpen(false);
         }}>
           <h1 className="text-xl sm:text-3xl font-bold text-[#E6DACD]">
             OLÚ THE MAKER
@@ -96,17 +65,12 @@ const Header = () => {
             <CurrencySwitcher />
           </div>
           {/* CART ICON */}
-          <button 
-            className="relative p-1 text-[#E6DACD] hover:text-[#f0e5d8] transition-colors"
-            onClick={toggleCart}
-          >
-            <FiShoppingCart className="w-6 h-6" />
-            {cartItemCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#E6DACD] text-[#4B371C] text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                {cartItemCount}
-              </span>
-            )}
-          </button>
+         <Link
+  to="/cart"
+  className="relative p-1 text-[#E6DACD] hover:text-[#f0e5d8] transition-colors"
+>
+  <FiShoppingCart />
+</Link>
 
           {/* USER ICON */}
 
@@ -118,7 +82,6 @@ const Header = () => {
                 setRedirect(); // Store current path before redirecting to login
               }
               setIsMenuOpen(false);
-              setIsCartOpen(false);
             }}
           >
             <FiUser className="w-6 h-6" />
@@ -166,56 +129,6 @@ const Header = () => {
 
       {/* Cart Modal */}
 {/* Cart Modal */}
-<AnimatePresence>
-  {isCartOpen && (
-    <>
-      {/* Backdrop */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.9 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-        className="fixed inset-0 z-40 bg-black"
-        onClick={() => setIsCartOpen(false)}
-      />
-
-      {/* Side Cart Panel */}
-      <motion.div
-        initial={{ x: '100%' }}
-        animate={{ x: 0 }}
-        exit={{ x: '100%' }}
-        transition={{ type: 'tween', ease: 'easeInOut', duration: 0.3 }}
-        className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-md h-full bg-[#E6DACD] shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Cart Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[#4B371C]/20 bg-[#4B371C] text-[#E6DACD]">
-          <h2 className="text-xl font-bold">Your Cart ({cartItemCount})</h2>
-          <button 
-            onClick={() => setIsCartOpen(false)}
-            className="p-1 rounded-full hover:bg-[#E6DACD]/10"
-          >
-            <FiX className="w-6 h-6" />
-          </button>
-        </div>
-        {!user && (
-          <div className="mt-4 text-center">
-            <Link to="/login">
-              <button
-                className="px-6 py-2 text-sm sm:text-base bg-[#4B371C] text-[#E6DACD] rounded-full shadow-md hover:bg-[#3c2d15] transition duration-300"
-              >
-                Login to add items to cart
-              </button>
-            </Link>
-          </div>
-        )}
-
-        {/* Cart Content */}
-        <CartPage />
-      </motion.div>
-    </>
-  )}
-</AnimatePresence>
 
     </>
   );

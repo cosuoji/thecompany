@@ -58,7 +58,7 @@ export default function Blog() {
   return (
     <div className="flex flex-col min-h-screen">
       <SEO 
-        title="Blog"
+        title="Blog | Olu The Maker"
         description="Our thoughts, stories, experiences, all in one page"
         url="https://yourdomain.com/blog"
       />
@@ -111,7 +111,7 @@ export default function Blog() {
       )}
 
       {/* FEATURED ARTICLES SECTION */}
-      <div className="bg-[#4B371C] text-[#E6DACD] py-12 px-8">
+      <div className="bg-black text-[#E6DACD] py-12 px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center">
             {featuredArticles.slice(1).map((article) => (
@@ -193,7 +193,7 @@ export default function Blog() {
   <input
     type="text"
     placeholder="Search articles..."
-    className="flex-grow border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#4B371C]"
+    className="flex-grow border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-black"
     value={search}
     onChange={(e) => {
       setSearch(e.target.value);
@@ -205,7 +205,7 @@ export default function Blog() {
   
   <button 
     type="submit" 
-    className="px-6 py-3 bg-[#4B371C] text-white rounded-lg hover:bg-[#3A2C18] transition"
+    className="px-6 py-3 bg-black text-white rounded-lg hover:bg-[#3A2C18] transition"
   >
     Search
   </button>

@@ -74,7 +74,7 @@ const AddressesPage = () => {
             setIsFormOpen(true);
             setEditingAddress(null);
           }}
-          className="px-4 py-2 bg-[#4B371C] text-[#EAE4D5] rounded-lg hover:bg-[#5a452c] transition-colors"
+          className="px-4 py-2 bg-black text-[#EAE4D5] rounded-lg hover:bg-[#5a452c] transition-colors"
         >
           Add New Address
         </button>
