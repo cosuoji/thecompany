@@ -64,30 +64,24 @@ login: async (email, password) => {
   set({ loading: true });
 
   try {
-    const res = await axiosInstance.post(
+    await axiosInstance.post(
       "/auth/login",
       { email, password },
-      { withCredentials: true }
+      { withCredentials: true, _shouldRetry: false }
     );
 
-    if (isIOS() && res.data?.refreshToken) {
-      tokenStorage.set(
-        res.data.accessToken,
-        res.data.refreshToken
-      );
-    }
+    // 🔑 Login succeeded if no error thrown
+    await get().fetchUserData();
 
-    if (res.data?._id) {
-      await get().fetchUserData();
-      set({ loading: false });
-      return true;
-    }
+    set({ loading: false });
+    return true;
 
-    throw new Error("Login failed");
   } catch (err) {
     set({ user: null, loading: false });
-    console.log(err)
-    toast.error(err?.response?.data?.message || "Invalid credentials");
+
+    toast.error(
+      err?.response?.data?.message || "Invalid credentials"
+    );
     return false;
   }
 },
