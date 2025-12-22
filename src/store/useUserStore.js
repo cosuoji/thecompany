@@ -59,53 +59,43 @@ checkAuth: async () => {
   // },
 
   // ✅ LOGIN
-login: async (email, password) => {
-  set({ loading: true });
-
-  try {
-    await axiosInstance.post(
-      "/auth/login",
-      { email, password },
-      { withCredentials: true, _shouldRetry: false }
-    );
-
-    const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent);
-
-    if (isIOS && res.data?.accessToken) {
-      tokenStorage.set(
-        res.data.accessToken,
-        res.data.refreshToken
-      );
-    }
-
-
-    // 🔑 Login succeeded if no error thrown
-    await get().fetchUserData();
-
-    set({ loading: false });
-    return true;
-
-  } catch (err) {
-    set({ user: null, loading: false });
-
-    toast.error(
-      err?.response?.data?.message || "Invalid credentials"
-    );
-    return false;
-  }
-},
-
-
-  // ✅ SIGNUP
-  signup: async (formData) => {
+// ✅ LOGIN
+  login: async (email, password) => {
     set({ loading: true });
 
     try {
-      const res = await axiosInstance.post(
-        "/auth/signup",
-        formData,
-        { withCredentials: true }
-      );
+      const res = await axiosInstance.post("/auth/login", { email, password });
+
+      // iOS fallback for refreshToken
+      if (/iP(hone|od|ad)/.test(navigator.userAgent) && res.data?.refreshToken) {
+        localStorage.setItem("refreshToken", res.data.refreshToken);
+      }
+
+      if (res.data?._id) {
+        await get().fetchUserData();
+        set({ loading: false });
+        return true;
+      }
+
+      throw new Error("Login failed");
+    } catch (err) {
+      set({ user: null, loading: false });
+      toast.error(err?.response?.data?.message || "Invalid credentials");
+      return false;
+    }
+  },
+
+  // ✅ SIGNUP
+// ✅ SIGNUP
+  signup: async (formData) => {
+    set({ loading: true });
+    try {
+      const res = await axiosInstance.post("/auth/signup", formData);
+
+      // iOS fallback
+      if (/iP(hone|od|ad)/.test(navigator.userAgent) && res.data?.refreshToken) {
+        localStorage.setItem("refreshToken", res.data.refreshToken);
+      }
 
       if (res.data?._id) {
         await get().fetchUserData();
@@ -218,7 +208,7 @@ addToWishlist: async (productId) => {
       return false;
     }
     },
-    removeFromWishlist: async (productId) => {
+ removeFromWishlist: async (productId) => {
     try {
       set({ loading: true });
       
@@ -262,7 +252,7 @@ addToWishlist: async (productId) => {
       return false;
     }
     },
-    addAddress: async (addressData) => {
+ addAddress: async (addressData) => {
       try {
         set({ loading: true });
         const res = await axiosInstance.post('/user/address', addressData);
@@ -387,4 +377,5 @@ addToWishlist: async (productId) => {
   
 }));
 
+useUserStore.getState().checkAuth();
 
