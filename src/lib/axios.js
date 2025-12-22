@@ -1,50 +1,52 @@
 import axios from "axios";
 import { useUserStore } from "../store/useUserStore";
 
-
 const axiosInstance = axios.create({
-	baseURL: import.meta.env.VITE_API_BASE_URL,
-	withCredentials: true, // send cookies to the server
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  withCredentials: true,
 });
 
+let isRefreshing = false;
+let failedQueue = [];
 
-const publicRoutes = [
-  '/',
-  '/login',
-  '/register',
-  '/products',
-  '/product/:id',
-  '/magazine',
-  '/blog',
-  '/store',
-  "/store/shoes/:slug"
-];
-
-
-
-const isPublicRoute = (url) => {
-  return publicRoutes.some((route) => {
-    const regex = new RegExp('^' + route.replace(/:\w+/g, '[^/]+') + '$');
-    return regex.test(url);
+const processQueue = (error = null) => {
+  failedQueue.forEach(p => {
+    if (error) p.reject(error);
+    else p.resolve();
   });
+  failedQueue = [];
 };
 
-  
 
-export const setupAxiosInterceptor = () => {
-  // 1) REQUEST interceptor (new)
 axiosInstance.interceptors.response.use(
   res => res,
   async error => {
-    const original = error.config;
+    const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !original._retry) {
-      original._retry = true;
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/auth/refresh-token")
+    ) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then(() => axiosInstance(originalRequest));
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
       try {
-        await axiosInstance.post('/auth/refresh-token', {}, { _shouldRetry: false });
-        return axiosInstance(original);
-      } catch {
+        await axiosInstance.post("/auth/refresh-token");
+        processQueue();
+        return axiosInstance(originalRequest);
+      } catch (err) {
+        processQueue(err);
         useUserStore.getState().logout();
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
       }
     }
 
@@ -53,39 +55,4 @@ axiosInstance.interceptors.response.use(
 );
 
 
- // 2) RESPONSE interceptor (your existing one)
-  axiosInstance.interceptors.response.use(
-	(res) => res,
-	async (error) => {
-	  const originalRequest = error.config;
-	  const url = new URL(originalRequest.url, window.location.origin).pathname;
-
-	  if (originalRequest._shouldRetry === false) {
-		return Promise.reject(error);
-	  }
-
-	  if (
-		error.response?.status === 401 &&
-		!originalRequest._retry &&
-		!isPublicRoute(url)
-	  ) {
-		originalRequest._retry = true;
-		try {
-		  await useUserStore.getState().refreshToken();
-		  return axiosInstance(originalRequest);
-		} catch (refreshError) {
-		  await useUserStore.getState().logout();
-		  return Promise.reject(refreshError);
-		}
-	  }
-	  return Promise.reject(error);
-	}
-  );
-};
-if (!axiosInstance.interceptors.response.handlers.length)
-setupAxiosInterceptor();
-
-export { axiosInstance as default};
-
-
-  
+export default axiosInstance;

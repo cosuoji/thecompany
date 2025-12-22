@@ -63,15 +63,14 @@ import SEO from './Components/SEO.jsx';
 
 function App() {
   const location = useLocation();
-  const { user, checkingAuth } = useUserStore();
+  const checkAuth = useUserStore(state => state.checkAuth);
+  const { user } = useUserStore();
 
   
-
-  useEffect(() => {
-    useUserStore.getState().init(); // only checks if there's a token
+ useEffect(() => {
+    checkAuth();
   }, []);
 
- 
   return (
     <CurrencyProvider>
       <AnalyticsLoader />

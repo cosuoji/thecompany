@@ -1,10 +1,8 @@
 import { create } from "zustand";
 import { toast } from "react-hot-toast";
-import axiosInstance, { setupAxiosInterceptor } from "../lib/axios";
+import axiosInstance from "../lib/axios";
 
-
-
-
+let isRefreshing = false;
 
 export const useUserStore = create((set, get) => ({
   user: null,
@@ -15,186 +13,138 @@ export const useUserStore = create((set, get) => ({
   orders: [],
   loading: false,
   checkingAuth: true,
-  _initialized: false,
 
-  init: async () => {
-    const store = get();
-    if (store._initialized) return;
-  
-    setupAxiosInterceptor();
-  
-    try {
-      await store.checkAuth(); // Always try to check auth
-    } catch (err) {
-      set({ user: null, checkingAuth: false });
-    }
-  
-    set({ _initialized: true });
-  },
-  
-  checkAuth: async (force = false) => {
-    console.log("🔍 Starting checkAuth");
-    
-  
-    if (get().user && !force) {
-      console.log("✅ Already authenticated user");
-      set({ checkingAuth: false });
-      return;
-    }
-  
-    set({ checkingAuth: true });
-    console.log("🔄 checkingAuth set to true");
-  
-    try {
-      await get().fetchUserData(); // This may fail
-      console.log("✅ fetchUserData succeeded");
-    } catch (err) {
-      console.error("❌ fetchUserData failed in checkAuth:", err);
-      set({ user: null, checkingAuth: false });
-    } finally {
-      console.log("🟢 Reached finally block in checkAuth");
-      set({ checkingAuth: false });
-    }
-  },  
-  
+  // ✅ Check auth on app load
+checkAuth: async () => {
+  set({ checkingAuth: true });
 
-  refreshToken: async () => {
-    const state = get();
-    if (state.checkingAuth || isRefreshing) {
-      return Promise.reject(new Error("Refresh already in progress"));
-    }
-  
-    set({ checkingAuth: true });
-    isRefreshing = true;
-  
-    try {
-      const res = await axiosInstance.post("/auth/refresh-token", {}, {
-        _shouldRetry: false // prevent infinite loop
-      });
-  
-      return res.data;
-    } catch (err) {
-      console.error("❌ Refresh token failed", err);
-      // Force logout if refresh fails
-      set({
-        user: null,
-        cart: null,
-        wishlist: [],
-        orders: [],
-      });
-      throw err;
-    } finally {
-      isRefreshing = false;
-      set({ checkingAuth: false });
-    }
-  },  
-
-// inside login
-login: async (email, password) => {
-  set({ loading: true });
   try {
-    const res = await axiosInstance.post("/auth/login", { email, password }, {
-      withCredentials: true,
-      _shouldRetry: false,
-    });
-
-    // ① broader iOS check (covers Chrome, Safari, Edge on iOS)
-    const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent);
-
-    await new Promise(r => setTimeout(r, 300));
-    const hasCookie = document.cookie.includes('refreshToken=');
-
-    if (isIOS && !hasCookie && res.data?.refreshToken) {
-      localStorage.setItem('refreshToken', res.data.refreshToken);
-    }
-
-    if (res.data?._id) {
-      await get().fetchUserData();
-      set({ loading: false });
-      return true;
-    }
-
-    toast.error("Login failed: No user data returned.");
-    return false;
-  } catch (err) {
-  set({ user: null, loading: false, checkingAuth: false });
-
-  const message =
-    err?.response?.data?.message ||
-    err?.message ||
-    "Login failed";
-
-  toast.error(message);
-  return false;
-}
-
-},
-
-// inside signup
-signup: async (formData) => {
-  set({ loading: true });
-  try {
-    const res = await axiosInstance.post("/auth/signup", formData, { withCredentials: true });
-
-    const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent);
-    await new Promise(r => setTimeout(r, 300));
-    const hasCookie = document.cookie.includes('refreshToken=');
-
-    if (isIOS && !hasCookie && res.data?.refreshToken) {
-      localStorage.setItem('refreshToken', res.data.refreshToken);
-    }
-
-    if (res.data?._id) {
-      await axiosInstance.get("/auth/profile");
-      await get().fetchUserData();
-      toast.success("Signup successful! Please update your profile information");
-      set({ loading: false });
-      return true;
-    }
-
-    toast.error("Signup failed: No user data returned.");
-    set({ loading: false });
-    return false;
-  } catch (err) {
-    set({ user: null, loading: false, checkingAuth: false });
-    toast.error(err.response?.data?.message || "Signup failed");
-    return false;
+    await get().fetchUserData();
+  } catch {
+    set({ user: null });
+  } finally {
+    set({ checkingAuth: false });
   }
 },
-  
-  
 
+
+
+  // 🔁 Refresh token (used by axios interceptor)
+  // refreshToken: async () => {
+  //   if (isRefreshing) {
+  //     return Promise.reject(new Error("Refresh already in progress"));
+  //   }
+
+  //   isRefreshing = true;
+  //   set({ checkingAuth: true });
+
+  //   try {
+  //     await axiosInstance.post(
+  //       "/auth/refresh-token",
+  //       {},
+  //       { _shouldRetry: false }
+  //     );
+  //   } catch (err) {
+  //     set({
+  //       user: null,
+  //       cart: null,
+  //       wishlist: [],
+  //       orders: [],
+  //     });
+  //     throw err;
+  //   } finally {
+  //     isRefreshing = false;
+  //     set({ checkingAuth: false });
+  //   }
+  // },
+
+  // ✅ LOGIN
+  login: async (email, password) => {
+    set({ loading: true });
+
+    try {
+      const res = await axiosInstance.post(
+        "/auth/login",
+        { email, password },
+        { withCredentials: true, _shouldRetry: false }
+      );
+
+      if (res.data?._id) {
+        await get().fetchUserData();
+        set({ loading: false });
+        return true;
+      }
+
+      throw new Error("Login failed");
+    } catch (err) {
+      set({ user: null, loading: false });
+      toast.error(err?.response?.data?.message || "Invalid credentials");
+      return false;
+    }
+  },
+
+  // ✅ SIGNUP
+  signup: async (formData) => {
+    set({ loading: true });
+
+    try {
+      const res = await axiosInstance.post(
+        "/auth/signup",
+        formData,
+        { withCredentials: true }
+      );
+
+      if (res.data?._id) {
+        await get().fetchUserData();
+        toast.success("Signup successful!");
+        set({ loading: false });
+        return true;
+      }
+
+      throw new Error("Signup failed");
+    } catch (err) {
+      set({ user: null, loading: false });
+      toast.error(err?.response?.data?.message || "Signup failed");
+      return false;
+    }
+  },
+
+  // 🚪 LOGOUT
   logout: async () => {
     try {
       await axiosInstance.post("/auth/logout");
-      
     } catch (_) {}
-    set({ user: null, cart: null, addresses: [], orders: [] });
-  },
- 
-fetchUserData: async () => {
-
-  try {
-    const user = await axiosInstance.get('/auth/profile');
-    const cart = await axiosInstance.get('/cart');
-    const wishlist = await axiosInstance.get('/user/wishlist/products');
-
-    let orders;
-    if (get().orders.length === 0) {
-      orders = await axiosInstance.get('/orders/myorders');
-    } else {
-      orders = { data: get().orders };
-    }
 
     set({
-      user: user.data,
-      cart: cart.data,
-      wishlist: wishlist.data,
-      orders: orders.data,
+      user: null,
+      cart: null,
+      addresses: [],
+      orders: [],
+    });
+  },
+
+  // 👤 FETCH USER DATA
+fetchUserData: async () => {
+  try {
+    const userRes = await axiosInstance.get("/auth/profile");
+
+    set({ user: userRes.data });
+
+    // secondary data — failures shouldn't log user out
+    const [cart, wishlist, orders] = await Promise.allSettled([
+      axiosInstance.get("/cart"),
+      axiosInstance.get("/user/wishlist/products"),
+      axiosInstance.get("/orders/myorders"),
+    ]);
+
+    set({
+      cart: cart.status === "fulfilled" ? cart.value.data : null,
+      wishlist: wishlist.status === "fulfilled" ? wishlist.value.data : [],
+      orders: orders.status === "fulfilled" ? orders.value.data : [],
       loading: false,
     });
   } catch (err) {
-    console.error('❌ fetchUserData error:', err);
+    // ONLY auth failure logs out
     set({
       user: null,
       cart: null,
@@ -206,7 +156,9 @@ fetchUserData: async () => {
   }
 },
 
-  addToWishlist: async (productId) => {
+
+
+addToWishlist: async (productId) => {
     try {
       set({ loading: true });
       
@@ -420,6 +372,3 @@ fetchUserData: async () => {
 }));
 
 
-
-// Call `init()` at app start
-useUserStore.getState().init();
