@@ -63,12 +63,12 @@ import SEO from './Components/SEO.jsx';
 
 function App() {
   const location = useLocation();
-  const checkAuth = useUserStore(state => state.checkAuth);
+  const init = useUserStore(state => state.init);
   const { user } = useUserStore();
 
   
- useEffect(() => {
-    checkAuth();
+   useEffect(() => {
+    init();
   }, []);
 
   return (

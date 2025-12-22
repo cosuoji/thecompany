@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { toast } from "react-hot-toast";
-import axiosInstance from "../lib/axios";
-import { tokenStorage } from "../lib/tokenStorage";
+import axiosInstance, { setupAxiosInterceptor } from "../lib/axios";
 
 
 export const useUserStore = create((set, get) => ({
@@ -13,6 +12,20 @@ export const useUserStore = create((set, get) => ({
   orders: [],
   loading: false,
   checkingAuth: true,
+
+
+    init: async () => {
+    const store = get();
+    if (store._initialized) return;
+
+    setupAxiosInterceptor();
+    try {
+      await store.checkAuth();
+    } catch {
+      set({ user: null });
+    }
+    set({ _initialized: true });
+  },
 
   // ✅ Check auth on app load
 checkAuth: async () => {
@@ -29,61 +42,38 @@ checkAuth: async () => {
 
 
 
-  // 🔁 Refresh token (used by axios interceptor)
-  // refreshToken: async () => {
-  //   if (isRefreshing) {
-  //     return Promise.reject(new Error("Refresh already in progress"));
-  //   }
 
-  //   isRefreshing = true;
-  //   set({ checkingAuth: true });
-
-  //   try {
-  //     await axiosInstance.post(
-  //       "/auth/refresh-token",
-  //       {},
-  //       { _shouldRetry: false }
-  //     );
-  //   } catch (err) {
-  //     set({
-  //       user: null,
-  //       cart: null,
-  //       wishlist: [],
-  //       orders: [],
-  //     });
-  //     throw err;
-  //   } finally {
-  //     isRefreshing = false;
-  //     set({ checkingAuth: false });
-  //   }
-  // },
-
-  // ✅ LOGIN
-// ✅ LOGIN
   login: async (email, password) => {
     set({ loading: true });
-
     try {
-      const res = await axiosInstance.post("/auth/login", { email, password });
+      const res = await axiosInstance.post('/auth/login', {email, password}, {
+        withCredentials: true,
+        _shouldRetry: false,
+      });
+         // --- NEW TEST CODE ---
+    const isMobileSafari =
+      /iP(hone|od|ad)/.test(navigator.userAgent) &&
+      /Safari/.test(navigator.userAgent) &&
+      !/Chrome/.test(navigator.userAgent);
 
-      // iOS fallback for refreshToken
-      if (/iP(hone|od|ad)/.test(navigator.userAgent) && res.data?.refreshToken) {
-        localStorage.setItem("refreshToken", res.data.refreshToken);
-      }
-
-      if (res.data?._id) {
-        await get().fetchUserData();
-        set({ loading: false });
-        return true;
-      }
-
-      throw new Error("Login failed");
+    await new Promise(r => setTimeout(r, 300)); // small delay so browser can set cookie
+    const hasCookie = document.cookie.includes('refreshToken=');
+    if (isMobileSafari && !hasCookie && res.data.refreshToken) {
+      localStorage.setItem('refreshToken', res.data.refreshToken);
+    }
+  
+      await get().fetchUserData();
+      set({ loading: false });
+      return true;
+  
     } catch (err) {
-      set({ user: null, loading: false });
-      toast.error(err?.response?.data?.message || "Invalid credentials");
+      set({ loading: false });
+      toast.error(err.response?.data?.message || 'Login failed');
       return false;
     }
   },
+  
+
 
   // ✅ SIGNUP
 // ✅ SIGNUP
@@ -373,9 +363,36 @@ addToWishlist: async (productId) => {
         throw err;
       }
     },
+
+    refreshToken: async () => {
+  try {
+    // mobile Safari fallback
+    const fallbackToken = localStorage.getItem('refreshToken');
+    if (fallbackToken) {
+      await axiosInstance.post(
+        '/auth/refresh-token',
+        {},
+        {
+          withCredentials: true,
+          headers: { Authorization: `Bearer ${fallbackToken}` },
+        }
+      );
+    } else {
+      await axiosInstance.post(
+        '/auth/refresh-token',
+        {},
+        { withCredentials: true }
+      );
+    }
+  } catch (err) {
+    localStorage.removeItem('refreshToken');
+    await get().logout();
+    throw err;
+  }
+},
+  
     
   
 }));
 
-useUserStore.getState().checkAuth();
 

@@ -7,88 +7,47 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-const isIOS = () =>
-  /iP(hone|od|ad)/.test(navigator.userAgent);
-
-let isRefreshing = false;
-let failedQueue = [];
-
-const processQueue = (error = null) => {
-  failedQueue.forEach(p => {
-    if (error) p.reject(error);
-    else p.resolve();
+export const setupAxiosInterceptor = () => {
+  // 1) REQUEST interceptor (new)
+  axiosInstance.interceptors.request.use((cfg) => {
+    const hasCookie = document.cookie.includes('accessToken=');
+    if (!hasCookie) {
+      const fb = localStorage.getItem('refreshToken');
+      if (fb) cfg.headers['Authorization'] = `Bearer ${fb}`;
+    }
+    return cfg;
   });
-  failedQueue = [];
-};
 
-/* ----------------------------------
-   REQUEST INTERCEPTOR (iOS SUPPORT)
----------------------------------- */
-axiosInstance.interceptors.request.use(config => {
-  if (isIOS()) {
-    const token = tokenStorage.getAccess();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-  }
-  return config;
-});
+  // 2) RESPONSE interceptor (your existing one)
+  axiosInstance.interceptors.response.use(
+    (res) => res,
+    async (error) => {
+      const originalRequest = error.config;
+      const url = new URL(originalRequest.url, window.location.origin).pathname;
 
-/* ----------------------------------
-   RESPONSE INTERCEPTOR (REFRESH)
----------------------------------- */
-axiosInstance.interceptors.response.use(
-  res => res,
-  async error => {
-    const originalRequest = error.config;
-
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry &&
-      !originalRequest.url.includes("/auth/refresh-token")
-    ) {
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        }).then(() => axiosInstance(originalRequest));
+      if (originalRequest._shouldRetry === false) {
+        return Promise.reject(error);
       }
 
-      originalRequest._retry = true;
-      isRefreshing = true;
-
-      try {
-        const res = await axiosInstance.post(
-          "/auth/refresh-token",
-          {
-            // ✅ iOS fallback
-            refreshToken: isIOS()
-              ? tokenStorage.getRefresh()
-              : undefined,
-          },
-          { _retry: true }
-        );
-
-        // ✅ Store new tokens on iOS
-        if (isIOS() && res.data?.accessToken) {
-          tokenStorage.set(
-            res.data.accessToken,
-            res.data.refreshToken
-          );
+      if (
+        error.response?.status === 401 &&
+        !originalRequest._retry &&
+        !isPublicRoute(url)
+      ) {
+        originalRequest._retry = true;
+        try {
+          await useAuthStore.getState().refreshToken();
+          return axiosInstance(originalRequest);
+        } catch (refreshError) {
+          await useAuthStore.getState().logout();
+          return Promise.reject(refreshError);
         }
-
-        processQueue();
-        return axiosInstance(originalRequest);
-      } catch (err) {
-        processQueue(err);
-        useUserStore.getState().logout();
-        return Promise.reject(err);
-      } finally {
-        isRefreshing = false;
       }
+      return Promise.reject(error);
     }
+  );
+};
+if (!axiosInstance.interceptors.response.handlers.length)
+setupAxiosInterceptor();
 
-    return Promise.reject(error);
-  }
-);
-
-export default axiosInstance;
+export { axiosInstance as default};
