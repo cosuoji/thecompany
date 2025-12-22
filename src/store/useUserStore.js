@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { toast } from "react-hot-toast";
 import axiosInstance from "../lib/axios";
+import { tokenStorage } from "../lib/tokenStorage";
 
 let isRefreshing = false;
 
@@ -59,29 +60,38 @@ checkAuth: async () => {
   // },
 
   // ✅ LOGIN
-  login: async (email, password) => {
-    set({ loading: true });
+login: async (email, password) => {
+  set({ loading: true });
 
-    try {
-      const res = await axiosInstance.post(
-        "/auth/login",
-        { email, password },
-        { withCredentials: true, _shouldRetry: false }
+  try {
+    const res = await axiosInstance.post(
+      "/auth/login",
+      { email, password },
+      { withCredentials: true }
+    );
+
+    if (isIOS() && res.data?.refreshToken) {
+      tokenStorage.set(
+        res.data.accessToken,
+        res.data.refreshToken
       );
-
-      if (res.data?._id) {
-        await get().fetchUserData();
-        set({ loading: false });
-        return true;
-      }
-
-      throw new Error("Login failed");
-    } catch (err) {
-      set({ user: null, loading: false });
-      toast.error(err?.response?.data?.message || "Invalid credentials");
-      return false;
     }
-  },
+
+    if (res.data?._id) {
+      await get().fetchUserData();
+      set({ loading: false });
+      return true;
+    }
+
+    throw new Error("Login failed");
+  } catch (err) {
+    set({ user: null, loading: false });
+    console.log(err)
+    toast.error(err?.response?.data?.message || "Invalid credentials");
+    return false;
+  }
+},
+
 
   // ✅ SIGNUP
   signup: async (formData) => {
@@ -110,18 +120,21 @@ checkAuth: async () => {
   },
 
   // 🚪 LOGOUT
-  logout: async () => {
-    try {
-      await axiosInstance.post("/auth/logout");
-    } catch (_) {}
+logout: async () => {
+  try {
+    await axiosInstance.post("/auth/logout");
+  } catch (_) {}
 
-    set({
-      user: null,
-      cart: null,
-      addresses: [],
-      orders: [],
-    });
-  },
+  tokenStorage.clear();
+
+  set({
+    user: null,
+    cart: null,
+    addresses: [],
+    orders: [],
+  });
+},
+
 
   // 👤 FETCH USER DATA
 fetchUserData: async () => {

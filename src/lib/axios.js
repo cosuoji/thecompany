@@ -1,10 +1,14 @@
 import axios from "axios";
 import { useUserStore } from "../store/useUserStore";
+import { tokenStorage } from "./tokenStorage"; // ✅ REQUIRED
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
 });
+
+const isIOS = () =>
+  /iP(hone|od|ad)/.test(navigator.userAgent);
 
 let isRefreshing = false;
 let failedQueue = [];
@@ -17,7 +21,22 @@ const processQueue = (error = null) => {
   failedQueue = [];
 };
 
+/* ----------------------------------
+   REQUEST INTERCEPTOR (iOS SUPPORT)
+---------------------------------- */
+axiosInstance.interceptors.request.use(config => {
+  if (isIOS()) {
+    const token = tokenStorage.getAccess();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
 
+/* ----------------------------------
+   RESPONSE INTERCEPTOR (REFRESH)
+---------------------------------- */
 axiosInstance.interceptors.response.use(
   res => res,
   async error => {
@@ -38,7 +57,25 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await axiosInstance.post("/auth/refresh-token");
+        const res = await axiosInstance.post(
+          "/auth/refresh-token",
+          {
+            // ✅ iOS fallback
+            refreshToken: isIOS()
+              ? tokenStorage.getRefresh()
+              : undefined,
+          },
+          { _retry: true }
+        );
+
+        // ✅ Store new tokens on iOS
+        if (isIOS() && res.data?.accessToken) {
+          tokenStorage.set(
+            res.data.accessToken,
+            res.data.refreshToken
+          );
+        }
+
         processQueue();
         return axiosInstance(originalRequest);
       } catch (err) {
@@ -53,6 +90,5 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
 
 export default axiosInstance;

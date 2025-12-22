@@ -38,7 +38,7 @@ const BackToTop = () => {
 
       {/* Vertical text with same background */}
       <motion.span
-        className="hidden sm:block  text-[#4B371C] text-xs uppercase tracking-wider px-2 py-1 rounded"
+        className="hidden sm:block  text-black text-xs uppercase tracking-wider px-2 py-1 rounded"
         style={{ writingMode: 'vertical-rl' }}
         initial={{ opacity: 0 }}
         animate={{ opacity: isVisible ? 1 : 0 }}
