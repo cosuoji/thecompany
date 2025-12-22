@@ -3,7 +3,6 @@ import { toast } from "react-hot-toast";
 import axiosInstance from "../lib/axios";
 import { tokenStorage } from "../lib/tokenStorage";
 
-let isRefreshing = false;
 
 export const useUserStore = create((set, get) => ({
   user: null,
@@ -69,6 +68,16 @@ login: async (email, password) => {
       { email, password },
       { withCredentials: true, _shouldRetry: false }
     );
+
+    const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent);
+
+    if (isIOS && res.data?.accessToken) {
+      tokenStorage.set(
+        res.data.accessToken,
+        res.data.refreshToken
+      );
+    }
+
 
     // 🔑 Login succeeded if no error thrown
     await get().fetchUserData();
