@@ -80,7 +80,7 @@ checkAuth: async () => {
   signup: async (formData) => {
     set({ loading: true });
     try {
-      const res = await axiosInstance.post("/auth/signup", formData);
+      const res = await axiosInstance.post("/auth/signup", formData, { withCredentials: true });
 
       // iOS fallback
       if (/iP(hone|od|ad)/.test(navigator.userAgent) && res.data?.refreshToken) {
@@ -107,8 +107,6 @@ logout: async () => {
   try {
     await axiosInstance.post("/auth/logout");
   } catch (_) {}
-
-  tokenStorage.clear();
 
   set({
     user: null,
