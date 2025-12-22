@@ -18,7 +18,7 @@ const AccountLayout = () => {
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar Navigation */}
           <div className="w-full md:w-64 shrink-0">
-            <div className="bg-[#1a1a1a] p-6 rounded-lg sticky top-4">
+           <div className="bg-[#1a1a1a] p-6 rounded-lg md:sticky md:top-4">
               <h2 className="text-xl font-bold text-[#EAE4D5] mb-6">My Account</h2>
               <nav className="space-y-2">
                 {navItems.map((item) => (
@@ -34,12 +34,13 @@ const AccountLayout = () => {
                     {item.label}
                   </Link>
                 ))}
-                <button
-                  onClick={logout}
-                  className="w-full text-left px-4 py-2 text-[#B6B09F] hover:bg-[#2a2a2a] rounded-md transition-colors mt-4"
-                >
-                  Log Out
-                </button>
+            <button
+              onClick={logout}
+              className="relative z-10 w-full text-left px-4 py-2 text-[#B6B09F] hover:bg-[#2a2a2a] rounded-md transition-colors mt-4"
+            >
+              Log Out
+            </button>
+
               </nav>
             </div>
           </div>
