@@ -32,31 +32,40 @@ export const useUserStore = create((set, get) => ({
     set({ _initialized: true });
   },
   
-  checkAuth: async (force = false) => {
-    console.log("🔍 Starting checkAuth");
+  // checkAuth: async (force = false) => {
+  //   console.log("🔍 Starting checkAuth");
     
   
-    if (get().user && !force) {
-      console.log("✅ Already authenticated user");
-      set({ checkingAuth: false });
-      return;
-    }
+  //   if (get().user && !force) {
+  //     console.log("✅ Already authenticated user");
+  //     set({ checkingAuth: false });
+  //     return;
+  //   }
   
-    set({ checkingAuth: true });
-    console.log("🔄 checkingAuth set to true");
+  //   set({ checkingAuth: true });
+  //   console.log("🔄 checkingAuth set to true");
   
-    try {
-      await get().fetchUserData(); // This may fail
-      console.log("✅ fetchUserData succeeded");
-    } catch (err) {
-      console.error("❌ fetchUserData failed in checkAuth:", err);
-      set({ user: null, checkingAuth: false });
-    } finally {
-      console.log("🟢 Reached finally block in checkAuth");
-      set({ checkingAuth: false });
-    }
-  },  
+  //   try {
+  //     await get().fetchUserData(); // This may fail
+  //     console.log("✅ fetchUserData succeeded");
+  //   } catch (err) {
+  //     console.error("❌ fetchUserData failed in checkAuth:", err);
+  //     set({ user: null, checkingAuth: false });
+  //   } finally {
+  //     console.log("🟢 Reached finally block in checkAuth");
+  //     set({ checkingAuth: false });
+  //   }
+  // },  
   
+checkAuth: async () => {
+  try {
+    await get().fetchUserData();
+  } catch {
+    set({ user: null });
+  } finally {
+    set({ checkingAuth: false });
+  }
+},
 
   refreshToken: async () => {
     const state = get();
@@ -136,13 +145,13 @@ signup: async (formData) => {
   try {
     const res = await axiosInstance.post("/auth/signup", formData, { withCredentials: true });
 
-    const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent);
-    await new Promise(r => setTimeout(r, 300));
-    const hasCookie = document.cookie.includes('refreshToken=');
+   // const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent);
+    // await new Promise(r => setTimeout(r, 300));
+    // const hasCookie = document.cookie.includes('refreshToken=');
 
-    if (isIOS && !hasCookie && res.data?.refreshToken) {
-      localStorage.setItem('refreshToken', res.data.refreshToken);
-    }
+    // if (isIOS && !hasCookie && res.data?.refreshToken) {
+    //   localStorage.setItem('refreshToken', res.data.refreshToken);
+    // }
 
     if (res.data?._id) {
       await axiosInstance.get("/auth/profile");
@@ -173,9 +182,6 @@ signup: async (formData) => {
   },
  
 fetchUserData: async () => {
-  console.log('fetchUserData axios instance:', axiosInstance);
-  console.log('Request interceptors:', axiosInstance.interceptors.request.handlers);
-  console.log('Response interceptors:', axiosInstance.interceptors.response.handlers);
 
   try {
     const user = await axiosInstance.get('/auth/profile');

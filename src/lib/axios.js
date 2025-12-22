@@ -33,19 +33,27 @@ const isPublicRoute = (url) => {
 
 export const setupAxiosInterceptor = () => {
   // 1) REQUEST interceptor (new)
-  axiosInstance.interceptors.request.use(cfg => {
-  const hasCookie = document.cookie.includes('accessToken=');
-  const fb = localStorage.getItem('refreshToken');
-  //console.log('📤 interceptor:', cfg.url, 'hasCookie:', hasCookie, 'token:', fb);
-  if (!hasCookie && fb) cfg.headers['Authorization'] = `Bearer ${fb}`;
-  return cfg;
-});
+axiosInstance.interceptors.response.use(
+  res => res,
+  async error => {
+    const original = error.config;
 
-  //console.log('📤 interceptor running, hasCookie:', document.cookie.includes('accessToken='));
-console.log('fetchUserData axios instance:', axiosInstance);
-console.log('Request interceptors:', axiosInstance.interceptors.request.handlers);
-console.log('Response interceptors:', axiosInstance.interceptors.response.handlers);
-  // 2) RESPONSE interceptor (your existing one)
+    if (error.response?.status === 401 && !original._retry) {
+      original._retry = true;
+      try {
+        await axiosInstance.post('/auth/refresh-token', {}, { _shouldRetry: false });
+        return axiosInstance(original);
+      } catch {
+        useUserStore.getState().logout();
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+
+ // 2) RESPONSE interceptor (your existing one)
   axiosInstance.interceptors.response.use(
 	(res) => res,
 	async (error) => {
