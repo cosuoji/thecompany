@@ -75,7 +75,6 @@ checkAuth: async () => {
   
 
 
-  // ✅ SIGNUP
 // ✅ SIGNUP
   signup: async (formData) => {
     set({ loading: true });
